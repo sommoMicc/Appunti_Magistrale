@@ -18,9 +18,9 @@ Un agente razionale (o intelligente) cerca di raggiungere i suoi obiettivi data 
 Un agente può essere considerato come una funzione che da tutte le possibili sequenze di percezioni estrae delle azioni ammissibili.
 > f \: P\* -> A
 
-> Sequenza di percezioni --> conoscenza a disposizione dell'agente.
+In questa funzione, la sequenza di percezioni P* rappresenta la conoscenza a disposizione dell'agente.
 
-Tra tutte le classi di ambienti e compiti si va a cercare sempre l'agente che offre le prestazioni migliri, tenendo in considerazione anche tutte le limitazioni computazionali che impediscono la realizzazione di una razionalità parfetta.
+Tra tutte le classi di ambienti e compiti si va a cercare sempre l'agente che offre le prestazioni migliri, tenendo in considerazione anche tutte le limitazioni computazionali che impediscono la realizzazione di una razionalità perfetta.
 
 Bisogna quindi cercare di progettare il miglior programma date le risorse disponibili.
 
@@ -28,7 +28,7 @@ Bisogna quindi cercare di progettare il miglior programma date le risorse dispon
 
 L'agente riceve delle percezioni dall'ambiente delle informazioni mediante dei sensori e in base a queste percezioni esegue delle azioni con degli attuatori.
 
-La funzione agente mappa quindi tutte le possibili sequenze di percezioni (_P*_) ad un insieme di azioni (_A_). Il dominio della funzione, quindi l'insieme delle possibili sequenze di percezione, è molto (troppo) grande: l'implementazione quindi dovrà "dimenticarsi" di alcune informazioni non rilevanti (o poco rilevanti), in quanto le risorse che ho a disposizione sono limitate. Se vogliamo, questa (la limitatezza, quindi la necessità di scegliere cosa tenere e cosa no) è la caratteristica per cui l'agente è considerato intelligente.
+La funzione agente mappa quindi tutte le possibili sequenze di percezioni (_P*_) ad un insieme di azioni (_A_). Il dominio della funzione, quindi l'insieme delle possibili sequenze di percezione, è molto (troppo) grande: l'implementazione dovrà "dimenticarsi" di alcune informazioni non rilevanti (o poco rilevanti), in quanto le risorse a disposizione sono limitate. Se vogliamo, questa (la limitatezza, quindi la necessità di scegliere cosa tenere e cosa no) è la caratteristica per cui l'agente è considerato intelligente (è l' "intelligenza dell'agente").
 
 E' sempre possibile fare assunzioni sull'ambiente in modo da semplificare l'agente, ma questo non sempre è conventiente in quanto l'agente diventa più fragile.
 
@@ -53,11 +53,11 @@ Le azioni che si possono intraprendere invece:
 <tr><td>[A,Clean],[A,Dirty]</td><td>Suck</td></tr>
 </table>
 
-Quello che è interessante è che conta solo l'ultima percezione: se la stanza in cui mi trovo è sporca, devo aspirare (a prescindere se la stanza in cui mi trovavo in precedenza era sporca o pulita). Con risorse limitate si ottiene dunque un agente razionale che raggiunge lo scopo di pulire le due stanze (quando entrambe le stanze sono pulite, continua ad andare a destra e a sinistra finché non finisce la batteria but, it's a feature XD).
+Quello che è interessante è che conta solo l'ultima percezione: se la stanza in cui mi trovo è sporca, devo aspirare (a prescindere se la stanza in cui mi trovavo in precedenza era sporca o pulita). E' possibile dunque "scartare" tutti i record storici dalla memoria, cosicché con risorse limitate si ottenga un agente razionale che raggiunge lo scopo di pulire le due stanze (quando entrambe le stanze sono pulite, continua ad andare a destra e a sinistra finché non finisce la batteria but, it's a feature XD).
 
 ### Razionlità
 
-Fissata una misura per la presetazione che valuta la sequenza di percezioni, un agente razionale cerca di massimizzare il valore della misura delle prestazioni. Nell'esempio precedente potremmo applicare: 
+Fissata una misura per la prestazione che valuta la sequenza di percezioni (una sorta di score/punteggio che indica in soldoni quanto bene sto andando), un agente razionale cerca di massimizzarne il valore. Nell'esempio precedente potremmo applicare: 
 * +1 ad un determinato score per ogni spazio pulito in tempo T
 * +1 per ogni spazio pulito in T ma -1 per ogni spostamento (penalizzo lo spostamento della stanza che ho già pulito)
 * ...
