@@ -1,9 +1,9 @@
-#Lezione 3 - Ricerca non informata
+# Lezione 3 - Ricerca non informata
 
 _Altre informazioni sul progetto, come l'estensione di un sistema con elementi di intelligenza artificiale.
 Oppure studio sperimentale di algoritmi diversi. La presentazione pubblica del progetto dovrebbe dare un bonus, la presentazione di una 20-ina di minuti_
 
-##Ambiente (Cont'd)
+## Ambiente (Cont'd)
 
 __Ambiente semi-dinamico__: ambiente che cambia lentemante, in un breve periodo l'ambiente può essere considerato statico.
 
@@ -18,7 +18,7 @@ Problema definito da 4 elementi:
 - Test goal, per sapere se è stato raggiunto l'obiettivo;
 - Soluzione come sequenza di azioni che porta dallo stato iniziale ad uno stato goal.
 
-###Esempio del Puzzle
+### Esempio del Puzzle
 
 ![alt text](./immagini/l3-puzzle.png "Puzzle")
 
@@ -32,7 +32,7 @@ __Costo del cammino__: si può considerare un +1 per ogni spostamento, in questo
 
 _La soluzione di questo problema è NP-Hard_
 
-##Algoritmi di ricerca ad albero
+## Algoritmi di ricerca ad albero
 
 L'idea di base è quella di simulare l'esplorazione dello spazio degli stati generando successori degli stati già esplorati (espansione di uno stato).
 
@@ -72,7 +72,7 @@ function Espandi(nodo, problema) return insimeme di nodi
     return succerssori
 ```
 
-###Strategie di ricerca
+### Strategie di ricerca
 
 Rappresenta la scelta dell'ordine di espansione dei nodi.
 
@@ -89,13 +89,13 @@ La complessità in spazio e tempo viene misurata in termini di:
 * __d__: profondità della soluzione di costo minimo, a che livello dell'albero la trovo (possono esserci più soluzioni di costo minimo anche a livelli diversi).
 * __m__: massima profondità dell'albero, che può essere anche infinita.
 
-###Strategie di ricerca non informate
+### Strategie di ricerca non informate
 
 Sono strategie che usano solo l'informazione disponibile nella definizione del problema.
 
 Non vengono usate infomrazioni a priori per ottimizzare la ricerca.
 
-####Ricerca a ventaglio (breadth-first, in ampiezza)
+#### Ricerca a ventaglio (breadth-first, in ampiezza)
 
 Espande il nodo a profondità minore, la frontiera viene implementata con una coda FIFO. 
 
@@ -107,7 +107,7 @@ C'è un problema anche per lo spazio, in quanto devo tenere in memoria tutti i n
 
 Infine risulta ottima solo se il costi degli archi è identico, perché trovo la soluzione al livello più basso, quindi prendo sempre il cammino minimo.
 
-####Ricerca a costo uniforme
+#### Ricerca a costo uniforme
 
 Espande il nodo a costo di cammino inferiore, la frontiera viene quindi implementata come una coda ordinata per costo di cammino. 
 
@@ -119,7 +119,7 @@ Allo stesso modo il costo in spazio è limitato dal costo della soluzione ottima
 
 L'algoritmo riuslta ottima nel caso tutti i costi siano > 0, in qunato tutti i nodi vengono espansi nel modo "più promettente".
 
-####Ricerca a profondità (depth-first)
+#### Ricerca a profondità (depth-first)
 
 Può essere anche limitata e iterativa.
 
@@ -133,7 +133,7 @@ Lo spazio richiesto è invece __lineare__ secondo _O(b\*m)_ in quanto per ogni n
 
 L'algoritmo **non è ottimo**, in quanto cerca una soluzione generica andando in profondità e non è garantito che la soluzione che trova sia ottima.
 
-#####Ricerca a profondità limitata
+##### Ricerca a profondità limitata
 
 Vengono ignorati tutti i figli al di sotto di un certo livello _l_.
 
@@ -156,7 +156,7 @@ Ovviamente questa strategia è ancora meno completa, in quanto tutte le soluzion
 
 Tuttavia, l'analisi dell'albero a profondità limitata risulta più efficiente della ricerca breadth-first.
 
-#####Rircerca a profondità limitata iterativa
+##### Rircerca a profondità limitata iterativa
 
 Viene fissato un limite e se entro il limite non viene trovata una soluzione, si re-inizia la ricerca con un limite più profondo, ripetendo il procedimento finché non viene trovata una soluzione.
 

@@ -6,9 +6,9 @@ Note:
 - A* ed euristiche sembrano esserci quasi sempre
 
 
-##Ricerca non informata
+## Ricerca non informata
 
-###Domanda 1 (20130404-d1)
+### Domanda 1 (20130404-d1)
 
 Descrivere le principali strategie di ricerca non informate e confrontarle dal punto di vista della loro correttezza, completezza, ottimalità e complessità in tempo e spazio.
 
@@ -16,7 +16,7 @@ Considerare l'albero della figura e mostrare la sequenza di visita dei nodi per 
 
 ![](./immagini/c1-tree.png)
 
-####Soluzione
+#### Soluzione
 
 L'idea alla base di queste strategie è quella di andare a simulare l'esplorazione dei vari stati generando i successori degli stati già visitati.
 Viene quindi creato un albero di ricerca dove ogni nodo rappresenta un determinato stato e i nodi che sono candidati per l'espansione vengono memorizzati in una struttura dati che prende il nome di frontiera.
@@ -65,7 +65,7 @@ Se volete fate esempi del loro uso su un problema di ricerca.
 
 ## Ricerca informata
 
-###Domanda 2 (20130404-d2)
+### Domanda 2 (20130404-d2)
 
 Descrivere l'algoritmo A* e la nozione di euristica ammissibile e consistente, e discutere a cosa serva avere un'euristica con una di queste proprietà.
 
@@ -113,13 +113,13 @@ L'euristica *distanza dalle foglie* applicata all'esempio **non** è ammissibile
 
 ![](./immagini/c1-tree-4.png)
 
-###Domanda 8 (20110214-d2)
+### Domanda 8 (20110214-d2)
 
 Descrivere l'algoritmo A* e la notazione di euristica ammissibie e consistente, e provare formalemente la sua ottimalità.
 
 **Duplicata**
 
-###Domanda 14 (20061103-d2)
+### Domanda 14 (20061103-d2)
 
 Si definisca il concetto di euristica e si dia la definizione formale di euristica ammissibile e consistente.
 
@@ -162,7 +162,7 @@ Descrivere in modo preciso l'algoritmo di ricerca generico e dire come si istanz
 
 Dire anche le proprietà di cui A* gode, motivandole in modo preciso, in particolare dimostrare perché A* è ottimo.
 
-####Soluzione
+#### Soluzione
 
 L'algoritmo di ricerca generico cerca di costruire un albero utilizzando una struttura di supporto chiamata *frontiera*.
 
@@ -208,15 +208,15 @@ Questa ricerca risulta completa solo se la soluzione può essere contenuta nella
 
 Segue che SMA\* risulta migliore di IDA\* perché non sono necessarie iterazioni e sfrutta al meglio la memoria disponbile.
 
-##Giochi
+## Giochi
 
-###Domanda 3 (20130404-d3)
+### Domanda 3 (20130404-d3)
 
 Nell'ambito dei giochi, descrivere l'algoritmo minimax e la potatura alfa-beta per giochi deterministici e per giochi stocastici.
 
 Discutere la condizione in cui la potatura alfa-beta è più conveniente.
 
-####Soluzione
+#### Soluzione
 
 L'algortimo Minimax viene utilizzato per creare una strategia di gioco tra due avversari che giocano in modo perfetto.
 
@@ -252,7 +252,7 @@ In caso di giochi stocastici, è possibile applicare sia Minimax che la potatura
 
 ---
 
-##Domanda 4 (20130404-d4)
+## Domanda 4 (20130404-d4)
 
 Dato il seguente problema di colorazione dei grafi:
 
