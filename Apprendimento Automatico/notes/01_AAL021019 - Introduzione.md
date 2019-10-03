@@ -94,7 +94,7 @@ Grazie alle reti di computer (soprattutto internet), oggi si hanno a disposizion
 
 ## Le basi
 
-Perché il machine leargning funzioni deve esserci un processo (stocastico o deterministico) che spiega i dati che osserviamo, in modo da riuscire a costruire un'approssimazione di tale processo che può anche risultare imperfetta dal momento che il processo che si vuole approssimare non è noto.
+Perché il machine learning funzioni deve esserci un processo (stocastico o deterministico) che spiega i dati che osserviamo, in modo da riuscire a costruire un'approssimazione di tale processo che può anche risultare imperfetta dal momento che il processo che si vuole approssimare non è noto.
 
 *Stocastico*: random a probabilità
 
