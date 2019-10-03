@@ -1,0 +1,82 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = computabilità e algoritmi.tex
+% !TEX spellcheck = it-IT
+
+\chapter{Altri esercizi}
+
+\section{Teoremi di ricorsione}
+
+\subsection{Es 1}
+
+Dimostrare che \textit{K} non è ricorsivo.
+
+\subsubsection{Soluzione}
+
+Assumiamo che \textit{K} sia ricorsivo, sia $e_0 \in \overline{K}$ e tale che $\phi_{e_0} = \emptyset$.
+
+Dato un $x$, se $x \in K$ allora cerchiamo una funzione che lo manda in $e_0$ e se $x \in \overline{K}$ lo mandiamo in $e_1 \in K$ tale che $\phi_{e_1} = id$.
+
+La nostra funzione sarà quindi 
+
+$$
+f(x) = e_0 \cdot \mathcal{X}_{K}(x) + e_1 \cdot \mathcal{X}_{\overline{K}}(x)
+$$
+
+risulta essere totale, perché definita su ogni input e calcolabile, perché entrambe le funzioni caratteristiche sono calcolabili (\textbf{perché c'è l'assunzione che \textit{K} sia ricorsivo}).
+
+Per il secondo teorema di ricorsione esiste un punto fisso, $\exists e \:\: \phi_{f(e)} = \phi_e$.
+Per questo programma abbiamo due possibilità
+
+\begin{itemize}
+	\item $e \in K$, ma quindi $\phi_{e}(e) \downarrow$ e siccome $e \in K$, $f(e) = e_0$ e quindi $\phi_{f(e)}(e) = \phi_{e_0}(e) \uparrow$. Si ha quindi che $ \phi_{e_0}(e) \neq \phi_{e}(e)$ che contraddice l'ipotesi.
+	\item $e \notin K$, ma quindi $\phi_{e}(e) \uparrow$ e per definizione $f(e) = e_1$ e quindi $\phi_{f(e)} = \phi_{e_1}(e) = \downarrow$. Si ha quindi che $\phi_e \neq \phi_{f(e)}$ che contraddice l'ipotesi.
+\end{itemize}
+
+Da questo segue che $K$ non è ricorsivo, perché viene contraddetta l'assunzione che lo sia.
+
+\subsection{Esercizio 2}
+
+$K$ non è saturo.
+
+\subsubsection{Soluzione}
+
+Abbiamo già osservato che per sapere che \textit{K} non è saturo, basta avere un programma \textit{P} che riceve in input dei programmi espressi come numeri e controlla se riceve in input se stesso. Se la risposta è si, ritorna 1, altrimenti $\uparrow$.
+
+Assumendo che questo programma si possa definire, è possibile definire anche un altro programma, aggiungendo un'istruzione che non fa niente, in modo da cambiare rappresentazione numerica. Questo programma continua a terminare solo se riceve in input la versione originale del programma.
+
+Più formalmente
+
+$$
+\phi_{e_1}(x) = \begin{cases}
+1 &x = e_1 \\
+\uparrow &\text{altrimenti} 
+\end{cases}
+$$
+
+SI ha che $e_1 \in K$ perché $\phi_{e_1}(e_1) = 1 \downarrow$ e siccome ci sono infiniti indici per calcolare $\phi_{e_1}$, si può trovare $e_2 \neq e_1$ tale che $\phi_{e_2} = \phi_{e_1}$.
+
+Si ha che $e_2 \notin K$ dato che $\phi_{e_2}(e_2) = \phi_{e_1}(e_2) \uparrow$, segue quindi che $K$ non è saturo.
+
+Resta da dimostrare che esiste $e_1$.
+
+Definiamo
+
+$$
+g(e,x) = \begin{cases}
+1 &x = e \\
+\uparrow &\text{altrimenti}
+\end{cases} = 1(\mu z. |e-x|)
+$$
+
+Questa funzione è calcolabile per minimalizzazione illimitata e quindi per il teorema SMN  esiste una funzione $S : \mathbb{N} \rightarrow \mathbb{N}$ calcolabile e totale tale che $\phi_{S(e)}(x) = g(e,x)$.
+
+Siccome $S$ è calcolabile e totale, per il secondo teorema di ricorsione esiste $e_1$ tale che $\phi_{S(e_1)} = \phi_{e_1}$.
+Ovvero:
+
+$$\phi_{e_1}(x) = \phi_{S(e_1)}(x) = g(e_1, x) = \begin{cases}
+1 &x = e_1 \\
+\uparrow &\text{altrimenti}
+\end{cases}$$
+
+$e_1$ è quindi il programma che cercavamo.
