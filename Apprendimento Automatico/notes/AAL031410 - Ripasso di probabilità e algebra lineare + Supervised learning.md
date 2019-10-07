@@ -1,9 +1,9 @@
-#Lezione 3 - Ripasso di probabilità e algebra + Supervised Learning
+# Lezione 3 - Ripasso di probabilità e algebra + Supervised Learning
 
 
-##Variabili aleatorie
+## Variabili aleatorie
 
-###Bernoulli
+### Bernoulli
 
 Esito di un esperimento che può essere positivo o negativo.
 
@@ -12,7 +12,7 @@ P(X = i) = p   se i=1
            1-p se i=0
 ```
 
-###Binomiale
+### Binomiale
 
 La probabilatà di avere _i_ successi su _N_ esperimenti è uguale a 
 
@@ -20,7 +20,7 @@ La probabilatà di avere _i_ successi su _N_ esperimenti è uguale a
 
 Il valore atteso di questa variabile è dato da `N*p` mentre la varianza è `N*p*(1-p)`.
 
-###Distribuzione uniforme
+### Distribuzione uniforme
 
 Assume che in un intervallo `[a,b]` tutti i punti hanno la stessa probabilità.
 
@@ -30,7 +30,7 @@ Assume che in un intervallo `[a,b]` tutti i punti hanno la stessa probabilità.
 
 Il valore atteso di X (`E[X]`) è uguale a `(a+b)/2`
 
-###Distribuzione normale (Gaussaina)
+### Distribuzione normale (Gaussaina)
 
 La distribuzione si concentra in un certo valore medio `mu` ed ha la forma _a campana_.
 
@@ -40,7 +40,7 @@ La distribuzione si concentra in un certo valore medio `mu` ed ha la forma _a ca
 
 <!-- https://it.wikipedia.org/wiki/Distribuzione_normale -->
 
-##Algebra lineare
+## Algebra lineare
 
 > M € R<sup>m x d</sup>
 
