@@ -55,7 +55,7 @@ In questo modo si ottiene una ricerca completa, in tempo *O(b<sup>d</sup>)* e co
 ![](./immagini/c1-tree-2.png)
 ![](./immagini/c1-tree-3.png)
 
-###Domanda 7 (20110214-d1)
+### Domanda 7 (20110214-d1)
 
 Descrivere le principali strategie di ricerca non informate e confrontale dal punto di vista della loro correttezza, completezza e complessità in tempo e spazio.
 
