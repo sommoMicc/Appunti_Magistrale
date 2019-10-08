@@ -197,3 +197,73 @@ Si fanno due ricerche contemporaneamente, una da start a goal e una da goal a st
 
 ### Riepilogo
 ![alt text](./immagini/l3-riepilogo-ricerche.png "Riepilogo performance ricerche")
+
+# Ricerca Informata
+
+Nella ricerca non informata la strategia di ricerca delle soluzioni è data dall'ordine di espansione dei nodi.
+
+Nella ricerca informata viene utilizzata una __funzione di valutazione__ *f(n)* (da non confondere con la funzione euristica) per ogni nodo *n* che indica quanto è _desiderabile_ espandere il dato nodo. Questa funzione è realizzata grazie alla presenza di informazioni a priori sul problema da risolvere.
+
+In questo modo è possible utilizzare la funzione per ordinare la coda dei nodi dell frontiera secondo desiderabilità. In pratica, la frontiera è una coda con priorità in cui davanti abbiamo i nodi più desiderabili. Andremo quindi ad espandere il nodo non espanso più desiderabile.
+
+La ricerca **greedy** e __A\*__ utilizzano questi ragionamenti.
+
+Nell'esempio del viaggio da Arad a Bucharest la distanza della soluzione ottima non può essere minore della distanza in linea d'aria.
+Inoltre, le città intermedie migliori sono quelle più vicine in linea d'aria alla destinazione.
+
+Tenendo conto di queste considerazioni è possibile utilizzare una funzione di valutazione che, dato uno stato, ritorni la distanza in linea d'aria dal dato stato a Bucharest.
+
+### Rircerca Greedy
+Utilizza una funzione di valutazione definita sulla base di una funzione euristica.
+
+> $h(n)$ = stima del costo dal nodo n al goal più vicino
+
+La ricerca greedy espande il nodo che __appare__ essere il più vicino al goal, senza tenere traccia del cammino effettuato. In questo caso quindi viene utilizzata la funzione euristica come funzione di valutazione: $f(n) = h(n)$.
+
+Come tutti gli algoritmi greedy, la ricerca greedy non assicura di raggiungere la soluzione ottima
+
+Questa ricerca **non è completa** in quanto può rimanere intrappolata nei cicli. Se si opera in stati finiti e se viene introdotto un controllo per gli stati ripetuti, può diventare completa (gli stati devono comunque essere finiti).
+
+Il tempo è $O(b^m)$ dove *m* è la profondità della soluzione ottima, ma l'utilizzo di una buona euristica può portare dei miglioramenti (perché vado a scartare molti stati che non sono utili).
+
+Lo stesso discroso vale per lo spazio in quanto per ogni nodo deve essere tenuta la stima della funzione di valutazione ($O(b^m)$).
+
+Non è inoltre garantito che la soluzione trovata sia ottima.
+
+### Ricerca A*
+
+L'idea alla base è quella di evitare di espandere cammini che sono già costosi.
+
+* $f(n) = h(n) + g(n)$, in modo da evitare di espandere cammini non promettenti (cammini con costo già elevato)
+* $h(n)$ --> funzione euristica per il costo dal nodo n al goal
+* $g(n)$ --> costo sostenuto per raggiungere il nodo (n)
+* $f(n)$ --> costo totale stimato del cammino che passa da n al goal
+
+A\* usa una euristica _ammissibile_, cioè la funzione $h(n)$ è una sottostima di $h^*(n)$ (costo effettivo per raggiungere il nodo goal a partire da *n*). La distanza in linea d'aria è quindi ammissibile, in quanto non sottostima mai il costo (è la distanza minima possibile in assoluto tra due città).
+
+La funzione $h(n)$ deve ritornare sempre un valore $\ge 0$ altrimenti si potrebbero avere dei problemi, in quanto un costo non può essere negativo (il costo non negativo permette di non preoccuparsi degli stati ripetuti).
+
+Di conseguenza la ricerca A\* su un albero è **ottima**.
+
+Durante l'esecuzione di A\* può comparire all'interno della frontiera un nodo goal, tuttavia se c'è un nodo che viene stimato di costo inferiore, viene espanso quello al posto del nodo goal.
+Questo perché A\* cerca la soluzione ottima ed espande il nodo con la funzione di valutazione migliore.
+
+#### Ottimalità di A* (su un albero)
+
+Supponiamo che un goal sub-ottimo $G_2$ sia stato generato e che si trovi nella coda (frontiera).
+
+Sia *n* un nodo non ancora espanso su un cammino minimo verso il goal ottimo *G*.
+
+> f(G<sub>2</sub>)	= g(G<sub>2</sub>)	-- perché h(G<sub>2</sub>) = 0
+>
+> f(G<sub>2</sub>)   > g(G)		-- perché G<sub>2</sub> non è ottimo
+> 
+> f(G<sub>2</sub>)	≥ f(n)	-- perché h è ammissibile
+
+A\* quindi non selezionerà mai G<sub>2</sub> per l'espansione e di conseguenza verrà estratto prima G di G<sub>2</sub>.
+
+
+
+
+
+
