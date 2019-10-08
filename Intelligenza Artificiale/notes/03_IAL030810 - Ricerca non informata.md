@@ -110,15 +110,11 @@ Nel caso di un albero binario di altezza/profondità $H$, il costo di memoria (o
 
 C'è un'ambiguità nella definizione dell'ordine dei successori di un dato nodo, che diventa arbitraria.
 
-Questa ricerca risulta completa se il fattore di branching è finito. Il tempo di esplorazione è esponenziale $(1 + b + b^2 + ... + b^d + b(b^{d-1}) --> O(b^{d+1})$, dove:
-* $b$ è il fattore di ramificazione
-* $d$ è la profondità della soluzione vicino alla radice
-* $m$ è la profondità massima dell'albero
-* $l$ è il limite alla profondità
+Questa ricerca risulta completa se il fattore di branching è finito. Il tempo di esplorazione è esponenziale $(1 + b + b^2 + ... + b^d + b(b^{d-1}) \to O(b^{d+1})$
 
 C'è un problema anche per lo spazio, in quanto devo tenere in memoria tutti i nodi che ho analizzato. 
 
-Infine risulta ottima solo se il costi degli archi è identico, perché trovo la soluzione al livello più basso, quindi prendo sempre il cammino minimo.
+Infine risulta ottima solo se il costi degli archi è costante o quantomeno non decrescente all'aumentare del livello. Infatti, siccome verrà selezionata sempre la soluzione (goal) di profondità minima (perché prima di passare al livello/profondità $i+1$ devo aver esaminato tutti i nodi di profondità $i$). Quindi, se esistono due nodi goal, $x$ (a profondità $i$) e $y$ (a profondità $i+\epsilon$, con $\epsilon$ positivo) e $y$ è il nodo di costo minimo, l'algoritmo troverà prima $x$ e quindi non arriverà all'ottimalità della soluzione.
 
 #### Ricerca a costo uniforme
 E' un caso particolare della ricerca a ventaglio, ovvero è una ricerca a ventaglio in  cui i costi dei singoli passi sono identici.
@@ -135,15 +131,15 @@ L'algoritmo riuslta ottima nel caso tutti i costi siano > 0, in qunato tutti i n
 
 #### Ricerca a profondità (depth-first)
 
-Può essere anche limitata e iterativa. [?????? Non detto]
+Può essere anche limitata e iterativa (vedi sezioni immediatamente successive)
 
-La frotinera diventa una coda LIFO (pila).
+La frontiera diventa una coda LIFO (pila).
 
 Questa strategia di ricerca **non è completa** perché può essere che ci sia un cammino di profondità infinita o con un ciclo. Se non ci sono cicli e lo spazio degli stati è finito, allora è completa.
 
-Il tempo necessario è $O(b^m$, il che risulta terribile se _m_ è più grande di _d_, ma se le soluzioni sono dense (vicine tra loro) risulta migliore del breadth-first.
+Il tempo necessario è $O(b^m)$, il che risulta terribile se _m_ è più grande di _d_, ma se le soluzioni sono dense (vicine tra loro) risulta migliore del breadth-first.
 
-Lo spazio richiesto è invece __lineare__ secondo _O(b\*m)_ in quanto per ogni nodo che viene visitato è necessario tenere in memoria solamente i fratelli del nodo espanso.
+Lo spazio richiesto è invece __lineare__ secondo $O(b*m)$ in quanto per ogni nodo che viene visitato è necessario tenere in memoria solamente i fratelli del nodo espanso.
 
 L'algoritmo **non è ottimo**, in quanto cerca una soluzione generica andando in profondità e non è garantito che la soluzione che trova sia ottima. Nel senso, potrebbe trovare una soluzione a profondità 5 prima di una a profondità 3. Tuttavia, l'occupazione di spazio è lineare rispetto alla profondità, quindi è più efficente a livello di memoria.
 
@@ -173,7 +169,7 @@ Tuttavia, l'analisi dell'albero a profondità limitata risulta più efficiente d
 ##### Rircerca a profondità limitata iterativa (IDS)
 
 Viene fissato un limite di profondità, che indica l'altezza massima dei nodi presenti nella frontiera. Se entro il limite non viene trovata una soluzione, si re-inizia la ricerca con un limite più profondo, ripetendo il procedimento finché non viene trovata una soluzione. Da notare che quando incremento il limite, la ricerca riparte da zero, perché sarebbe sconveniente tenere in memoria i risultati delle ricerche fallimentari precedenti. Infatti, ogni volta che abbiamo un fallimento con limite $l$, siamo sicuri che, se esiste la soluzione, essa si trova a livello $\ge l+1$.
-I nodi vengono visitati al massimo $l+1$ volte (perché per arrivare a profondità $l+1$ si sono avuti $l$ fallimenti). I nodi più visitati (cioè quelli in cui ripeto le stesse cose più di una volta) sono quelli più vicini alla radice, quindi l'overhead è contenuto (ogni volta che aumento di livello, aggiungo un numero di nodi pari a tutti i nodi già esistenti + 1).
+I nodi vengono visitati al massimo $l+1$ volte (perché per essere arrivati a profondità $l+1$ si sono avuti $l$ fallimenti). I nodi più visitati (cioè quelli in cui ripeto le stesse cose più di una volta) sono quelli più vicini alla radice, quindi l'overhead è contenuto (ogni volta che aumento di livello, aggiungo un numero di nodi pari a tutti i nodi già esistenti + 1).
 
 ```javascript
 function RicercaApprofondimentoIterativo(problema) returns una soluzione o il fallimento
@@ -182,11 +178,11 @@ function RicercaApprofondimentoIterativo(problema) returns una soluzione o il fa
         if risultato != taglio then return risultato
 ```
 
-Si ottiene così un compromesso tra lo spazio e il tempo (*O(b<sup>d</sup>)*) che risulta più vantaggioso rispetto all'utilizzo di uno dei due algoritmi in modo "puro".
+Si ottiene così un compromesso tra lo spazio e il tempo ($O(b^d)$) che risulta più vantaggioso rispetto all'utilizzo di uno dei due algoritmi in modo "puro".
 
 Questa modalità di ricerca è **completa**.
 
-Il tempo necessario è un *O(b<sup>d</sup>)* e lo spazio necessario rimane lineare.
+Il tempo necessario è un $O(b^d)$ e lo spazio necessario rimane lineare.
 
 La strategia risulta anche ottima solo nel caso i costi di tutti gli archi siano gli stessi.
 
@@ -202,7 +198,7 @@ Si fanno due ricerche contemporaneamente, una da start a goal e una da goal a st
 
 Nella ricerca non informata la strategia di ricerca delle soluzioni è data dall'ordine di espansione dei nodi.
 
-Nella ricerca informata viene utilizzata una __funzione di valutazione__ *f(n)* (da non confondere con la funzione euristica) per ogni nodo *n* che indica quanto è _desiderabile_ espandere il dato nodo. Questa funzione è realizzata grazie alla presenza di informazioni a priori sul problema da risolvere.
+Nella ricerca informata viene utilizzata una __funzione di valutazione__ $f(n)$ (da non confondere con la funzione euristica $h(n)$) per ogni nodo *n* che indica quanto è _desiderabile_ espandere il dato nodo. Questa funzione è realizzata grazie alla presenza di informazioni a priori sul problema da risolvere.
 
 In questo modo è possible utilizzare la funzione per ordinare la coda dei nodi dell frontiera secondo desiderabilità. In pratica, la frontiera è una coda con priorità in cui davanti abbiamo i nodi più desiderabili. Andremo quindi ad espandere il nodo non espanso più desiderabile.
 
@@ -218,9 +214,9 @@ Utilizza una funzione di valutazione definita sulla base di una funzione euristi
 
 > $h(n)$ = stima del costo dal nodo n al goal più vicino
 
-La ricerca greedy espande il nodo che __appare__ essere il più vicino al goal, senza tenere traccia del cammino effettuato. In questo caso quindi viene utilizzata la funzione euristica come funzione di valutazione: $f(n) = h(n)$.
+Nell'esempio del viaggio in Romania, $h(n)$ indica la distanza geografica di $n$ da *Bucharest*.
 
-Come tutti gli algoritmi greedy, la ricerca greedy non assicura di raggiungere la soluzione ottima
+La ricerca greedy espande il nodo che __appare__ essere il più vicino al goal, senza tenere traccia del cammino effettuato. In questo caso quindi viene utilizzata la funzione euristica come funzione di valutazione: $f(n) = h(n)$.
 
 Questa ricerca **non è completa** in quanto può rimanere intrappolata nei cicli. Se si opera in stati finiti e se viene introdotto un controllo per gli stati ripetuti, può diventare completa (gli stati devono comunque essere finiti).
 
@@ -235,9 +231,9 @@ Non è inoltre garantito che la soluzione trovata sia ottima.
 L'idea alla base è quella di evitare di espandere cammini che sono già costosi.
 
 * $f(n) = h(n) + g(n)$, in modo da evitare di espandere cammini non promettenti (cammini con costo già elevato)
-* $h(n)$ --> funzione euristica per il costo dal nodo n al goal
-* $g(n)$ --> costo sostenuto per raggiungere il nodo (n)
-* $f(n)$ --> costo totale stimato del cammino che passa da n al goal
+* $h(n) \to$ funzione euristica per il costo dal nodo n al goal
+* $g(n) \to$ costo sostenuto per raggiungere il nodo (n)
+* $f(n) \to$ costo totale stimato del cammino che passa da n al goal
 
 A\* usa una euristica _ammissibile_, cioè la funzione $h(n)$ è una sottostima di $h^*(n)$ (costo effettivo per raggiungere il nodo goal a partire da *n*). La distanza in linea d'aria è quindi ammissibile, in quanto non sottostima mai il costo (è la distanza minima possibile in assoluto tra due città).
 
@@ -254,13 +250,13 @@ Supponiamo che un goal sub-ottimo $G_2$ sia stato generato e che si trovi nella 
 
 Sia *n* un nodo non ancora espanso su un cammino minimo verso il goal ottimo *G*.
 
-> f(G<sub>2</sub>)	= g(G<sub>2</sub>)	-- perché h(G<sub>2</sub>) = 0
+> $f(G_2) = g(G_2)$	-- perché $h(G_2) = 0$
 >
-> f(G<sub>2</sub>)   > g(G)		-- perché G<sub>2</sub> non è ottimo
+> $f(G_2) > g(G)$	-- perché $G_2$ non è ottimo
 > 
-> f(G<sub>2</sub>)	≥ f(n)	-- perché h è ammissibile
+>  $f(G_2) ≥ f(n)$	-- perché h è ammissibile (ovvero h fornisce un limite inferiore per f)
 
-A\* quindi non selezionerà mai G<sub>2</sub> per l'espansione e di conseguenza verrà estratto prima G di G<sub>2</sub>.
+A\* quindi non selezionerà mai $G_2$ per l'espansione ($g(n)+h(n) < g(G_2)+h(G_2)$, altrimenti $G_2$ sarebbe il nodo goal ottimo) e di conseguenza verrà estratto prima $G$ di $G_2$.
 
 
 

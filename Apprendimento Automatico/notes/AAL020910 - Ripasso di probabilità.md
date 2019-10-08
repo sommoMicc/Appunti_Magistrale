@@ -148,13 +148,3 @@ Una matrice pseudo inversa è un qualcosa di simile ad una matrice inversa per l
 **Traccia**: la traccia di una matrice è la somma degli elementi nella diagonale. (detto anche se non c'è nelle slide)
 
 Una matrice si dice **simmetrica** se tutti gli autovalori sono maggiori di 0.
-
-
-
-
-
-
-
-
-
-
