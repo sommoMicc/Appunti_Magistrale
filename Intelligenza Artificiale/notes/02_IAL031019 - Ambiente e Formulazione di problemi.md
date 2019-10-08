@@ -137,9 +137,11 @@ Trovare una soluzione vuol dire quindi trovare una sequenza di città che permet
 Un problema è definito da 4 elementi:
 
 - __Stato iniziale__: stato iniziale, ad esempio 'Arad' (una citta della Romania).
-- __Funzione successore__: funzione che dato uno stato fornisce tutti gli stati vicini allo stato dato e l'azione che permette di raggiungerli. Esempio: _S(Arad) = {&lt;Arad-Zerind,Zerind&gt;...}_.
-- __Test per il goal__: che può essere _esplicito_ (raggiungo Bucharest) oppure può essere _implicito_ che descrive una caratteristica/proprietà (città con una determinata officina), è una funzione che dato uno stato specifica se lo stato soddisfa o meno la proprità che mi interessa(_Bucharest(x)_).
-- __Costo di un cammino__: è la somma dei costi del cammino che sto considerando, a partire dallo stato iniziale fino allo stato attuale. Il costo di ogni singolo passo, _c(x,a,y)_ (costo per arrivare da x a y usando l'azione a) viene assunto &ge; 0.
+- __Funzione successore__: funzione che dato uno stato fornisce tutti gli stati vicini allo stato dato e l'azione che permette di raggiungerli. Esempio: _S(Arad) = {&lt;Arad-Zerind,Zerind&gt;...}_. Questa può essere formulata alternativamente dalla definizione di:
+    * Azioni eseguibili in un dato stato
+    * Transition model (ovvero l'effetto ottenuto dall'applicazione di ogni azione, che potrebbe esssere anche sconosciuto in caso di ambiente non totalmente osservabile)
+- __Test per il goal__: che può essere _esplicito_ (raggiungo Bucharest) oppure può essere _implicito_ che descrive una caratteristica/proprietà (città con una determinata officina), è una funzione che dato uno stato specifica se lo stato soddisfa o meno la proprità che mi interessa(_Bucharest(x)_, oppure "città con un teatro di lirica").
+- __Costo di un cammino__: è il costo di ogni singolo passo (quindi ogni singolo spostamento) _c(x,a,y)_ (costo per arrivare da x a y usando l'azione a) e viene assunto &ge; 0.
 
 _Una soluzione è quindi una sequenza di azioni che conduce da uno stato iniziale ad uno stato di goal._
 
@@ -151,7 +153,7 @@ Nell'esempio della Romania vengono astratti sia gli stati sia le azioni, questo 
 
 Di conseguenza anche la soluzione ottenuta sarà una soluzione astratta.
 
-
+Lo scopo della ricerca non informata è appunto risolvere il problema senza avere ulteriori informazioni.
 
 ```python
 function SIMPLE-PROBLEM-SOLVING-AGENT(percept) returns an action
@@ -170,6 +172,6 @@ function SIMPLE-PROBLEM-SOLVING-AGENT(percept) returns an action
     seq <- REST(seq)
     return action
 ```
-Viene portato un esempio di ricerca in ampiezza su un albero. La coda dei nodi da esplorare è una FIFO. La coda viene riempita finché non ho trovato il nodo target (raggiunto il goal). Per la ricerca in profondità, invece, si usa una struttura LIFO (il nodo aggiunto viene subito "esploso").
+Viene portato un esempio di ricerca in ampiezza su un albero. Dato un padre, i nodi figli rappresentano tutti i suoi stati successori. La coda dei nodi da esplorare è una FIFO. La coda viene riempita finché non ho trovato il nodo target (raggiunto il goal). Per la ricerca in profondità, invece, si usa una struttura LIFO (il nodo aggiunto viene subito "esploso").
 
-Il "bug" della ricerca ad albero per risolvere il problema è che ho una pesante duplicazioni delle città, ma la caratteristica positiva è che mi permette di differenziare i vari percorsi che partono da uno stato/città X e arrivano ad uno stato Y. Ecco perché nelle slide viene riportata sia la ricerca ad albero che quella a grafo.
+L'aspetto negativo della ricerca ad albero per risolvere il problema è che ho una pesante duplicazioni delle città, ma la caratteristica positiva è che mi permette di differenziare i vari percorsi che partono da uno stato/città X e arrivano ad uno stato Y (in quanto vengono rappresentati tutti i cammini possibili da X a Y). Ecco perché nelle slide viene riportata sia la ricerca ad albero che quella a grafo.
