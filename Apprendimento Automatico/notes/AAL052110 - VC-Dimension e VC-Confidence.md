@@ -1,42 +1,11 @@
-#Lezione 5 VC-Dimension e VC-Confidence
+# Lezione 5 VC-Dimension e VC-Confidence
 
-##Esempi di spazi delle ipotesi
+## Esempi di spazi delle ipotesi
 
 Seguono alcuni esempi di spazi per le ipotesi nei problemi di apprendimento supervisionato, cioè quei problemi in cui si vuole stabilire se un elemento *x* appartiene o meno ad una classe.
 
-###Iperpiani in R<sup>2</sup>
 
-**Iperpiano**: dato uno spazio a *n*-dimensioni, un iperpiano per quello spazio è un sottospazio di dimensione *n-1*. Quindi gli iperpiani in R<sup>2</sup> sono tutte le rette del piano.
-
-Lavorando in R<sup>2</sup> lo spazio delle istanze è definito come:
-
-> X = {x | x ∈ R<sup>2</sup>}.
-
-Mentre lo spazio delle ipotesi è dato dalle dicotomie indotte da iperpiani in R<sup>2</sup>, cioè da tutte le possibili divisioni del piano.
-
-> H = {f<sub>(w,b)</sub>(x) | f<sub>(w,b)</sub>(x) = sign(w * x + b), w ∈ R<sup>2</sup>, b ∈ R}
-
-Così facendo vengono prese in considerazione tutte le rette che dividono R<sup>2</sup> in due parti in modo che da una parte l'ipotesi valga 1 e dall'altra -1.
-
-###Dischi in R<sup>2</sup>
-
-Sempre in R<sup>2</sup> è possibile considerare come spazio delle ipotesi tutte le dicotomie indotte da disci in R<sup>2</sup> e centrati nell'origine.
-
-> H = {f<sub>b</sub>(x) | f<sub>b</sub>(x) = sign(||x||<sup>2</sup> - b), w ∈ R<sup>2</sup>, b ∈ R}
-
-Il che vuol dire che all'interno del disco le ipotesi valgono -1 mentre al di fuori valgono 1.
-
-###Congiunzione di *m* letterali positivi
-
-Lo spazio delle istanze questa volta è dato da tutte le stringhe di *m* bits 
-
-> X = {s | s ∈ {0,1}<sup>m</sup>}
-
-Lo spazio delle ipotesi è dato da tutte le sentenze logiche che riguardano i letterali positivi l<sub>1</sub>,l<sub>2</sub>,...,l<sub>m</sub> (l<sub>i</sub> è vero se l'*i*-esimo bit è 1) e che contengono solo l'operatore ⋀.
-
-> H = { f<sub>{i<sub>1</sub>,...,i<sub>j</sub>}</sub>(s) | f<sub>{i<sub>1</sub>,...,i<sub>j</sub>}</sub> (s) equivale a l<sub>i<sub>1</sub></sub> ⋀ l<sub>i<sub>2</sub></sub> ⋀ ... ⋀ <sub>i<sub>j</sub></sub>, {i<sub>1</sub>...i<sub>j</sub>} sottoinsieme di {1..m}}
-
-##Misurare la complessità dello spazio delle ipotesi
+## Misurare la complessità dello spazio delle ipotesi
 
 Considerato un determinato spazio delle ipotesi *H*, questo contiene sempre:
 
@@ -51,7 +20,7 @@ Cioè *H* realizza tutte le possibili dicotomie di *S*.
 
 *H* frammenta un certo insieme *S* se è possibile trovare un iperpiano che raccoglie tutti i punti dell'insieme *S*. Ovvero per tutte le dicotomie di *S* esiste un iperpiano che riesce a realizzarle.
 
-###VC (Vapnik-Chervonenkis) Dimension
+### VC (Vapnik-Chervonenkis) Dimension
 
 La VC-Dimension è la dimensione di uno spazio delle ipotesi *H* definito su uno spazio delle istanze *X* ed è data dalla cardinalità del sottoinsieme più grande frammentato da *H*.
 
