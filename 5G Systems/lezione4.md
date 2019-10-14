@@ -31,9 +31,7 @@ Per quanto osservato al punto 3, i vari $b[n]$ (quindi quello che effettivamente
 $$ b[n] = a[n]\cdot H[n] $$
 dove $H[n]$ è la frequenza di risposta del canale.
 
-Otteniamo quindi *n-sottoportanti*, ognuna trasmettente in un canale differente. Nella conversione parallelo-seriale del canale, oltre a tutti gli n-simboli da trasmettere, vengono ripetuti anche alcuni dei primi simboli trasmessi (si chiama __Cyclic Prefix__). Lato ricevente, esso viene scartato.
-
-Siccome la DFT è lineare, l'output del canale è la somma di tutto quello che avviene al suo interno, quindi il rumore può essere "sommato" ad ogni singolo termine.
+Otteniamo quindi *n-sottoportanti*, ognuna trasmettente in un canale differente. Nella conversione parallelo-seriale del canale, oltre a tutti gli n-simboli da trasmettere, vengono ripetuti anche alcuni dei primi simboli trasmessi (si chiama __Cyclic Prefix__). Lato ricevente, esso viene scartato..
 
 ## Cyclc Prefix
 Prima di tutto, esso evita l'__inter-block interference__. Quando trasmetto un segnale su un canale, esso reagirà con la __impulse response__, quindi il simbolo in realtà verrà trasmesso più volte, con diverse intensità e attenuazioni. Quando poi la trasmissione di un segnale si interrompe, in realtà il ricevente continua a ricevere degli eco relativi agli ultimi dati/simboli trasmessi. Quindi, se subito dopo il primo blocco di dati se ne trasmette un altro, i primi pezzi di esso subiranno interferenze dal primo blocco di dati trasmesso. Grazie al __cyclic-prefix__, se è lungo abbastanza, opera come buffer/separazione tra i blocchi di dati (al posto di usare un silenzio radio). Quindi, lato ricevente, se li scarto, viene eliminata l'inter-block interference.
