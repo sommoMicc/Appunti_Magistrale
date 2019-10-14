@@ -17,8 +17,9 @@ In pratica:
 ## Cos'è OFDM
 OFDM è ispirato dai principi di divisione dello spettro e inserimento di ogni simbolo in una frazione dello spettro. 
 
+![](./immagini/l4_ofdm.png)
 L'idea di OFDM è:
-* associare ciascun simbolo QUAM ad una frequenza
+* associare ciascun simbolo QAM ad una frequenza
 * siccome l'antenna ragiona in tempo, è necessario applicare una inverse discrete-time fourier transform (IDFT). Ho quindi ora i segnali espressi in tempo (e non in frequenza)
 * effettuare una conversione parallel-to-serial (in pratica, si leggono i punti uno ad uno e si piazzano nel canale)
 * inviare il segnale convertito nel canale. Notare che l'effetto della convoluzione effettuata dal canale (in tempo) corrisponde ad una moltiplicazione di segnali nel dominio di frequenza.
@@ -30,7 +31,7 @@ Per quanto osservato al punto 3, i vari $b[n]$ (quindi quello che effettivamente
 $$ b[n] = a[n]\cdot H[n] $$
 dove $H[n]$ è la frequenza di risposta del canale.
 
-Otteniamo quindi n-*subcarriers*, ognuna trasmettente in un canale differente. Nella conversione parallelo-seriale del canale, oltre a tutti gli n-simboli da trasmettere, vengono ripetuti anche alcuni dei primi simboli trasmessi (si chiama __Cyclic Prefix__). Lato ricevente, esso viene scartato.
+Otteniamo quindi *n-sottoportanti*, ognuna trasmettente in un canale differente. Nella conversione parallelo-seriale del canale, oltre a tutti gli n-simboli da trasmettere, vengono ripetuti anche alcuni dei primi simboli trasmessi (si chiama __Cyclic Prefix__). Lato ricevente, esso viene scartato.
 
 Siccome la DFT è lineare, l'output del canale è la somma di tutto quello che avviene al suo interno, quindi il rumore può essere "sommato" ad ogni singolo termine.
 
