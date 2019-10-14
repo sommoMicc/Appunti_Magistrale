@@ -2,28 +2,28 @@
 14 Ottobre 2019
 
 ## A simple experiment
-Da una cesta formata da varie palline, che possono essere rosse o blu, andiamo a fare $N$ estrazioni. La probabilita $P(R) = \pi$, mentre la probabilità $P(B) = 1-p$. Io non conosco $\pi$, ma conosco $\sigma$, ovvero il numero di palline rosse pescate nelle $N$ estrazioni. Di fatto però, $\sigma$ non da un'informazione certa, in quanto l'estrazione è casuale. Tuttavia, mi aspetto che la frequenza del campione $\sigma$ sia simile a $P(R)$, cioè $\pi$, (al netto di un errore $\epsilon$) soprattutto quando il sample $N$ è grande. A riguardo, esiste un teorema (Hoeffding's Inequality):
+Da una cesta formata da varie palline, che possono essere rosse o blu, andiamo a fare $N$ estrazioni. La probabilita di estrarre una pallina rossa $P(R) = \pi$, mentre la probabilità di estrarne una di colore blu $P(B) = 1-p$ (sono eventi indipendenti, variabili di Bernoulli). Io non conosco $\pi$, ma conosco $\sigma$, ovvero il numero di palline rosse pescate nelle $N$ estrazioni. Di fatto però, $\sigma$ non da un'informazione certa, in quanto le estrazioni avvengono in maniera casuale e totalmente scorrelata. Tuttavia, mi aspetto che la frequenza del campione $\sigma$ sia simile a $P(R)$, cioè $\pi$, (al netto di un errore $\epsilon$) soprattutto quando il sample $N$ è grande. A riguardo, esiste un teorema (Hoeffding's Inequality):
 
 $$ P(|\sigma - \pi| > \epsilon) \le 2e^{-2\epsilon^2N}$$
-dove $|\sigma - \pi| > \epsilon$ è chiamato "bad event".
+dove $|\sigma - \pi| > \epsilon$ è chiamato "bad event" (ovvero il sample considerato si discosta di "molto" rispetto al comportamento reale).
 
-Questo teorema ci dice che tenendo $N$ tanto alta (facendo tante estrazioni), il valore dell'esponenziale tenderà a 0 (perché $e^{-\inf} \to 0$). In ogni caso, $\epsilon$ e $N$ sono legati da una relazione quadratica: diminuendo $\epsilon$ di 1/10, $N$ aumenta di 100 volte per compensare tale riduzione. Quindi l'equazione $\sigma = \pi$ è P.A.C. (Probably Approximately Correct): si verifica poco spesso che abbiamo un $N$ così tanto grande.
+Questo teorema ci dice che tenendo $N$ tanto alta (facendo tante estrazioni), il valore dell'esponenziale tenderà a 0 (perché $e^{-\infty} \to 0$). In ogni caso, $\epsilon$ e $N$ sono legati da una relazione quadratica: diminuendo $\epsilon$ di 1/10, $N$ aumenta di 100 volte per compensare tale riduzione. Quindi l'equazione $\sigma = \pi$ è P.A.C. (Probably Approximately Correct): si verifica poco spesso che abbiamo un $N$ così tanto grande.
 
 Siccome l'equazione del bad event è simmetrica rispetto a $\sigma$ e $\pi$ (per la presenza del modulo), si può dire che $\pi$ approssima $\sigma$ e $\sigma$ approssima $\pi$.
 
 ## Connection to Learning
 Nell'esempio precedente, $\pi$ è l'incognita. Nel caso dell'apprendimento, invece, la vera incognita è la funzione target ($f: X \to Y$), che è quello che vogliamo approssimare. Il recipiente dell'esempio precedente è "equivalente" all'input space $X$, mentre le palline sono relative alle ipotesi: __fissata un'ipostesi $h$__, se la pallina è verde allora l'esempio è corretto, ovvero $h(x) = f(x)$, mentre se la pallina è rossa l'esempio è errato, ovvero $h(x) \ne f(x)$. Quindi, $\pi$ non è altro che l'errore ideale (la proporzione di errori nell'instance space, recipiente), mentre $\sigma$ è l'errore empirico.
 
-Il problema è che qua abbiamo fissato una ipotesi $h$ (di cui valutiamo le performance), quindi questo rappresenta il processo di verifica, non di apprendimento. Nel processo di apprendimento, invece, oltre a testare una particolare $h$, dobbiamo sceglierla tra un'insieme di ipotesi $H$. Per ciascuna possibile scelta, avrò un diverso $\pi$ e un diverso $\sigma$. 
+Il problema è che qua abbiamo fissato una ipotesi $h$ (di cui valutiamo le performance), quindi questo rappresenta il processo di verifica, non di apprendimento. Nel processo di apprendimento, invece, oltre a testare una particolare $h$, dobbiamo prima sceglierla tra un'insieme di ipotesi $H$. Per ciascuna possibile scelta, avrò un diverso $\pi$ e un diverso $\sigma$. 
 
 Cambiando un attimo notazione, abbiamo:
 * in-sample error (errore del campione) $\sigma \to E_i(h)$
 * out-of-sample error $\pi \to E_o(h)$
-* quindi, $P(|E_i(h)-E_o(h)| > \epsilon) \le 2e^{-2\epsilon^2N}$
+* quindi, $P(|E_i(h)-E_o(h)| > \epsilon) \le 2e^{-2\epsilon^2N}$ (e invece no!!)
 
 La reale situazione in un setting di apprendimento è avere tanti bidoni tutti uguali (in capienza) ma con i colori disposti in maniera diversa. Da notare che ogni pallina rappresenta la stessa $x$ in $f$. Per ciascuno di questi recipienti conosco solo l'errore _in-sample_ $\sigma = E_i(h)$. L'algoritmo di apprendimento va a scegliere una $h$ con un determinato errore _in-sample_ (ad esempio, prendere una $h$ che lo minimizzi).
 
-Analogamente a quanto succede con il lancio di monente (l'esempio delle 10 teste consecutive), la probabilità del _bad-event_ aumenta all'aumentare del numero dei campioni!
+Analogamente a quanto succede con il lancio di monente (l'esempio delle 10 teste consecutive), la probabilità del _bad-event_ aumenta all'aumentare del numero dei campioni: è inapplicabile la _disuguaglianza di Hoeffding_
 
 La formula che considera tutto questo è l'__union bound__:
 
@@ -58,13 +58,13 @@ $H$ frammenta un certo insieme $S$ se è possibile trovare un iperpiano che racc
 
 La VC-Dimension è la dimensione di uno spazio delle ipotesi *H* definito su uno spazio delle istanze *X* ed è data dalla cardinalità del sottoinsieme più grande frammentato da *H* (massima cardinalità di punti $x$ in $X$ tale che $X$ può essere frammentato da $H$).
 
-> VC(H) = max(<sub>S ⊆ X</sub>)|S| tale che H frammenta S
-> 
-> VC(H) = ∞ se S non è limitato
+>$VC(H) = max(_{S ⊆ X})|S|$ tale che $H$ frammenta $S$
+>
+>$VC(H) = \infty$ se S non è limitato
 
 Ad esempio nello spazio delle ipotesi dato dagli iperpiani su $\R^2$
 
-Se nello spazio delle istanze ho 2 punti, questo viene frammentato da *H*, perché posso sempre trovare una retta che riesce a realizzare tutte le possibili dicotomie di due punti su un piano.
+Se nello spazio delle istanze ho 2 punti, questo viene frammentato da $H$, perché posso sempre trovare una retta che riesce a realizzare tutte le possibili dicotomie di due punti su un piano.
 
 Se nello spazio delle istanze ho 3 punti, riesco comunque a realizzare tutte le dicotomie.
 
@@ -72,7 +72,7 @@ Se nello spazio delle istanze ho 4 punti qualsiasi non si riesce a trovare un ip
 
 Segue che, prendendo uno spazio delle ipotesi di cardinalità finita si ha che:
 
-> $VC(H) ≤ log_2(|H|)$
+$$VC(H) ≤ log_2(|H|)$$
 
 # HA FINITO QUA!!!
 
@@ -108,7 +108,7 @@ Il secondo termine *g(N, VC(H), δ)* non dipende da *L*, ma dal numero di esempi
 
 Il termine *g(N, VC(H), δ)* viene anche chiamato **VC-confidence** e risulta essere monotono rispetto al rapporto *VC(H)/N*.
 
-##Structural Risk Minimization (SRM)
+## Structural Risk Minimization (SRM)
 
 Approccio per la scelta dello spazio delle ipotesi proposto da Vapnik che cerca di trovare un compromesso tra l'errore empirico e la VC-Confidence.
 
