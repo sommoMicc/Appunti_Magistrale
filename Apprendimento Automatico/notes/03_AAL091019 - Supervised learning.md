@@ -22,32 +22,13 @@ L'errore atteso su coppie qualsiasi pescate in accordo alla probabilità $P(x,y)
 
 Cosa importante, questo oracolo non sempre è una funzione, questo perché può capitare che ad uno stesso *x* corrispondano *y* diversi.
 
-
-<h1>Roba vecchia</h1>
-<strike>
-Si dispone di una serie di coppie *(x,y)* che seguono lo schema naturale, l'insieme di queste coppie prende il nome di **training set**.
-
-Viene quindi scelta un funzione *h* che prende il nome di **ipotesi**, definita nello spazio delle ipotesi *H* tale che, da valori presenti nell'insieme *X*, restituisca dei valori nell'insieme *Y*.
-
-L'apprendimento consiste quindi nell'andare a scegliere l'*h* migliore in modo che approssimi bene i dati presenti nel training set e che riesca a generalizzare e predirre i corretti valori *y* anche per valori di *x* non presenti nel training set.
-
-Da ciò segue che possono essere commessi due tipi di errori:
-
-- **Errore empirico**: è l'errore commesso da *h* in media, all'interno del training set. In altre parole è l'errore medio dell'ipotesi sul training set.
-- **Errore ideale**: è l'errore commesso da *h* su una qualsiasi coppia *(x,y) ~ P(x,y)*, come media su un'insieme infinito di coppie. Questo errore può essere solamente stimato.
-
-Per calcolare una stima dell'errore ideale si può usare un **test set**, cioè un altro insieme di coppie *(x,y)* che non compaiono nel training set. Questa discriminazione è importante perché se così non fosse l'errore ideale sarebbe influenzato dall'errore empirico.
-
-_Riassumendo: l'errore empirico è quello che si fa sui dati che si conoscono, l'errore ideale è quello che si fa su dei dati nuovi._
-</strike>
-
 L'assunzione di base che si fa in ML (in particolare in apprendimento supervisionato) è che c'è un *processo stocastico* (relativamente) semplice che spiega i dati che osserviamo. Ad esempio, prendendo due immagini che rappresentano la stessa cifra, è evidente che ci sono dei tratti caratteristici comuni. In pratica, si assume che il comportamento stocastico dell'oracolo sia abbastanza regolare.
 
 Il machine learning non è magia: lo spazio delle ipotesi non può coincidere con tutte le funzioni calcolabili, quindi è necessario fare delle assunzioni sulla funzione oracolo: queste assunzioni prendono il nome di **bias induttivo**, composto da:
 * l'insieme delle ipotesi
 * l'algoritmo di apprendimento, che definisce in che modo andiamo ad esplorare lo spazio $H$ (in base a questo ordine verrà determinata che $g$ scegliere)
 
-Fanno parte del bias induttivo:
+In altre parole, fanno parte del bias induttivo:
 
 - Come vengono rappresentati gli esempi;
 - Come viene modellato lo spazio delle ipotesi *H*;
@@ -116,7 +97,7 @@ Lo spazio delle ipotesi è dato da tutte le sentenze logiche che riguardano i le
 > H = { f<sub>{i<sub>1</sub>,...,i<sub>j</sub>}</sub>(s) | f<sub>{i<sub>1</sub>,...,i<sub>j</sub>}</sub> (s) equivale a l<sub>i<sub>1</sub></sub> ⋀ l<sub>i<sub>2</sub></sub> ⋀ ... ⋀ <sub>i<sub>j</sub></sub>, {i<sub>1</sub>...i<sub>j</sub>} sottoinsieme di {1..m}}
 
 
-# __ESERCIZI__
+# __ESERCIZIO__
 Implement polynomial regression using the Ridge Regression method available in scikit-learn, see sklearn.linear model.Ridge() and look at the behavior of the solution when changing the parameter α
 
 
