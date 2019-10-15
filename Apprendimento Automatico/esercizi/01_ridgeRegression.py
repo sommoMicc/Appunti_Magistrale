@@ -1,12 +1,12 @@
-import display as display
-import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
 import random as rnd
 from sklearn.datasets import load_boston
 from sklearn.linear_model import Ridge
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
+import display as display
+import pandas as pd
+import matplotlib.pyplot as plt
 
 dataset = load_boston()
 houses = pd.DataFrame(data=dataset.data, columns=dataset.feature_names)

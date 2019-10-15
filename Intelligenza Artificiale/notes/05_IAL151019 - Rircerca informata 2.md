@@ -5,6 +5,8 @@ Martedì 15 Ottobre 2019
 
 Considerando l'esempio del puzzle da 8 tasselli.
 
+![](immagini/l5_8puzzle.png)
+
 Per quel problema possono essere trovate due euristiche:
 
 >$h_1(n)$ = numero di tasselli in posizione errata
@@ -40,6 +42,8 @@ Il problema principale di questi algoritmi è la completezza, in quanto si cerca
 
 
 ## Problema delle *n-regine*
+![](immagini/l5_8puzzle.png)
+
 Disporre *n* regine su una scacchiera $n \times n$ senza che si minaccino (non ci devono essere due regine sulla stessa riga, colonna o diagonale) nel minor numero di mosse possibili. Qualche tempo fa è stato dimostrato che esiste una soluzione polinomiale, ma vabbé non importa.
 
 Una euristica è contare, per ogni regina, il numero di regine che minaccia. Nella slide di esempio, la prima regina ne minaccia altre 2, la seconda (sulla prima riga) altre 3 ecc. Per generare gli stati successori, devo essere bravo a modellare il problema in modo da evitare l'esplosione combinatoria già in questa fase. Nell'esempio delle slide, si passa da 10 minacce a 6 e infine a 2.
@@ -67,14 +71,19 @@ Lo stato iniziale può essere scelto in maniera random.
 
 ### Hill climbing contro le 8 regine.
 In questo caso, la funzione che vogliamo minimizzare è:
-> $h(s)$ = numero di coppie di regine che si attaccano a vicenda
+> $h(s)$ = numero di coppie di regine che si minacciano a vicenda
+
+Siccome l'Hill Climbing è un problema di massimizzazione, è sufficente trovare il duale di $h$, ovvero
+> $h^D(s)$ = numero di coppie di regine che non si minacciano a vicenda
 
 Il numero di stati è $8 \times 7$.
 I numeri all'interno delle caselle rappresentano il numero di minacce ottenibili (punteggio, $h(s)$) spostando la regina di quella colonna in quella posizione. 
 
 In alcuni casi Hill climbing non riesce ad arrivare ad una soluzione.
 
-Questo perché l'algoritmo si blocca su una spalla (punto in cui la funzione obiettivo è costante) o su un massimo locale e non riesce a continuare (lo stato in cui si ferma non è detto che sia una soluzione). 
+Questo perché l'algoritmo si blocca su una spalla (punto in cui la funzione obiettivo è costante) o su un massimo locale e non riesce a continuare (lo stato in cui si ferma non è detto che sia una soluzione, perché potrebbe non essere il massimo globale). 
+
+![](immagini/l5_massimi.png)
 
 E' chiaro che data una certa configurazione, c'è un certo bacino di attrazione per ogni massimo: in base al punto di partenza si raggiungerà un massimo locale piuttosto che un altro: non sempre quindi si giungerà ad un massimo globale (soluzione ottima)
 
