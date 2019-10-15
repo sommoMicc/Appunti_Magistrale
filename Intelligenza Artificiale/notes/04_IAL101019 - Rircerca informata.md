@@ -60,11 +60,11 @@ Non inserisce nella coda dei nodi con valore di $f$ maggiore di un certo valore 
 
 Questo valore di _cutoff f_ alla iterazione successiva viene posto uguale al minimo valore di *f* dei nodi non inseriti in coda.
 
-(Ad ogni iterazione prendo il nodo di che non ho inserito in coda e con funzione di valutazione minima e assegno a _cutof f_ il su f-valore, in questo modo quel nodo verrà preso in cosiderazione alla prossima iterazione dell'algoritmo)
+(Ad ogni iterazione prendo il nodo di che non ho inserito in coda e con funzione di valutazione minima e assegno a _cutoff_ il su f-valore, in questo modo quel nodo verrà preso in cosiderazione alla prossima iterazione dell'algoritmo)
 
 Viene così limitato l'uso della memoria.
 
-Ad ogni aggiornamento di _cutof_ devo comunque reiniziare la ricerca da capo.
+Ad ogni aggiornamento di _cutoff_ devo comunque reiniziare la ricerca da capo.
 
 _Possibile tema di progetto: utilizzo di A\* e IDA\* per la risulzione di 8-puzzle_
 
@@ -82,69 +82,23 @@ Durante il ritorno, si sotistuisce l'*f-valore* di ogni nodo lungo il cammino co
 
 Come per A\*, la ricerca è ottima se la funzione euristica è ammissibile.
 
-La complessità spaziale è lineare ma la complessità temporale è difficile da definire, nel caso pessimo è sempre esponenziale.
+La complessità spaziale è lineare ma la complessità temporale è difficile da definire, nel caso pessimo è sempre esponenziale e maggiore di A*, perché si è risparmiato in memoria (__tradeoff spazio-tempo__).
 
-Anche questo algoritmo soffre di un problema simile ad IDA\*, cioè non usano tutta la memoria a disposizione.
+Anche questo algoritmo soffre di un problema simile ad IDA\*, cioè non usano tutta la memoria a disposizione. Sono stati proposti allora _MA*_ e _SMA*_, che sfruttano al meglio la memoria disponibile.
 
-_------------------ 
-# HA FINITO QUA
+> Martedì 15 ottobre 2019
 
-## Generare euristiche ammissibili
+### SMA*
+Di fatto, SMA* procede come A* (espandendo la foglia migliore candidata) finché ha memoria disponibile. In quel momento, A* normale si bloccherebbe, mentre SMA* si crea spazio all'interno della frontiera cancellando dalla memoria un nodo _vecchio_ per far posto ad un nodo _nuovo_: nella pratica viene scartato il nodo foglia peggiore, quello con l'*f-valore* più alto. Tale valore viene riportato sul nodo padre, per "correggere" l'euristica (e non perdere informazioni). Se si dovesse arrivare a non trovare dei cammini, il nodo padre verrebbe espanso nuovamente solo se tutti i suoi figli presenti in frontiera hanno un f-valore maggiore rispetto al suo.
 
-Considerando l'esempio del puzzle da 8 tasselli.
+Viene proposto in classe un esempio di SMA* con limite di memoria di 3 nodi. E' importante osservare come non si potrà mai raggiungere la soluzione più profonda, perché essa richiede che siano memorizzati 4 nodi (corrispondente alla sua profondità).
 
-Per quel problema possono essere trovate due euristiche:
-
->h<sub>1</sub>(n) = numero di tasselli in posizione errata
->
->h<sub>2</sub>(n) = distanza di Manhattan, cioè il numero di mosse necessarie per portare ogni tassello nella posizione corretta.
-
-*h<sub>1</sub>* è una euristica più semplice da calcolare ma da una sottostima tanto bassa, mentre *h<sub>2</sub>* da una sottostima più accurata rispetto ad *h<sub>1</sub>*.
-
-Conseguentemente è meglio *h<sub>2</sub>* così considero meno nodi e trovo prima il nodo associato ad uno stato ottimo.
-
-Dal momento che *h<sub>2</sub>(n)* è sempre maggiore o uguale di *h<sub>1</sub>(n)* si dice che *h<sub>2</sub>* __domina__ *h<sub>1</sub>*.
-
-Tipicamente ha più senso usare l'euristica dominante, c'è però da considerare il tempo necessario per calcolare l'euristica, in alcuni casi può essere più performante usare un'euristica "peggiore" ma che è molto efficente da calcolare.
-
-### Problemi rilassati
-
-Per facilitare il calcolo si possono togliere alcuni vincoli al problema per applicare una ricerca non informata, in modo da poter usare il valore riscontrato dalla ricerca rilassata come euristica per il problema completo.
-
-Il costo della solzione ottima di un problema rilassato non è più grande del costo della soluzione ottima del problema originario, ed è quindi un euristica ammissibile.
-
-Un esempio dell'uso di questa tecnica è la risoluzione del problema del commesso viaggiatore che può utilizzare un albero di copertura minimo per trovare un limite inferiore al percorso più breve.
+Se si arriva ad un punto in cui tutte le foglie hanno lo stesso *f-valore* si potrebbe incorrere in un loop: viene eliminata una foglia che poi viene subito ri-espansa. Una soluzione è rimuovere la foglia più _vecchia_ (quella che è in frontiera da più tempo) ed espandere la più _recente_. Se queste due foglie coincidono, allora la soluzione che passa da quel nodo non può essere contenuta nella memoria disponibile, quindi è corretto rimuoverla (non arriverei mai alla soluzione). Ricapitolando, SMA* è:
+* completo solo se la soluzione può essere contenuta in memoria
+* ottimo se la soluzione è raggiungibile (altrimenti restituisce la miglior soluzione raggiungibile)
 
 ## Considerazioni finali su A\*
 
 Si può limitare il consumo della memoria in una modo simile all'iterative deeping al contesto delle euristiche.
 
 Questo si può fare andando ad aggiungere un limite al valore dalla funzione di valutazione.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
