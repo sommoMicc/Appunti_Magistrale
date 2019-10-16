@@ -92,15 +92,27 @@ Il massimo numero di punti che possono essere frammentati da *H* è detto *VC(H)
 
 Considerando un problema di apprendimento binario, con: 
 
-> Training set S={(x<sub>i</sub>,y<sub>i</sub>)}<sub>i=1...N</sub>
+> Training set $S=\{(x_i,y_i)\}, i=1...N$</sub>
 >
->Spazio delle ipotesi H={h<sub>𝜃</sub>(x)}
+>Spazio delle ipotesi $H=\{h_0(x)\}$
 
-Supponendo di avere un algoritmo di apprendimento *L* che restituisce l'ipotesi _h<sub>𝜃\*</sub>(x)_ che minimizza l'errore empirico su *S* espresso come *errore<sub>S</sub>(h<sub>𝜃</sub>(x))*.
+Supponendo di avere un algoritmo di apprendimento *L* che restituisce l'ipotesi $h_0(x)$ che minimizza l'errore empirico su *S* espresso come $errore_S(h_0)(x))$.
 
 È possibile derivare un bound (limite superiore) per l'errore ideale o errore di generalizzazione, valido con probabilità *(1 - δ)* con *δ* piccolo a piacere:
 
 > errore<sub>D</sub>(h<sub>𝜃</sub>(x)) ≤ errore<sub>S</sub>(h<sub>𝜃</sub>(x)) + g(N, VC(H), δ)
+oppure
+
+$$error(g) < error_S(g) + F(\frac{VC(H)}{n},\delta)$$
+
+In questo caso F è una funzione che ha come parametri la VC dimension dello spazio delle ipotesi H, n e delta (coefficente arbitrariamente piccolo).
+
+#### Analisi del boud
+I due termini del bound sono:
+* $A = error_S(g)$, che dipende dall'algoritmo di apprendimento (è il minimo errore empirico osservato sui dati)
+* $F(VC(H)/n,\delta)$ (chiamata __VC-confidence__), che dipende dal numero di esempi: all'aumentare del numero di esempi, l'approssimazione che ottengo dall'errore empirico si avvicina sempre di più all'errore reale. Viceversa, la *VC-dimension* dello spazio delle ipotesi è proporzionale alla complessità dello spazio delle ipotesi, quindi alla _VC-confidence_: al suo aumentare, aumenta il lasco del bound. Infine, all'aumentare di $\delta$, la _VC-confidence_ diminuisce ($\delta$ indica "bound vero con alta probabilità").
+
+##### ROBA VECCHIA ########
 
 Il primo termine *errore<sub>S</sub>(h<sub>𝜃</sub>(x))* dipende dall'ipotesi restituita dall'algoritmo di apprendimento L.
 
@@ -108,12 +120,14 @@ Il secondo termine *g(N, VC(H), δ)* non dipende da *L*, ma dal numero di esempi
 
 Il termine *g(N, VC(H), δ)* viene anche chiamato **VC-confidence** e risulta essere monotono rispetto al rapporto *VC(H)/N*.
 
+##### FINE ROBA VECCHIA ######
+
 ## Structural Risk Minimization (SRM)
 
 Approccio per la scelta dello spazio delle ipotesi proposto da Vapnik che cerca di trovare un compromesso tra l'errore empirico e la VC-Confidence.
 
 Si considerano spazi delle ipotesi sempre più piccoli H<sub>1</sub> ⊆ H<sub>2</sub> ⊆ ... ⊆ H<sub>n</sub> tali che VC(H<sub>1</sub>) ≤ VC(H<sub>2</sub>) ≤ ... ≤ VC(H<sub>n</sub>)
 
-Si seleziona lo spazio delle ipostesi H<sub>i</sub> che ha il valore del bound sull'errore di generalizzazione più piccolo.
+Si seleziona lo spazio delle ipotesi $H_i$ che ha il valore del bound sull'errore di generalizzazione più piccolo. Nell'immagine sottostante, ad esempio, verrebbe scelta la $g$ con spazio di ipotesi $H_2$ (perché l'obiettivo dell'aprrendimento è minimizzare l'errore ideale, non quello empirico!)
 
 ![](./immagini/l5-srm.png)
