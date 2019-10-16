@@ -26,10 +26,12 @@ Bot che compra su internet.
 Alcune caratteristiche degli ambienti possono permettere ipotesi semplificative andando così ad influenzare la progettazione.
 
 - **Osservabile**: si ha accesso a tutta l'informazione che caratterizza l'ambiente. Avere o non avere tutta l'informazione influisce nelle varie azioni, perché potrebbero essere intraprese delle decisioni solamente per ottenere ulteriori informazioni.<br> Ad esempio, il Solitario (con carte scoperte) e Backgammon sono osservabili, mentre l'internet shopping (è improbabile riuscire ad accedere contemporaneamente a tutti i siti che vendono un determinato oggetto) e il taxi (perché percepisco solo l'ambiente in prossimità) sono in parte osservabili.
-- **Determinstico**: quando l'esecuzione di un'azione porta sempre lo stesso effetto nell'ambiente. Molto spesso un ambiente non è del tutto deterministico: ci sono quindi vari "gradi" di determinismo/stocasticità. In generale, lavorare in un ambiente deterministioco è più semplice in quanto si riesce a prevedere i risultati. <br>Ad esempio, il solitario è deterministico (ho un numero determinato di mosse che posso fare), mentre l'internet shopping lo è in parte (ci possono essere degli altri agenti che mi fottono i prodotti dal momento che li aggiungo al carrello a quello che li pago). Il taxi non è deterministico.
+- **Determinstico**: quando l'esecuzione di un'azione porta sempre lo stesso effetto nell'ambiente, o in generale il prossimo stato dell'ambiente è determinato completamente dallo stato corrente e dall'azione eseguita dall'agente. Molto spesso un ambiente non è del tutto deterministico: ci sono quindi vari "gradi" di determinismo/stocasticità. In generale, lavorare in un ambiente deterministioco è più semplice in quanto si riesce a prevedere i risultati. <br>Ad esempio, il solitario è deterministico (ho un numero determinato di mosse che posso fare), mentre l'internet shopping lo è in parte (ci possono essere degli altri agenti che mi fottono i prodotti dal momento che li aggiungo al carrello a quello che li pago). Il taxi non è deterministico.
 - **Episodico**: _la percezione attuale dell'ambiente non è influenzata dallo storico delle percezioni._ Anche in questo caso, un ambiente episodico permette di effettuare alcune assunzioni semplificative in quanto non è necessario tenere conto dello storico delle percezioni. Se l'ambiente non è episodico è necessario scegliere quante percezioni tenere in memoria, dal momento che non è possibile immagazzinarle tutte. Se in un ambiente una decisione influenza poi tutte quelle successive (ovvero il contrario di *episodico*) si dice che esso è **sequenziale**.<br>Nessuno degli esempi precedenti è episodico (solitario e backgamon dipendono dalle mosse precedenti, mentre il prodotto che acquisto tramite shopping su interent dipende dalle pagine che ho visitato).
 - **Statico** (o stazionario): se le relazioni tra le entità che definiscono il problema stesso (le leggi che regolano il rapporto dell'agente con l'ambiente) restano intalterate nel tempo (ad esempio, le leggi della fisica). <br>Internet Shopping è parzialmente statico perché potrebbe cambiare o il valore della moneta o il prezzo del bene (asta). Il taxi è considerato dinamico perché ci possono essere lavori o impedimenti sulla strada (la viabilità non è statica!).
 - **Discreto**: se le quantità che vengono osservate sono discrete o continue. <br>Solitario, Backgamon e Internet Shopping sono discreti (anche la moneta è considerata a grandezza finita, approssimazione al centesimo di euro). Il taxi invece è continuo.
+- **Conosciuto**: tutte le conseguenze delle azioni sono conosciute a priori.
+- **Non conosciuto**: le conseguenze delle azioni non sono conosciute a priori, quindi l'agente deve acquisire conoscenza in merito all'ambiente per potere effettuare buone decisioni.
 - **Agente singolo**: c'è un solo agente che modifica l'ambiente o possono esserci più agenti che operano nello stesso ambiente?
 
 Il mondo reale tipicamente è parzialmente osservabile, stocastico (non deterministico), sequenziale, dinamico, continuo e multi-agente.
@@ -99,6 +101,10 @@ Il concetto di goal viene sostituito da una funzione che calcola quando l'agente
 
 Quando viene valutato l'effetto dell'azione sull'ambiente si tiene conto anche di quanto quello stato è _"buono"_ per l'agente. Tenendo anche conto delle varie probabilità di raggiungere con successo lo stato.
 
+Inoltre, il concetto di utilità permette di estendere il concetto binario di "buono" o "cattivo", espresso dagli obiettivi, permettendo di pesare **quanto** buona (o cattiva) sia una scelta.
+
+Un agente a misura di utilità  sceglie le azioni che massimizzano l'**utilià attesa** delle conseguenze delle azioni intraprese.
+
 Ad esempio, un taxi deve correre veloce (goal) per arrivare il prima possibile. Tuttavia, se va *troppo* veloce si schianta. Ecco perché viene introdotta una funzione di utilità dello stato, e grazie a questa una velocità troppo eccessiva può essere marcata come deplorevole.
 
 ## Agenti in grado di apprendere
@@ -114,13 +120,17 @@ L'emento critico genera quindi un feedback per l'__elemento di apprendimento__ c
 
 Il performance element è l'elemento che decide quale azione andare a prendere in base alle informazioni ottenute dai sensori.
 
-C'è anche un __problem geneator__ che fa in modo che tutte le casistiche possibili vengano affrontate dall'elemento di apprendimento, in modo che anche queste vengano considerate.
+C'è anche un __problem generator__ che fa in modo che tutte le casistiche possibili vengano affrontate dall'elemento di apprendimento, in modo che anche queste vengano considerate.
 
 Questo perché l'apprendimento potrebbe essere come quello di uno studente, che cerca di imparare le domande tipiche di un compito, il problem generator è quello che genere le domande che non sono mai comparse in un compito. In pratica, se io ho delle percezioni che non mi portano molto lontano dal punto iniziale, l'agente non fa esperienza.  Formalmente, questo si chiama rischio di sovraspecializzazione. Grazie al problem generator l'agente viene forzato a fare delle scelte "alternative" che non sono mai state esplorate in precedenza.
 
 Il problem generator risulta particolarmente importante nelle fasi iniziali.
 
 ## Ricerca in uno spazio di soluzioni
+
+
+
+
 
 Esempio della vacanza in Romania.
 
