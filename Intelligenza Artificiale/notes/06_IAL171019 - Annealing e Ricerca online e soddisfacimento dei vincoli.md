@@ -1,16 +1,17 @@
-#Lezione 7 - Ricerca online e soddisfacimento di vincoli
+# Lezione 7 - Ricerca online e soddisfacimento di vincoli
+Giovedì 17 ottobre 2019
 
 Nelle precedenti puntante: Hill climbing con la risalita per trovare una funzione globale.
 
-##Simulated Annealing
+## Simulated Annealing
 
-L'idea è quella di permettere delle mosse cattive per eviatre i massimi locali.
+L'idea è quella di permettere delle mosse cattive per evitare i massimi locali (si ispira al processo di tempra dell'acciaio).
 
 La frequenza di queste mosse va via via a calare e viene determinata da una distribuzione di probabilità nota che deriva da come le molecole di un metallo si muovono al variare della temperatura.
 
 ```
 function SimulatedAnnealing(problema, velocità_raffreddamento) returns uno stato soluzione
-	inputs: problema, un problema
+	input: problema, un problema
 			  velocità_raffreddamento, una corrispondenta dal tempo alla temperatura
 	variabili locali: nodo_corrente, un nodo
 						  successivo, un nodo
@@ -25,15 +26,25 @@ function SimulatedAnnealing(problema, velocità_raffreddamento) returns uno stat
 	   else nodo_corrente <- successivo con probabilità e^(DeltaE/T)
 ```
 
-A temperatura fissata `T` la probabilità di occuppazione degli stati segue la distrubuzione di Boltzmann.
+Con il procedere dell'esecuzione si va diminuire la probabilità di fare scelte a caso
+
+A temperatura fissata `T` la probabilità di occupazione degli stati segue la distrubuzione di Boltzmann.
+
+$$p(x) = \alpha e^{\frac{E(x)}{kT}}$$
 
 Se `T` viene diminuito abbastanza lentamente si raggiunge sempre lo stato migliore.
 
 Questo viene usato largamente nelle applicazioni pratiche come la definizione degli orari dei voli delle linee aeree.
 
-##Ricerca online
+## Discesa di gradiente
+Permette di effettuare ottimizzazione locale anche per sistemi non lineari. /* L'idea è che abbiamo delle variabili a dominio continuo e l'espressione è */
+L'idea di base è partire da un vettore random $w$ che viene poi "spostato" nella direzione opposta a quella di massima crescita della funzione obiettivo (direzione trovata tramite il calcolo delle derivate). Se l'obiettivo è di massimizzare una funzione, si fa una ascesa di gradiente (e non una discesa, ovviamente!).
 
-Quando l'ambiente è dinamico o non deterministico non è possibile pianificare a priori le operazioni da compiere.
+E' l'equivalente dell'hill climbing in cui lo spazio dei parametri sia continuo e la funzione obiettivo sia derivabile e con derivata diversa da zero. Nel senso, se la funzione obiettivo è a scalini, nella parte piatta avrà una derivata zero, e quindi il vettore ottenuto sarà nullo. In tal caso si cercano funzioni che "smussano" la funzione obiettivo in modo da eliminare i punti con derivata nulla.
+
+## Ricerca online
+
+Quando l'ambiente è dinamico o non totalmente osservabile o non deterministico non è possibile pianificare a priori le operazioni da compiere.
 
 In questo caso è necessario interagire con l'ambiente per recuperare le informazioni mancanti.
 
@@ -41,15 +52,15 @@ Si parla quindi di _ricerca online_.
 
 Si assume che l'agente conosca solo:
 
-- Azioni(_s_): le azioni permesse nello stato _s_;
+- Azioni(_s_): le azioni permesse nello stato _s_ . Da notare che si parla solo di azioni, non di effetti, i quali verranno osservati tramite le percezioni (si scoprirà solo vivendo);
 - c(_s,a,s'_): il costo dell'azione _a_ per passare dallo stato _s_ a _s'_ (lo stato di arrivo non è noto finché non è stata applicata l'azione);
-- TestObiettivo(*s*): per sapere se lo stato *s* è un obiettivo.
+- TestObiettivo(*s*): per sapere se lo stato *s* è un obiettivo (deve essere sempre possibile).
 
-Il problema principale di questo tipo di ricerca è che non esiste un algoritmo che permette di evitare vicoli cechi. Questo perché tipicamente non ci sono abbastanza infomrazioni riguardo l'ambiente di esecuzione.
+Il problema principale di questo tipo di ricerca è che non esiste un algoritmo che permette di evitare vicoli cechi. Questo perché tipicamente non ci sono abbastanza infomrazioni riguardo l'ambiente di esecuzione, quindi si può utilizzare solo una tecnica di ricerca locale (ad esempio DFS).
 
 Questi algoritmi non sono (ovviamente) completi.
 
-###Ricerca in profondità online
+### Ricerca in profondità online
 
 L'idea è quella di esplorare l'ambiente alla ricerca di un goal.
 
@@ -76,21 +87,24 @@ Perché l'algoritmo funzioni è necessario che l'agente possa tornare indietro d
 
 Questo algoritmo può comunque finire in cammini infinti o in vicoli cechi.
 
-###Ricerca casuale
+### Ricerca casuale
 
-L'idea è quella di esplorare l'ambiente in modo da recuperare la maggior quantità possibile di informazioni per poi andare applicare altri algoritmi.
+L'idea è quella di esplorare l'ambiente in modo da recuperare la maggior quantità possibile di informazioni per poi andare applicare altri algoritmi. Rispetto alla ricerca sistematica, che tiene conto delle azioni precedenti, la ricerca random si muove molto più liberamente nell'ambiente.
 
 Questa tipologia di ricerca termina con un successo se lo spazio è finito, ma in ogni caso può essere molto lenta.
 
-Ad esempio nel caso il numero di archi che si allontanano dal goal è maggiore rispetto a quelli che vanno nel verso corretto.
+Ad esempio nel caso il numero di archi che si allontanano dal goal è maggiore (doppio, nell'esempio delle slide) rispetto a quelli che vanno nel verso corretto.
 
 Altre strategie come l'HillClimbing con memoria o LRTA\* permettono di ottenere risultati migliori.
 
-###Learning Real Time A\* - LRTA\*
+### Learning Real Time A\* - LRTA\*
 
 L'idea di base consiste nel memorizzare la migliore stima corrente `H(s)` del costo per raggiungere il goal da ogni stato visitato.
 
-`H(s)` inizialmente coincide con `h(s)` ma durante l'esecuzione viene aggiornata con l'esperienza.
+`H(s)` inizialmente coincide con `h(s)` ma durante l'esecuzione viene aggiornata con l'esperienza. Diciamo che è una versione aggiornata dell'euristica iniziale e funziona in modo analogo alle versioni ricorsive e con uso di memoria ottimizzata di A* (tipo SMA*)
+
+![](immagini/l6_ltra.png)
+
 
 ```
 function LRTA*-Agent(s') returns an action
@@ -114,9 +128,13 @@ function LTRA*-Cost(s,a,s',H) returns a cost estimate
 
 Anche in questo caso si ha la garanzia di trovare una soluzione solo se gli stati sono finiti e le azioni sono revesibili, altrimenti non può essere completo.
 
+L'algoritmo comunque richiede che le azioni siano deterministiche, altrimenti le scelte dovrebbero essere interpretate con la loro distribuzione di probabilità
+
 *Questo termina la parte riguardante gli algoritmi generici*
 
-##Problemi di soddisfacimento dei vincoli
+# FINE!
+
+## Problemi di soddisfacimento dei vincoli
 
 In questa tipologia di problemi lo stato è una black box, una qualunque struttura dati che supporta il test di goal, la funzione di valutazione e la funzione successore.
 

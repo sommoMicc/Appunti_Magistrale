@@ -1,4 +1,4 @@
-# Lezione 4 - Rircerca informata (A* in poi)
+# Lezione 4 - Ricerca informata (A* in poi)
 
 ### Ricerca su grafo
 

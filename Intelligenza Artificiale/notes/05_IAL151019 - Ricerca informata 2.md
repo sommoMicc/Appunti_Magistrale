@@ -112,15 +112,14 @@ Quindi su una serie di _k_ ricerche sia la _k_-esima ricerca sia una soluzione o
 
 Perché? Dimostrazione della probabilità, ci sono serie e derivate.
 
-# FINE
+> Giovedì 17 Ottobre 2019
 
-Con HC standard, il 14% delle volte si trova una soluzione ottima (globale).
+## Hill Climbing e le 8 regine
+Applicando l'Hill-Climbing al problema delle 8 regine otteniamo $8^8$ stati (17 milioni circa). Per:
+* Con _Hill Climbing_ standard, il 14% delle volte si trova una soluzione ottima (globale).
 
-Con HC laterale (max 100), la soluzione ottima viene trovata il 94% delle volte. In media servono circa 21 passi per trovare una soluzione.
+* Con _Hill Climbing_ laterale (max 100), la soluzione ottima viene trovata il 94% delle volte. In media servono circa 21 passi per trovare una soluzione.
 
-Con HC a riavvio casuale, la soluzione ottima ha _p = 0,14_, Servono quindi 6 fallimenti ed un successo per trovare una soluzione ottima, con una media di 22 passi.
+* Con _Hill Climbing_ a riavvio casuale, la soluzione ottima ha $p = 0,14$, Servono quindi 6 fallimenti ed un successo per trovare una soluzione ottima (7 ricerche in tutto), con una media di 22 passi.
 
-Con HC a riavvio casuale e mosse laterali, si ha _p=0,94_ e servono quindi 1,06 ricerche per trovare la soluzione ottima globale, con una media di 25 passi.
-
-
-
+* Con _Hill Climbing_ a riavvio casuale e mosse laterali, si ha $p=0,94$ e servono quindi 1,06 ricerche per trovare la soluzione ottima globale, con un numero di passi complessivo medio (atteso) di circa 25.08 passi.
