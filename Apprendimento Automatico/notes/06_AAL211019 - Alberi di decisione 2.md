@@ -72,7 +72,7 @@ Questi casi possono essere trattati in vari modi diversi:
 
 Cioè l'ipotesi è molto accurata sui valori di training, ma sui valori di test risulta meno accurata (succede quando le ipotesi sono troppo complesse per il fenomeno che si intende rappresentare).
 
-All'aumentare della complessità dell'albero creato, l'accuratezza dell'abero sui dati di trainging aumenta, ma una volta provata con i dati di test, l'accuratezza cala drastricamente.
+All'aumentare della complessità dell'albero creato, l'accuratezza dell'abero sui dati di training aumenta, ma una volta provata con i dati di test, l'accuratezza cala drastricamente.
 
 ```
 in fact it can lead to difficulties when there is noise in the data,
