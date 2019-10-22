@@ -44,7 +44,7 @@ $$ h_w(x)=w_0+w_1x+w_2x^2 +···+w_px^p ,p ∈ \N $$
 
 Bisogna innanzitutto minimizzare l'errore empirico:
 
-$$error_s(h_w) = \frac{1}{n}\sum_{i=1}{n}(h_w(x_i)-y_i)^2$$
+$$error_s(h_w) = \frac{1}{n}\sum_{i=1}^{n}(h_w(x_i)-y_i)^2$$
 
 In questo caso il bias induttivo è assumere che esista una funzione polinomiale in grado di approssimare i vari punti.
 
@@ -60,7 +60,7 @@ dobbiamo quindi trovare $w$ tale che $Xw \sim y$
 
 Per il dataset di training, bisogna minimizzare l'errore empirico (n.b: $\alpha$ è definito a priori, è un "iperparametro"):
 
-$$min_w \frac{1}{n} ||y − X_w||2 + \alpha||w||^2$$
+$$min_w \frac{1}{n} ||y − Xw||^2 + \alpha||w||^2$$
 
 Quando $\alpha = 0$ otteniamo la minimizzazione dell'errore empirico. Quando invece $\alpha$ cresce, nella funzione obiettivo li diamo più peso, concedendoci un maggiore errore empirico ma una funzione polinomiale più semplice (più liscia, con valori $w$ più bassi/regolari).
 
