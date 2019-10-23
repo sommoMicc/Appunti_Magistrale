@@ -82,7 +82,7 @@ $$ \sigma^2 = Var(X) = E[ (X-\mu)^2 ] = E[X^2] - \mu^2$$
  dove $\mu$ è il valore atteso. Dato che si eleva al quadrato $X-\mu$, la varianza sarà sempre positivo. $E[X^2]$ è il secondo momento (definito qualche riga sopra).
 
 __Deviazione standard__: o scarto quadratico medio, è la radice quadrata della varianza, ed è la media di quando ci si discosta dal valore atteso.
- 
+
 ### Distribuzioni notevoli
 Caso discreto:
 * __Bernoulli__: Output 1 o 0 (successo o fallimento), e $p$ è la probabilità di successo. Allora, $P(X=1) = p$ e $P(X=0) = 1-p$. Inoltre, $E[X] = P$ (perchè nella media moltiplico la probabilità per il valore, calcolo che si annulla perché moltiplico per zero quando calcolo $1-p$). La varianza invece è $Var(X) = p(1-p)$
@@ -93,7 +93,7 @@ Caso reale
 * __Uniforme__ nell'intervallo [a,b]. Allora $p(x) = \frac{1}{b-a}$ se $a \le x \le b$ e $p(x) = 0$ altrimenti. $E[X] = \frac{a+b}{2}$ e $Var(X) = \frac{(b-a)^2}{12}$
 * __Gaussiana__ di media $\mu$ e varianza $\sigma^2$, $N(\mu,\sigma^2)$: 
 
-$$ p(x) = \frac{1}{\sqrt{2\pi}\sigma} exp(-\frac{(x-\mu)^2}{}$$
+$$ p(x) = \frac{1}{\sqrt{2\pi}\sigma} exp(-\frac{(x-\mu)^2}{2\sigma ^2})$$  Gaussiana
 
 ## Algebra lineare
 ### Vettori
