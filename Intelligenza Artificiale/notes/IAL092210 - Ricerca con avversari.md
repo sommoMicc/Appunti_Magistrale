@@ -12,7 +12,7 @@ La soluzione diventa quindi una strategia, una funzione che specifica una mossa 
 
 In alcuni casi ci sono anche dei limiti di tempo codificati nelle regole del gioco, le possibilità di ricerca sono quindi limitate e non sempre è possibile arrivare ad una strategia ottima.
 
-##Tipi di giochi
+## Tipi di giochi
 
 - Informazione completa e deterministici: come la dama, gli scacchi, othello;
 - Informazione completa e non deterministici: backgammon, monopoli;
@@ -20,7 +20,7 @@ In alcuni casi ci sono anche dei limiti di tempo codificati nelle regole del gio
 
 Possono essere aggiunte anche altre informazioni, come online/offline.
 
-##TicTacToe
+## TicTacToe
 
 *Nelle slide c'è un esempio di albero di gioco*
 
@@ -32,7 +32,7 @@ I nomi derivano dal fatto che Max cerca di massimizzare la funzione di utilità 
 
 Questo gioco viene detto a **somma zero** o costante, questo perché il vantaggio di un giocatore equivale allo svantaggio dell'avversario.
 
-##Minimax
+## Minimax
 
 Gioco perfetto per giochi deterministici e ad informazione perfetta.
 
@@ -67,7 +67,7 @@ function MinValue(state) returns a utility value
 
 La funzione `MaxValue` cerca di massimizzare la funzione d'utilità quando gioca Max, mentre `MinValue` cerca di minimizzare la funzione funzione d'utilità quando gioca Min.
 
-###Proprietà
+### Proprietà
 
 L'algoritmo è completo solo se l'albero degli stati è finito.
 
@@ -99,7 +99,7 @@ Conviene quindi utilizzare una ricerca di **quiescienza** cioè tagliando la ric
 
 Se invece tra nodi successivi c'è un cambio notevole tra le funzioni di valutazioni, allora si tengono delle risorse per andare ad esplorare quell'area dell'albero.
 
-###Funzione di valutazione
+### Funzione di valutazione
 
 È una funzione usata per calcolare il valore degli stati.
 
