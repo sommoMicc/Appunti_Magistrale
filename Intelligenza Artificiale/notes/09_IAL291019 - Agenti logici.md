@@ -161,9 +161,3 @@ function TVVerificaTtto(KB, 𝜶, s, modello) returns true oppure false
         return TVVerificaTutto(KB, a, resto, Estendi(P, true, modello)) and TVVerificaTutto(KB, 𝜶, resto, Estendi(P, false, modello))    
 ```
 
-## Metodi di prova
-
-Ci sono due tipologie di prove che si possono fare:
-
-- **Model Checking**: viene fatta l'enumerazioe delle tabelle di verita, con una complessità esponenziale in *n* (numero di simboli nella KB), può essere migliorata con euristiche o Hill climbing, ma in questo caso si perde la completezza.
-- **Applicazione di regole di inferenza**: si inizia ad estendere la base di conoscenza utilizzando i dati attuali, se 𝜶 è tra queste nuove sentenze allora viene inferito, altrimenti ripeto il passo utilizzando le nuove informazioni inferite. L'utilizzo di questa strategia risulta più efficiente ma le sentenze devono essere scritte in una forma normale.
