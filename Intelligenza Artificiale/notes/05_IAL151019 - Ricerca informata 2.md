@@ -32,6 +32,8 @@ Un esempio dell'uso di questa tecnica è la risoluzione del problema del commess
 
 ## Algoritmi di miglioramento iterativo
 
+Tecniche greedy che costruiscono una soluzione ottima a partire da sotto problema, iterativamente.
+
 In molti problemi di ottimizzazione non è rilevante come si arriva alla soluzione (come nel TSP, al povero commesso interessa solo la soluzione, non come ci sono arrivato!).
 
 Gli algoritmi di miglioramento iterativo mantengono un singolo stato corrente e tentano di migliorarlo. Considerano l'insieme degli stati raggiungibili e verificano se ce n'è uno che migliora lo stato corrente. Un esempio è lo scambio degli estremi a partire da una soluzione (circuito) per TSP. Si chiama miglioramento iterativo perché cerco, ogni volta che compio un'azione, di migliorare lo stato in cui mi trovo.
@@ -42,9 +44,9 @@ Il problema principale di questi algoritmi è la completezza, in quanto si cerca
 
 
 ## Problema delle *n-regine*
-![](immagini/l5_8puzzle.png)
+![](immagini/l5_8regine.png)
 
-Disporre *n* regine su una scacchiera $n \times n$ senza che si minaccino (non ci devono essere due regine sulla stessa riga, colonna o diagonale) nel minor numero di mosse possibili. Qualche tempo fa è stato dimostrato che esiste una soluzione polinomiale, ma vabbé non importa.
+Disporre $n$ regine su una scacchiera $n \times n$ senza che si minaccino (non ci devono essere due regine sulla stessa riga, colonna o diagonale) nel minor numero di mosse possibili. Qualche tempo fa è stato dimostrato che esiste una soluzione polinomiale, ma vabbé non importa.
 
 Una euristica è contare, per ogni regina, il numero di regine che minaccia. Nella slide di esempio, la prima regina ne minaccia altre 2, la seconda (sulla prima riga) altre 3 ecc. Per generare gli stati successori, devo essere bravo a modellare il problema in modo da evitare l'esplosione combinatoria già in questa fase. Nell'esempio delle slide, si passa da 10 minacce a 6 e infine a 2.
 
