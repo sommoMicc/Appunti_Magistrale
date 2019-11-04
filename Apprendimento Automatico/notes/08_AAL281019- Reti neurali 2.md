@@ -95,36 +95,3 @@ In questo caso si può utilizzare lo stesso algoritmo di apprendimento visto in 
 
 Nonostate la formula sembri molto minacciosa, i $\Delta w_i$ sono uguali a $\frac{-\eta∂E}{∂w_i}$, cioè il learn rate moltiplicato per la derivata appena calcolata.
 
-## Rete di Perceptron
-
-![](./immagini/l10-rete.png)
-
-![](./immagini/l10-rete-parametri.png)
-
-E rappresenta l'errore quadratico medio di tutte le unità di output.
-
-### Calcolo dei pesi per le unità di output
-
-Calcoliamo i pesi per le unità di output, considerando i livelli nascosti come se fossero degli ingressi.
-
-I $w_i$ adesso diventano *Δw<sub>k,j</sub>* perché i pesi vengono calcolati per ogni collegamento da un'unità nascosta *j* all'unità di output *k*.
-
-![](./immagini/l10-rete-output.png)
-
-Nel secondo passo sono state fatte due operazioni, prima viene tolta la sommatoria, perché quando viene fatta la derivata della sommatoria c'è un solo elemento diverso da ed è quello di indice *k^=k*.
-
-###Calcolo dei pesi per le unità nascoste
-
-![](./immagini/l10-rete-input.png)
-
-###Algoritmo di apprendimento
-
-L'algoritmo di apprendimento lavora in due fasi: nella prima fase, detta **feed forward**, viene forinto in input alla rete un esempio del training set, in modo che questa possa provare a calcolare la funzione target per l'esempio. Una volta calcolata si passa alla fase di **backward progragation**, nella quale si aggiornarno i coefficenti delle unità di output e delle unità nascoste in base alla correttezza o meno della predizione. In questo caso l'apprendimento avviene a ritroso, prima vengono aggiornati i coefficenti delle unità di output e poi quelli dei livelli nascosti.
-
-![](./immagini/l10-apprendimento-rete.png)
-
-Il passo 2 dell'algoritmo rappresenta il calcolo della differenza tra l'output atteso e quello ottenuto, questo viene poi utilizzato per aggiornare a ritroso i valori dei nodi interni (passo 3).
-
-L'algoritmo prende il nome di **back propagation stocastico** perché il valore dei $\Delta w_i$ viene aggiornato subito dopo aver valutato un esempio *x* e non solamente dopo aver valutato tutti gli esempi del training set.
-
-Le possibili condizioni di terminazione sono le stesse che si hanno quando c'è un solo neurone.
