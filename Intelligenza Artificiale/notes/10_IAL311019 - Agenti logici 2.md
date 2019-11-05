@@ -103,83 +103,10 @@ Si può anche ottimizzare il lavoro, se ho un nuovo sottogoal posso controllare 
 
 Non è stato presentato un algoritmo a lezione perché una implementazione del Backward chaining è molto complessa.
 
-## Forward VS Backward
+## Forward VS Backward Chaining
 
 Forward è più orientata ai dati e viene utilizzata per l'elaborazione incoscia e automatica, come il riconoscimento dei dati.
 
 A causa dell'approccio utilizzato viene eseguito del lavoro irrilevante per il goal, cioé vengono dedotte molte conseguenze logiche che non sono rilevanti per il goal (come se fosse una ricerca a ventaglio).
 
 Backward è invece focalizzato sul goal, per questo motivo è più adatto al problem solving e la complessità di questa strategia può essere molto minore che lineare nella complessità di KB, perché cerca di restringersi alle clausole rilevanti per raggiungere lo scopo (Forward è lineare). 
-
-FINE
-___
-## Regola di risoluzione
-
-**Forma normale congiuntiva (CNF)**: forme di scrittura che utilizza congiunzione di disgiunzione di letterali (dove la disgiunzione di letterali è una clausa di Horn).
-
-> (A ⋁ !B) ⋀ (B ⋁ !C ⋁ !B)
-
-La **risoluzione** è una regola di inferenza per CNF completa e corretta per la logia proposizionale.
-
-![](./immagini/l12-risoluzione.png)
-
-In pratica si va a togliere un *l<sub>i</sub>* e *m<sub>j</sub>* che sono tra loro complementari (lo stesso letterale sia negato che non).
-
-Questo procedimento esegue la verifica del modello perché vuol dire che se *L* e *M* sono vere e anche la proposizione che si deduce è vera, quindi vuol dire che il letterale tolto non influenzava la verità di *L* e *M*.
-
-La **correttezza** di questa regola è semplice, se tolgo dalla clausola *L* il letterale *l* e dalla clausola *M* il letterale *m* che è complementare a *l*, allora se *l* è vero allora *m* è falso e quindi *M* deve essere vero e non a causa di *m*. Se *l* è falso, allora *L* deve essere vero senza *l*. Il valore di *l* quindi non incide ne in una clausola ne nell’altra, quindi la sua eliminazione non altera il valore delle clausole.
-
-
-###Conversione in CNF
-
-> B<sub>1,1</sub> <==> (P<sub>1,2</sub> ⋁ P<sub>2,1</sub>)
-
-1. Eliminare il se e solo se
-> (B<sub>1,1</sub> => (P<sub>1,2</sub> ⋁ P<sub>2,1</sub>)) ⋀ ((P<sub>1,2</sub> ⋁ P<sub>2,1</sub>) => B<sub>1,1</sub>)
-
-2. Eliminare il => rimpiazzando A => B con !A ⋁ B
-> (!B<sub>1,1</sub> ⋁ P_1,2 ⋁ P_2,1) ⋀ (!(P_1,2 ⋁ P_2,1) ⋁ B_1,1) 
-
-3. Spostare la negazione all'interno delle parentesi usando le regole di De Morgan
-> (!B<sub>1,1</sub> ⋁ P<sub>1,2</sub> ⋁ P<sub>2,1</sub>) ⋀ ((!P<sub>1,2</sub> ⋀ !P<sub>2,1</sub>) ⋁ B<sub>1,1</sub>) 
-
-4. Si applica la legge distrubutiva dell'OR sull'AND
-> (!B<sub>1,1</sub> ⋁ P<sub>1,2</sub> ⋁ P<sub>2,1</sub>) ⋀ (!P<sub>1,2</sub> ⋁ B<sub>1,1</sub>) ⋀ (!P<sub>2,1</sub>) ⋁ B<sub>1,1</sub>) 
-
-A questo punto abbiamo la CNF.
-
-###Algoritmo risolutivo
-
-La **regola di risoluzione** è le regola di inferenza precedentemente vista, l'aloritmo di risoluzione è quello che applica più volte la regola di risoluzione per andare a risolvere il problema.
-
-L'algoritmo funziona per contraddizione, cioè va a dimostrare che *KB ⋀ !𝜶* è insoddisfacibile.
-
-Se risolvendo KB ⋀ !𝜶 viene trovata la clausola vuota, allora vuol dire che KB ⋀ !𝜶 è insoddisfacibile e di conseguenza KB |= 𝜶.
-
-Da notare che l'algoritmo dice se 𝜶 è conseguenza logica o meno dalla KB, senza fornire una prova del risultato.
-
-```
-function CP-Risoluzione(KB, 𝜶) return true oppure false
-    clausole <- insieme di clausole nella rappresentazione CNF di KB ⋀ !𝜶
-    new <- {}
-    loop do
-        foreach C_i C_j in clausole do
-            resolvents <- CP-Risolvi(C_i, C_j)
-            if resolvents contiene la clausola vuota then return true
-            new <- new ∪ resolvents
-        if new ⊆ clausole then return false
-        clausole <- clausole ∪ new
-```
-
-`CP-Risolvi(C_i, C_j)` restituisce l'insieme dei risolventi ottenuti applicando la regola di risoluzione in tutti i modi possibili per le due clausole. Questo perché data una coppia di clausole è possibile risolverle in più modi diversi. 
-
-Per prima cosa è necessario convertire il tutto in CNF, quindi si applica la regola di risoluzione alle clausole risultati. 
-
-Ogni coppia che contiene letterali complementari è risolta per produrre una nuovo clausola che viene aggiunta all’insieme.
-
-Il processo continua finché:
-
-- non è più possibile aggiungere alcuna clausola, in questo caso KB non implica 𝜶
-- la risoluzione applicata a due clausole da come risultato la clausola vuota, in questo caso KB implica 𝜶
- 
-La clausola vuota, una disgiunzione senza alcun disgiunto è equivalente a *False* perché una disgiunzione è vera solo se è vero almeno uno dei disgiunti.

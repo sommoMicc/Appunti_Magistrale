@@ -1,55 +1,6 @@
 #Lezione 13 - Riduzione 2 e logica del primo ordine
 
-La complessità dell'algoritmo di risoluzione è esponenziale per il numero di simboli nella base di conoscenza e in 𝜶.
-
-##Completezza della Risoluzione
-
-**Completezza**: riesce a dedurre tutto quello che può essere dedotto dalla base di conoscenza.
-
-Il teorema di completezza per la risoluzione nella logica proposizionale è chiamato **ground resolution theorem**: se un insieme di clausole S è insoddisfacibile, allora la chiusura della risoluzione di tali clausole RC(S) contiene la clausola vuota.
-
-Nel nostro caso S è la base di conoscenza in ⋀ con la negazione di 𝜶.
-
-**insoddisfacible**: non esite un modello per l'insieme di clausole, ovvero non esiste una combinazione dei letterali che rende vero l'insieme delle clausole.
-
-La dimostrazione di questo teorema si ottiene dimostrando (per assurdo) che se la chiusura RC(S) non contiene la clausola vuota, allora S è soddisfacibile.
-
-Se la chiusura di S **non contiene** la clasusola vuota si può costruire un modello per S, perché se c'è una clausola vuota vuol dire che c'è una contrattiddizione e quindi non è possibile costruire un modello.
-
-Si può provare quindi a costruire un modello a partire dai vari letterali P<sub>1</sub>, ..., P<sub>k</sub> che compaiono in S.
-
-Quindi, per ogni P<sub>i</sub>:
-
-- Se esiste una clausola in RC(S) contiene not(P<sub>i</sub>) e tale che tutti gli altri letterali della clausola sono falsi a causa dei valori di verità già assegnati ai P precedendi, allora assegna il valore di verità falso a P<sub>i</sub>.
-- altrimenti assegna a P<sub>i</sub> vero.
-
-Questo perché sto cercando di creare un modello per RC(S) e ad ogni passo cerco un valore per P<sub>i</sub> in modo che non ci siano clausole che non sono soddisfatte.
-
-Tenendo presente che in RC(S) non c'è la clausola vuota per ipotesi, rimane da dimostrare che tale procedura termina sempre e produce un modello per S.
-
-Questo si dimostra per induzione su i: supponiamo che sia possibile costruire il modello parziale per i simboli fino a P<sub>i-1</sub> e mostriamo che tale modello può essere esteso fino a P<sub>i</sub>.
-
-**Caso base: i = 1**
-
-In questo caso, in RC(S) non possono essere presenti sia P<sub>1</sub> sia not(P<sub>1</sub>), perché altrimenti l'applicazione dell'algoritmo di risuluzione non sarebbe terminata, questo perché le due clausole P<sub>1</sub> e not(P<sub>1</sub>) possono essere risolte con la clausola vuota. Quindi è presente solo o P<sub>1</sub> o not(P<sub>1</sub>) e di conseguenza P<sub>1</sub> vale falso se è presente not(P<sub>i</sub>), altrimenti vero. 
-
-Questa scelta è vincolata perché stiamo cercando di costruire un modello per S. 
-
-**Caso induttivo:**
-
-Consideriamo una clausola C in RC(S) che contiene P<sub>i</sub>, si hanno dei problemi ad assegnare un valore di verità a P<sub>i</sub> solo se C equivale a B ⋁ not(P<sub>i</sub>), con B clausola che contiene solo simboli P<sub>j</sub> con *j < i*, cioè simboli ai quali ho già fissato un valore di verità, ed esiste C' in RC(S) ed equivalente a B' ⋁ P<sub>i</sub> con B' clausola che contiene solamente simboli P<sub>j</sub> con *j < i*.
-
-Il problema della scelta del valore è che, per rendere vera sia C che C', P<sub>i</sub> dovrebbe essere sia vero sia falso, e quindi non si sa cosa scegliere.
-
-Ma, se esistono queste due clasuole, in RC(S) deve essere presente anche la clausola B ⋁ B' altrimenti RC(S) non è la chiusura, questo perché se riduco C con C' ottengo B ⋁ B'.
-
-Per l'ipotesi induttiva, l'assegnamento parziale fino a P<sub>i-1</sub> non può rendere falsa sia B che B' (questo per come sono stati scelti i valori).
-
-Quindi, se B è falsa allora P<sub>i</sub> è falso e se invece B' è falso allora P<sub>i</sub> è vero, ottenendo così un modello parziale fino all'indice *i*.
-
-Quando *i* coincdice con *k* si ottiene un modello completo per *S* e di conseguenza *S* è soddisfacibile.
-
-##Riassunto
+## Riassunto
 
 Gli agenti logici applicano l'inferenza ad una base di conoscenza per derivare nuova informazione e prendere decisioni.
 
