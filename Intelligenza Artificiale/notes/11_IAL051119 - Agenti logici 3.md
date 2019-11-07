@@ -130,23 +130,3 @@ Quindi, se B è falsa allora $P_i$ è falso e se invece B' è falso allora $P_i$
 
 Quando *i* coincdice con *k* si ottiene un modello completo per *S* e di conseguenza *S* è soddisfacibile.
 
-## Riassunto
-
-Gli agenti logici applicano l'inferenza ad una base di conoscenza per derivare nuova informazione e prendere decisioni.
-
-Forward e Backward chaining sono lineari, completi e corretti per le clausole di Horn, mentre la Risoluzione è completa e corretta, ma nel caso pessimo ha una complessità esponenziale.
-
-Manca però del potere espressivo.
-
-## Pro e contro della logica proposizionale
-
-La logica proposizionale è dichiarativa e i pezzi di sintassi corrispondono a fatti.
-
-Permette anche di esprimere informazione parziale/disgiuntiva/negata, al contrario di basi di dati o strutture dati dove vengono utilizzati solo i fatti.
-
-La logica Proposizionale è composizionale, il significato di *B ⋀ P* è conseguenza del significato di *B* e di *P*, non ci sono valori di contesto che influenzano il valore di verità.
-
-Il significato di questa logica è **indipendente dal contesto**, al contrario del linguaggio naturale dove il significato dipende dal contesto.
-
-Tuttavia la potenza espressiva di questa logica è molto limitata.
-Ad esempio non si può esprimere "*le trappole causano la brezza in quadrati adiacenti se non scrivendo*" ma è necessario utilizzare una sentenza per ogni quadrato.
