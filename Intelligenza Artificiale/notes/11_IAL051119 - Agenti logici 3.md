@@ -15,7 +15,7 @@ dove $P_{i,j}$ sta per "pit" in posizione $i,j$ (nel mondo dei Wompoos).
 
 In pratica si va a togliere un $l_i$ e $m_j$ che sono tra loro complementari (lo stesso letterale sia negato che non).
 
-Questo procedimento esegue la verifica del modello perché vuol dire che se *L* e *M* sono vere e anche la proposizione che si deduce è vera, quindi vuol dire che il letterale tolto non influenzava la verità di *L* e *M*.
+Questo procedimento esegue la verifica del modello perché vuol dire che se *L* e *M* sono vere, anche la proposizione che si deduce è vera, quindi vuol dire che il letterale tolto non influenzava la verità di *L* e *M*.
 
 La **correttezza** di questa regola è semplice, se tolgo dalla clausola *L* il letterale *l* e dalla clausola *M* il letterale *m* che è complementare a *l*, allora se *l* è vero allora *m* è falso e quindi *M* deve essere vero e non a causa di *m*. Se *l* è falso, allora *L* deve essere vero senza *l*. Il valore di *l* quindi non incide ne in una clausola ne nell’altra, quindi la sua eliminazione non altera il valore delle clausole.
 
@@ -73,7 +73,7 @@ Il processo continua finché:
 
 - non è più possibile aggiungere alcuna clausola, in questo caso KB non implica 𝜶
 - la risoluzione applicata a due clausole da come risultato la clausola vuota, in questo caso KB implica 𝜶
- 
+
 La clausola vuota, una disgiunzione senza alcun disgiunto è equivalente a *False* perché una disgiunzione è vera solo se è vero almeno uno dei disgiunti.
 
 L'algoritmo è un po' meta, quindi non dice effettivamente che strategia adottare per risolvere le clausole (cioè l'ordine di espansione). Per trovare una contraddizione, dobbiamo trovare "la clausola più corta di tutte" (la clausola vuota). In una derivazione, l'unico modo per ridurre il numero delle clausole è avere una delle due sentenze composta da solo una clausola.

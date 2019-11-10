@@ -12,7 +12,7 @@ Il Bridge mostrato sulle slide è un esempio semplificato, supponendo che i gioc
 
 Questa strategia funziona, ma non è corretta.
 
-Perché nel caso di informazione parziale una strategia ottima potrebbe fare delle mosse solamente per acquisire ulteriori informazioni, mentre nel caso non deterministico questa tipologia di mosse non viene presa in considerazione in quanto si da per scontato di avere a diposizione tutta l'informazione.
+Perché nel caso di informazione parziale una strategia ottima potrebbe fare delle mosse solamente per acquisire ulteriori informazioni, mentre nel caso non deterministico questa tipologia di mosse non viene presa in considerazione in quanto si da per scontato di avere a diposizione tutta l'informazione. ( ** da rivedere ** )
 
 È più corretto che il valore di un azione dipenda dallo stato di informazione o **stato di credenza** in cui si trova l'agente ed è possibile generare e ricercare all'interno di un albero di stati di credenza.
 
@@ -116,7 +116,7 @@ Si assume sempre che la base di conoscenza sia vera. In questo modo si può dedu
 **Implicazione logica**: tra due formule significa che una *segue logicamenete* l'altra (entailment), in notazione si usa il simbolo 𝜶|=𝜷 e si dice che "𝜶 **implica** 𝜷". La definizione formale di implicazione è la seguete: 𝜶 implica 𝜷 se e solo se, in ogni modello in cui 𝜶 è vera, anche 𝜷 lo è.
 
 L'**inferenza** invece è il processo con il quale da una proposizione accolta come vera si passa ad una seconda proposizione la cui verità deriva dal contenuto della prima. L'inferenza è quindi il processo che porta a trovare l'implicazione tra due formule.
- 
+
 ### Modellazione per il Wumpus (lite)
 
 P<sub>i,j</sub> = vero se c'è una trappola in (i,j)
