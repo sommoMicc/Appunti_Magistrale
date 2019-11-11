@@ -76,7 +76,7 @@ In questo caso, la funzione che vogliamo minimizzare è:
 Siccome l'Hill Climbing è un problema di massimizzazione, è sufficente trovare il duale di $h$, ovvero
 > $h^D(s)$ = numero di coppie di regine che non si minacciano a vicenda
 
-Il numero di stati è $8 \times 7$.
+Il numero di successori per ogni stato è $8 \times 7$.
 I numeri all'interno delle caselle rappresentano il numero di minacce ottenibili (punteggio, $h(s)$) spostando la regina di quella colonna in quella posizione. 
 
 In alcuni casi Hill climbing non riesce ad arrivare ad una soluzione.
