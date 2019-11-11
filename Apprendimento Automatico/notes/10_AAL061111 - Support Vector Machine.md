@@ -5,8 +5,6 @@ Mercoledì 6 novembre 2019
 La funzione oggetto della minimizzazione, quindi $\frac{1}{n} ||Xw-y||^2$ è convessa, quindi ha un solo minimo rispetto a $w$.
 
 
-
-
 Richiamo: l'errore **ideale**, cioè quello commesso su esempi che non sono stati valutati durante l'apprendimento, può essere visto come composto da due termini, un errore empirico sui dati e la VC-Confidence.
 
 L'algoritmo di minimizzazione dei rischi cerca lo spazio delle impotesi che va a minimizzare la VC-Confidence.
