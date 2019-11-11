@@ -136,3 +136,23 @@ Ogni algoritmo per i dati vettoriali che può essere espresso in termini del pro
 2. Applicazione di algoritmi definiti su vettori a dati non vettoriali, utilizzando dei kernel definiti per dati non vettoriali.
 
 Ad esempio K-NN può utilizzare i kernel per calcolare la distanza tra due vettori.
+
+## Tipologie di Kernel
+
+Per **vettori** si possono utilizzare come kernel:
+
+- **lineare**: *k(x,z) = x \* z*
+- **polinomiale**: _k(x,z) = (x * z + c)<sup>d</sup>_
+- **gaussiano** (RBF): _k(x,z) = exp(-𝜸||x-z||<sup>2</sup>)_, ha la caratteristica di essere sempre compreso tra 0 e 1.
+
+Il fatto che il kernel sia sempre maggiore di 0, implica che i due vettori sono nello stesso ottante (tra i due vettori c'è un angolo minore di 90°).
+
+Se $k(x,x)$ è uguale a 1 si dice che il kernel è **normalizzato**, ovvero tutti i vettori del feature space sono normalizzati. La matrice kernel definita con un kernel normalizzato ha tutti 1 nella diagonale.
+
+È sempre possibile normalizzare un kernel $k(x,z)$ dividendolo per la radice quandrata di $k(x,x) \cdot k(z,z)$
+
+Come kernel per le **stringhe** si possono contare tutte le sequenze di una cerca lunghezza e costruire un vettore delle feature delle occorrenze, questo si fa con le tecniche di programmazione dinamica.
+
+Per gli alberi si possono utilizzare delle tecniche analoghe, considerando i sotto alberi in comune.
+
+C'è un libro **Kernel Methods for Pattern Analysis** che spiega molto bene questa tecnica.
