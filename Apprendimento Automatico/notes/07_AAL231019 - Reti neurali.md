@@ -102,13 +102,6 @@ END
 
 ### Sigmoidale
 
-![](./immagini/l9-sigmoidale.png)
-
-Utilizza la stessa sommatoria *net* alla quale viene applicata la funzione σ.
-
-> σ(z) = 1 / (1 + e<sup>-z</sup>)
-
-La funzione è continua e compresa tra 0 e 1.
 
 Il vantaggio fondamentale di σ è che si tratta di una funzione derivabile e quindi permette di utilizzare l'algoritmo di **back propagation**. Un algoritmo che permette di fare apprendimento all'indietro in grado di funzionare anche su reti composte da più livelli.
 

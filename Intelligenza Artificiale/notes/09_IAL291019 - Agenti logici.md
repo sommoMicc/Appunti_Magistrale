@@ -1,15 +1,40 @@
-#Lezione 11 - Agenti logici
+# Lezione 9 - Giochi ad informazione parziale + Agenti logici
+Martedì 29 Ottobre 2019
+
+## Giochi ad informazione parziale
+
+In questa tipologia di giochi non si hanno tutte le informazioni riguardo le mosse che può fare l'avversario (esempio tipico sono i giochi di carte).
+
+C'è stata la proposta di ridurre questi giochi in giochi non deterministici, considerando tutte le possibili smazzate come se si avesse un dado con tante facce.
+
+Un esempio di questo approccio è dato da GIB, un programma che gioca a bridge. 
+Il Bridge mostrato sulle slide è un esempio semplificato, supponendo che i giocatori giochino a carte scoperte e che il giocatore min deve rispondere con lo stesso seme della carta gettata da max, e viceversa
+
+Questa strategia funziona, ma non è corretta.
+
+Perché nel caso di informazione parziale una strategia ottima potrebbe fare delle mosse solamente per acquisire ulteriori informazioni, mentre nel caso non deterministico questa tipologia di mosse non viene presa in considerazione in quanto si da per scontato di avere a diposizione tutta l'informazione. ( ** da rivedere ** )
+
+È più corretto che il valore di un azione dipenda dallo stato di informazione o **stato di credenza** in cui si trova l'agente ed è possibile generare e ricercare all'interno di un albero di stati di credenza.
+
+Questo conduce a comportamenti razionali quali:
+
+- Agire con lo scopo di ottenere informazione;
+- Trasmettere informazione al proprio compagno di gioco (come i motti nella briscola);
+- Agire in modo casuale per minimizzare la perdita di informazione (fornire informazioni agli avversari).
+
+
+## Agenti logici
 
 ![](./immagini/l2-agente-goal.png)
 
-##Base di conoscenza
+## Base di conoscenza
 
-Un agente logico è composto da due componenti che possono essere modificati:
+Un agente logico è composto da due componenti __separate__ che possono essere modificati:
 
 - **Inference Engine** (motore inferenziale): è indipendete dal dominio applicativo e permette di utilizzare un linguaggio dichiarativo in quanto è in grado di andare a valutare dei simboli.
 - **Knowledge base** (base di conoscenza): contiene le informazioni specifiche del problema.
 
-Queste due parti sono tra loro intercambiabili, lo stesso motore inferenziale può essere utilizzato in più domini specifici e allo stesso modo la stessa base di conoscenza può essere trattata da vari tipi di motori inferenzial.
+Queste due parti sono tra loro intercambiabili, lo stesso motore inferenziale può essere utilizzato in più domini specifici e allo stesso modo la stessa base di conoscenza può essere trattata da vari tipi di motori inferenziali.
 
 **Base di conoscenza**: insieme di sentenze espresse in un linguaggio formale che permette di utilizzare un approccio dichiarativo per definire degli agenti logici.
 
@@ -91,7 +116,7 @@ Si assume sempre che la base di conoscenza sia vera. In questo modo si può dedu
 **Implicazione logica**: tra due formule significa che una *segue logicamenete* l'altra (entailment), in notazione si usa il simbolo 𝜶|=𝜷 e si dice che "𝜶 **implica** 𝜷". La definizione formale di implicazione è la seguete: 𝜶 implica 𝜷 se e solo se, in ogni modello in cui 𝜶 è vera, anche 𝜷 lo è.
 
 L'**inferenza** invece è il processo con il quale da una proposizione accolta come vera si passa ad una seconda proposizione la cui verità deriva dal contenuto della prima. L'inferenza è quindi il processo che porta a trovare l'implicazione tra due formule.
- 
+
 ### Modellazione per il Wumpus (lite)
 
 P<sub>i,j</sub> = vero se c'è una trappola in (i,j)
@@ -110,7 +135,7 @@ Codifica della brezza causata dalla trappole:
 - B<sub>2,1</sub> sse (P<sub>1,1</sub>  \/ P<sub>2,2</sub>  \/ P<sub>3,1</sub>)
 - ...
 
-Con queste informazioni è possibile andare a creare una tabella di verità, con le colonne per i vari letterali, le informazioni presenti nella base di conoscenza e una colonna per l'affermazione 𝜶<sub>1</sub> che vogliamo dedurre.
+Con queste informazioni è possibile andare a creare una tabella di verità, con le colonne per i vari letterali, le informazioni presenti nella base di conoscenza e una colonna per l'affermazione 𝜶<sub>1</sub> che vogliamo dedurre. La dimensione della tabella di verità è di $2^{numero\_di\_letterali}$
 
 ![](./immagini/l11-tabella.png)
 
@@ -136,9 +161,3 @@ function TVVerificaTtto(KB, 𝜶, s, modello) returns true oppure false
         return TVVerificaTutto(KB, a, resto, Estendi(P, true, modello)) and TVVerificaTutto(KB, 𝜶, resto, Estendi(P, false, modello))    
 ```
 
-## Metodi di prova
-
-Ci sono due tipologie di prove che si possono fare:
-
-- **Model Checking**: viene fatta l'enumerazioe delle tabelle di verita, con una complessità esponenziale in *n* (numero di simboli nella KB), può essere migliorata con euristiche o Hill climbing, ma in questo caso si perde la completezza.
-- **Applicazione di regole di inferenza**: si inizia ad estendere la base di conoscenza utilizzando i dati attuali, se 𝜶 è tra queste nuove sentenze allora viene inferito, altrimenti ripeto il passo utilizzando le nuove informazioni inferite. L'utilizzo di questa strategia risulta più efficiente ma le sentenze devono essere scritte in una forma normale.

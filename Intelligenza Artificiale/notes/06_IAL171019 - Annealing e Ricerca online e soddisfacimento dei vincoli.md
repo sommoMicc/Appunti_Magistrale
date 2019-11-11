@@ -53,7 +53,7 @@ Si parla quindi di _ricerca online_.
 Si assume che l'agente conosca solo:
 
 - Azioni(_s_): le azioni permesse nello stato _s_ . Da notare che si parla solo di azioni, non di effetti, i quali verranno osservati tramite le percezioni (si scoprirà solo vivendo);
-- c(_s,a,s'_): il costo dell'azione _a_ per passare dallo stato _s_ a _s'_ (lo stato di arrivo non è noto finché non è stata applicata l'azione);
+- $c(s,a,s')$: Il costo dell'azione _a_ per passare dallo stato _s_ a _s'_ (lo stato di arrivo non è noto finché non è stata applicata l'azione);
 - TestObiettivo(*s*): per sapere se lo stato *s* è un obiettivo (deve essere sempre possibile).
 
 Il problema principale di questo tipo di ricerca è che non esiste un algoritmo che permette di evitare vicoli cechi. Questo perché tipicamente non ci sono abbastanza infomrazioni riguardo l'ambiente di esecuzione, quindi si può utilizzare solo una tecnica di ricerca locale (ad esempio DFS).

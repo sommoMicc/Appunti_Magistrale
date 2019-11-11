@@ -1,4 +1,4 @@
-#Lezione 11 - Pipeline di apprendimento supervisionato
+# Lezione 10 - Pipeline di apprendimento supervisionato
 
 L'apprendimento supervisionato può essere visto come una serie di fasi:
 
