@@ -1,30 +1,7 @@
 #Lezione 16 - Backward Chaining e Prolog
 
-##Backward Chainging
 
-In modo analogo alla lgoica proposizionale è possibile utilizzare il backward chaining.
-
-![a](./immagini/l16-backward.png)
-
-In questo caso l'algoritmo ritorna un **generatore di sostituzioni**, ovvero una funzione che ritorna più valori, ognuno dei quali rappresenta una sostitizione diversa.
-
-L'algoritmo di ricerca può essere visto come un algoritmo AND/OR, dove nei nodi OR vengono valutate le clausole che potrebbero unificare con il goal, mentre nei nodi AND vengono valutati i congiunti della premessa delle regole.
-
-Quindi, `FOL-CI-OR` esegue il fetch di tutte le clausole che potrebbero unificare con il goal, le standardizza, e se la parte destra *rhs* della regola unifica con il goal, verfica che tutti i congiunti della parte sinistra *lhs* siano soddisfatti, utilizzando `FOL-CI-AND`.
-`FOL-CI-AND` prova quindi tutti i congiunti considerandoli come sotto-goal utilizzando `FOL-CI-OR`. 
-Man mano che la ricerca prosegue l'algoritmo tiene traccia sia delle sostituzioni che sono state effettuate durante la ricerca, sia una pila di sotto-goal da verificare per soddisfare la query.
-
-Trattandosi di una ricerca in profondità la complessità in spazio è lineare con la dimensione della prova ma c'è il rischio di effettuare cicli infiniti, è quindi necessario andare a controllare che il goal corrente non sia già nella pila dei goal.
-
-Il tempo di esecuzione di questo algortimo può essere ulteriormente ridotto parallelizzando l'unificazione dei nodi OR (**OR-parallelism**), questo perché ogni clausola che può unificare con il goal partiziona lo spazio di ricerca e può portare ad una potenziale soluzione.
-È possibile parallelizzare anche la risoluzione degli AND (**AND-parallelism**) però risulta più complessa da implementare.
-
-Un altro problema di questo algoritmo è che non tiene in considerazione i sotto-goal ripetuti. L'algoritmo infatti può finire in un ciclo cercando di risolvere sempre gli stessi sotto-goal, oppure può risultare infefficente quando si trova a dover provare più volte lo stesso sottogoal.
-Utilizzando una cache per sotto-goal già incontrati è si ottengono dei miglioramenti alle prestazioni, questa aggiunta prende il nome di **memoization**.
-
-Prolog non utilizza questi due miglioramenti.
-
-##Programmazione Logica: Prolog
+## Programmazione Logica: Prolog
 
 Come anticipato utilizza backward chaining con clausole di Horn.
 

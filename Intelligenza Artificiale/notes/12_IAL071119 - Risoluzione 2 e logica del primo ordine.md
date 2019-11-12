@@ -196,7 +196,7 @@ In questo caso l'algoritmo funziona comunque, tant'è che il predicato ottenuto 
 
 Con le sostituzioni che hanno dei termini non ground c'è un'ordinanento parziale dato dalla quantità di termini ground generabili a partire dalle varie sostituzioni.
 
-Quando c'è la scelta tra più sostituzioni conviene tenere quella più generale in modo da avere maggiori possibilità di scelta (**most general unifier**).
+**Quando c'è la scelta tra più sostituzioni conviene tenere quella più generale in modo da avere maggiori possibilità di scelta (most general unifier).**
 
 Si dice che una sostituzione 𝜃<sub>1</sub> è più generale di una sostituzione 𝜃<sub>2</sub> se 𝜃<sub>1</sub> impone meno vincoli sul valore delle variabili, per ogni coppia di di espressioni unificabili esiste un singolo unificatore più generale MGU.
 
@@ -216,6 +216,8 @@ Per poter unificare è necessario che i due predicati siano uguali sintatticamen
 Bisogna poi porre uguali tra loro i vari argomenti dei predicati, tenendo in considerazione che la stessa variabile può compararire in più argomenti dello stesso predicato.
 
 ![](./immagini/l14-unificazione-alg.png)
+
+La notazione è la seguente. Data una variabile $x \equiv f(g(z), b)$, $x.OP = f$, $x.ARGS = [g(z),b]$. Per "Composta/Compound" si intende una scrittura predicato, quindi non variabili sciolte (x è un predicato/scrittura predicato).
 
 L'algoritmo analizza i due predicati, termine per termine, cercando di unificarli con `Unify-Var`.
 
@@ -248,5 +250,5 @@ return Unify(
         )
 ```
 
-Inoltre, all'interno di `UnifyVar`, anziché aggiungere direttamente la nuova sostituzione a 𝜃, conviene utilizzare il metodo `Compose({var/x}, 𝜃)` che prima di aggiungerla applica la nuova sostituzione alla sostituzione corrente.
+Inoltre, all'interno di `UnifyVar`, anziché aggiungere direttamente la nuova sostituzione a 𝜃, conviene utilizzare il metodo `Compose({var/x}, 𝜃)` che prima di aggiungerla applica la nuova sostituzione alla sostituzione corrente. In pratica, "add {var/x} to $\theta$" è l'equivalente di una composizione di funzione
 
