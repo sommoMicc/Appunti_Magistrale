@@ -152,7 +152,7 @@ L'istanziazione esistenziale può essere applicata una sola volta per sentenza e
 
 Mentre l'istanziazione di un quantificatore universale può essere applicata più volte per aggiungere nuove sentenza alla base di conoscenza e la nuova KB è logicamente equivalente a quella vecchia.
 
-## Inferneza mediante riduzione alla inferenza proposizionale
+## Infereza mediante riduzione alla inferenza proposizionale
 
 L'idea è quella di istanziare i vari quantificatori, per poi considerare i vari predicati applicati ai termini ground come se fossero dei letterali nella logica proposizionale.
 Questo procedimento prende il nome di **proposizionalizzazione**.
