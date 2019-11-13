@@ -1,77 +1,4 @@
-# Lezione 10 - Pipeline di apprendimento supervisionato
-
-L'apprendimento supervisionato può essere visto come una serie di fasi:
-
-1. Analisi del problema
-2. Raccolta, analisi e preprocessing dei dati
-3. Studio delle correlazioni tra variabili
-4. Feature selection, definizione dei pesi, normalizzazione
-5. Scelta del predittore e del modello
-6. Verifica del modello
-
-##Fase 4 - Feature selection, definizione dei pesi, normalizzazione
-
-Per rappresensentare gli oggetti con i quali lavora un algoritmo di apprendimento è possibile utilizzare varie rappresentazioni:
-
-- **vettori**: come il valore di pressione del sangue, il battito cardiacoo, altezza e peso, (Un vettore con dei numeri.
-- **stringhe**: Una serie di caratteri che rappresentano un documento o la struttura del DN
-- **insiemi**: ad esempio l'insieme di termini che compare in un documento
-- **array multidimensionali**: come immagini e video
-- **albero o grafi**: un documento XML 
-- **strutture composte**: ottenute combinando tra loro le precedenti.
-
-Nel corso ci concentriamo principamente sui vettori.
-
-Per ogni oggetto possiamo avere a disponsizione delle **feature categoriche**, che rappresentano delle caratteristiche nominali dell'oggetto (marca di un auto, paese di origine), alcune di queste possono essere anche **ordinali**, cioè che impongno un ordine tra gli elementi ma la distanza tra un valore e un altro non è quantificabile, come per esempio i gradi militari: soldato, caporale, ecc.
-
-Un altro tipo di feature sono le **feature quantitative**, cioè delle caratteristiche che sono **enumerabili**, come il livello di apprezzamento di un prodotto, oppure **ratio**, ovvero dei numeri reali, come il peso di una persona.
-
-###Mapping Feature categoriche
-
-Le feature categoriche si possono mappare in un vettore con tante componenti quanti sono i possibili valori della variabile (**one-hot**).
-
-> Ad esempio per raooresentare una macchina con le seguenti caratteristiche è possibile utilizzare un vettore che lo codifica.
->
-> - Marca: Fiat [c1], Toyota [c2], Ford [c3]
-> - Colore: Bianco [c4], Nero [c5], Rosso [c6],
-> - Tipo: Economica [c7], Sportiva [c8]
->
-> La macchina (Toyota, Rossa, Economica) viene quindi rappresentata con un vettore `[0,1,0,0,0,1,1,0]`
-
-###Mapping per feature continue
-
-Tipicamente le feature continue vengono trasformate per ottenere dei valori comparabili con le altre feature.
-
-Per ottenere ciò è possibile applicare una delle seguenti traformazioni:
-
-- **Centramento**: *f(x) = x - E(x)*
-- **Normalizzazione STD**: *f(x) = (x - E(x))/σ(x)*
-- **Rescaling**: *f(x) = (x - x<sub>min</sub>)/(x<sub>max</sub>-x<sub>min</sub>)*
-
-Dove:
-
-- *E(x)* è la media di tutti i possibili valori di *x*
-- *σ(x)* è lo scarto quadratico medio
-
-
-
-###Algoritmo K-NN
-
-**K-Nearest-Neighbors**: è un algoritmo di classificazione in cui un esempio di test è classificato come la classe di maggioranza dei sui *k*-vicini nel training set.
-
-Si vanno a scegliere i *k* elementi più vicini all'elemento che si vuole classificare e viene scelta come classe quella della maggioranza dei suoi *k*-vicini.
-
-Volendo si può normalizzare per perdere volontariamente delle informazioni, in modo da togliere del rumore.
-
-Trattandosi di vettori la distanza deve essere misurata come:
-
->||x - y||<sup>2</sup> = ||x||<sup>2</sup> + ||y||<sup>2</sup> - 2x<sup>T</sup>y
-
-Per semplificare i calcoli, si può tenere in considerazione che se i due vettori hanno la stessa norma, la loro distanza è uguale alla similiarità indotta dal prodotto scalare:
-
-> ||x - y||<sup>2</sup> = const - 2x<sup>T</sup>y
-
-##Fase 5 - Scelta del predittore e del modell
+## Fase 5 - Scelta del predittore e del modello
 
 I parametri sono i valori che influiscono nell'apprendimento, come i vari pesi *w*. Mentre, gli **iper-parametri** sono tutti gli altri parametri che non influiscono con l'apprendimento, come il numero di unità nascoste per le reti neurali o il *k* per l'algoritmo k-nn.
 
@@ -87,7 +14,7 @@ Per valutare le predizioni di uno stimatore vengono utilizzate due misure:
 
 - **varianze**: che misura quanto si disperde la stima.
 
-> v = E[(𝜃' - E[𝜃'])<sup>2</sup>]
+> v = E[(𝜃' - E[𝜃'])^2]
 
 Nelle formule sopra riportate *𝜃* rappresenta il valore corretto e *𝜃'* rappresenta il valore prodotto dallo stimatore.
 
@@ -143,4 +70,4 @@ Un'altra misura più accurata è la **F-measure** che combina tra loro precision
 
 > F<sub>1</sub> = 2 πp / (π + p)
 > 
-> F<sub>𝜷</sub> = (1+𝜷<sup>2</sup>)πp / (𝜷<sup>2</sup>π + p)
+> F<sub>𝜷</sub> = (1+𝜷^2)πp / (𝜷^2π + p)
