@@ -16,7 +16,8 @@ Quando si parla di intelligenza, si possono intendere più ambiti (intelligenza 
 Un agente razionale (o intelligente) cerca di raggiungere i suoi obiettivi data l'informazione disponibile. Non è detto che nel raggiungere il suo obiettivo, l'agente esegua sempre l'azione migliore, in quanto potrebbe non avere una certa conoscenza. In altre parole, esso deve sfruttare al meglio le informazioni che dispone (o che può acquisire) per arrivare alla soluzione migliore possibile correlata alle sue capacità (computazionali/di memoria). Quindi, la soluzione raggiunta dall'agente non è sempre la soluzione ottima assoluta.
 
 Un agente può essere considerato come una funzione che da tutte le possibili sequenze di percezioni estrae delle azioni ammissibili.
-> f \: P\* -> A
+
+$$f : P^* \to A$$
 
 In questa funzione, la sequenza di percezioni P* rappresenta la conoscenza a disposizione dell'agente.
 

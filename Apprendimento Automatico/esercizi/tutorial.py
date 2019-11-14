@@ -1,6 +1,8 @@
-def prova(*argomenti):
+def prova(obbligatorio, *argomenti, **tanti):
     (primo, secondo) = argomenti
     print(f"Primo: {primo}; Secondo: {secondo}")
+    print(f"Tanto: {tanti['si']}")
 
 
-prova("ciao", "come")
+
+prova("ciao", "asd", "come", si="Pintus")
