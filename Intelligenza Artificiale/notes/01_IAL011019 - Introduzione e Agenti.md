@@ -71,7 +71,7 @@ Per lo stesso motivo la razionalità e le prestazioni non sono influenzate dal s
 
 ### PEAS - Performance Enviroment Actuatos Sensors
 
-Sono le caratteristiche da tenere a mente quanto ci si trova a progettare un'ambiente intelligente.
+Sono le caratteristiche da tenere a mente quando si progetta un agente intelligente.
 
 __Pensando ad un taxi automatizzato__
 * Misura delle prestazioni? **Obiettivo che l'agente deve ottenere:** _sicurezza, destinazione, profitto_
