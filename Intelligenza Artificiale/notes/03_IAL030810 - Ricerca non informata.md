@@ -114,7 +114,7 @@ Questa ricerca risulta completa se il fattore di branching è finito. Il tempo d
 
 C'è un problema anche per lo spazio, in quanto devo tenere in memoria tutti i nodi che ho analizzato. 
 
-Infine risulta ottima solo se il costi degli archi è costante o quantomeno non decrescente all'aumentare del livello. Infatti, siccome verrà selezionata sempre la soluzione (goal) di profondità minima (perché prima di passare al livello/profondità $i+1$ devo aver esaminato tutti i nodi di profondità $i$). Quindi, se esistono due nodi goal, $x$ (a profondità $i$) e $y$ (a profondità $i+\epsilon$, con $\epsilon$ positivo) e $y$ è il nodo di costo minimo, l'algoritmo troverà prima $x$ e quindi non arriverà all'ottimalità della soluzione.
+Infine risulta ottima solo se il costi degli archi è costante o quantomeno non decrescente all'aumentare del livello. Infatti, siccome verrà selezionata sempre la soluzione (goal) di profondità minima (perché prima di passare al livello/profondità $i+1$ devo aver esaminato tutti i nodi di profondità $i$), se esistono due nodi goal, $x$ (a profondità $i$) e $y$ (a profondità $i+\epsilon$, con $\epsilon$ positivo) e $y$ è il nodo di costo minimo, l'algoritmo troverà prima $x$ e quindi non arriverà all'ottimalità della soluzione.
 
 #### Ricerca a costo uniforme
 E' un caso particolare della ricerca a ventaglio, ovvero è una ricerca a ventaglio in  cui i costi dei singoli passi sono identici.
