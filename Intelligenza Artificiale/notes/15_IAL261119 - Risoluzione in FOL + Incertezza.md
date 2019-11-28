@@ -154,31 +154,3 @@ Con questo è possibile utilizzare la tabella delle probabilità congiunte per o
 ![](./immagini/l25-tabella-4.png)
 
 L'idea è quindi quella di calcolare la distribuzione sulla variabile della query (_Cavity_), fissando le variabili di evidenza, ovverro i fatti dati a priori (_tootache_) e sommando sulle variabili nascoste (_catch_) che vengono considerate non influenti per la distribuzione di probabilità della variabile.
-
-FINE
-
-### Formalmente
-
-![](./immagini/l25-enumerazione.png)
-
-La sommatoria per tutti i possibili valori delle variabili nascoste prende il nome di **marginalizzazione**, e viene effettuata per evitare che l'aggiunta di nuove evidenze porti a delle incosistenze.
-
-Problemi ovvi, descrizione:
-
-1. Nel caso pessimo devo accedere a tutti i valori delle _n_ variabili
-2. Devo poter tenere in memoria tutta la distribuzione congiunta
-3. O la distribuzione è nota a priori oppure vengono utilizzate delle stime. Tipicamente è necessario stimare i dati, ma per riuscire ad avere una stima corretta è necessario avere tanti dati.
-
-Non si riesce a migliorare la complessità in tempo, ma con oppurtuni accorgimenti si riesce a migliorare la complessità in spazio.
-
-####Indipendenza
-
-Due variabili sono _A_ e _B_ sono indipendenti se e solo se
-
-> **P**(A | B) = **P**(A) o **P**(B | A) = **P**(B) o **P**(A e B) = **P**(A)**\*P**(B)
-
-![](./immagini/l25-indipendenza.png)
-
-Se fossero tutte dipendendi servirebbe un entry per ogni possibile combinazione di valori (8 della tabella del dentista x 4 valori del tempo), mentre con l'indipendenza del tempo si ottengono due tabelle, una da 8 entry per il dentista e una separata da 4 per il tempo.
-
-In questo caso si parla di **indipendenza assulta** che porta ad avere un notevole risparmio di memoria, tuttavia nel mondo reale le variabili non sono indipendenti.
