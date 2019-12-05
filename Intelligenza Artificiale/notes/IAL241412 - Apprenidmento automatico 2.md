@@ -2,12 +2,12 @@
 
 ##Apprendimento di Concetti
 
-Un **concetto** su uno spazio delle istanze *X* è definito come una funzione booleana su *X*.
-Ad esempio un concetto *c* su uno spazio delle istanze *X* è definito come una coppia *(x,c(x))*, dove *x* è un esempio nello spazio delle istanze.
+Un **concetto** su uno spazio delle istanze _X_ è definito come una funzione booleana su _X_.
+Ad esempio un concetto _c_ su uno spazio delle istanze _X_ è definito come una coppia _(x,c(x))_, dove _x_ è un esempio nello spazio delle istanze.
 
-Si dice che una funzione *h* **soddisfa** *x* se *h(x) = 1*, inoltre si dice **consistente** se *h(x) = c(x)*. Se *h* è consistente con tutti gli esempi di un training set, allora si dice che *h* è consistente con  il training set ovvero c'è un errore empirico nullo.
+Si dice che una funzione _h_ **soddisfa** _x_ se _h(x) = 1_, inoltre si dice **consistente** se _h(x) = c(x)_. Se _h_ è consistente con tutti gli esempi di un training set, allora si dice che _h_ è consistente con il training set ovvero c'è un errore empirico nullo.
 
-Date due ipotesi *hi* e hj definte su X, si dice che hi è più generale o equivalente a hj se per ogni istanza di X, hj(x) = 1 ==> hi(x) = 1. (hi >=g hj)
+Date due ipotesi _hi_ e hj definte su X, si dice che hi è più generale o equivalente a hj se per ogni istanza di X, hj(x) = 1 ==> hi(x) = 1. (hi >=g hj)
 Può essere che due ipotesi non siano paragonabili.
 
 ###Find-S
@@ -18,9 +18,9 @@ Si assume quindi che la funzione che si vuole apprendere sia contenuta nello spa
 
 Assumendo anche che lo spazio delle ipotesi sia quello dei letterali positivi:
 
-1. Viene inizializzata l'ipotesi corrente *h* con l'ipotesi più specifica, ovvero la congiunzione di tutti i letterali presenti nello spazio delle ipotesi, sia affermati che negati, questa ipotesi è sempre falsa.
-2. Per ogni istanza positiva di apprendimento *(x,true)*, si rimuove da *h* ogni letterale affermato o negato che non è soddisfatto da *x*.
-3. Una volta terminate gli esempi si ritorna la versione corrente di *h*.
+1. Viene inizializzata l'ipotesi corrente _h_ con l'ipotesi più specifica, ovvero la congiunzione di tutti i letterali presenti nello spazio delle ipotesi, sia affermati che negati, questa ipotesi è sempre falsa.
+2. Per ogni istanza positiva di apprendimento _(x,true)_, si rimuove da _h_ ogni letterale affermato o negato che non è soddisfatto da _x_.
+3. Una volta terminate gli esempi si ritorna la versione corrente di _h_.
 
 Il passo 2 cerca di effettuare una **generalizzazione minima** dell'ipotesi.
 
@@ -42,7 +42,7 @@ Se l'algortimo di apprendimento prevede degli **iper-parametri**, il sotto-insie
 
 ##Errori
 
-L'**errore ideale** *error_D(h)* di un'ìpotesi *h* rispetto ad un concetto *c* e la distribuzione di probabilità *D*, ovvero la probabilità di osservare l'ingresso *x ϵ X*, è la probabilità che *h* classifichi erroneamente un input selezionato a caso secondo *D*.
+L'**errore ideale** _error_D(h)_ di un'ìpotesi _h_ rispetto ad un concetto _c_ e la distribuzione di probabilità _D_, ovvero la probabilità di osservare l'ingresso _x ϵ X_, è la probabilità che _h_ classifichi erroneamente un input selezionato a caso secondo _D_.
 
 > error_D(h) = P<sub>[x ϵ D]</sub>[c(x) ≠ h(x)]
 
@@ -50,9 +50,7 @@ L'errore che un'ipotesi commette classificando gli esempi del training set prend
 
 Possono però verificarsi dei casi in cui c'è un'ipotesi che commette degli errori sul training set, ma nello spazio completo si comporta correttamente, come può esserci un'ipotesi che non commette errore sul training set ma che commette tanti errori nello spazio completo.
 
-Per questo viene utilizzato il validation set per cercare di trovare l'ipotesi migliore. 
+Per questo viene utilizzato il validation set per cercare di trovare l'ipotesi migliore.
 
 Quando un'ipotesi è troppo specifica per un insieme di apprendimento ma ha un errore ideale troppo elevato, si dice che l'ipotesi è **overfit**.
-Formalmente: un'ipotesi *h ϵ H* è overfit su *Tr* se *∃h' ϵ H* tale che *error<sub>Tr</sub>(h) < error<sub>Tr</sub>(h')* 
-
-
+Formalmente: un'ipotesi _h ϵ H_ è overfit su _Tr_ se _∃h' ϵ H_ tale che _error<sub>Tr</sub>(h) < error<sub>Tr</sub>(h')_
