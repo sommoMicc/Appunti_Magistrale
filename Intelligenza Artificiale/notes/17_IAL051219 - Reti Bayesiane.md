@@ -212,6 +212,8 @@ Con una rete bayesiana è possibili calcolare la probabilità a posterirori marg
 
 Allo stesso modo si possono fare delle meta-query, ovvero ricavare informazioni su quali variabili influenzano maggiormente la distribuzione di probabilità, ovvero quale evidenza mi conviene cercare.
 
+-- FINE ROBA NON FATTA --
+
 ## Cenni di Apprendimento Automatico
 
 Per risolvere alcuni problemi non è possibile applicare un approccio algoritmico tradizionale, per vari motivi, come l'impossibilità di formalizare il problema, il rumore sui dati o l'alta complessità nel formulare una soluzione. Sennò ci sono dei casi in cui si riesce a formalizzare un problema ma non si ha idea di come risolverlo.
@@ -253,7 +255,7 @@ Lo scopo dell'agente è quello di massimizzare una funzione delle ricompense tra
 
 ## Elementi fondamentali dell'apprendimento supervisionato
 
-L'elemetno principale sono i dati, senza i dati non è possibile fare apprendimento.
+L'elemento principale sono i dati, senza i dati non è possibile fare apprendimento.
 
 Serve poi uno spazio delle ipotesi _H_, cioè l'insime delle funzioni che possono essere realizzate dal sistema di apprendimento. Si assume quindi che la funzione da apprendere _f_ possa essere rappresentata da un ipotesi _h_ presente in _H_.
 
