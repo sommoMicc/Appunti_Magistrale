@@ -48,7 +48,7 @@ Ci sono poi i **criteri esterni**, l'idea è quella di trovare quanto simile è 
 
 Si assume quindi che i documenti possano essere partizionati in $C$ classi che rappresentano la ground truth e che l'algortimo di clustering produca *K* cluster, $ω_1 ... ω_K$, ognuno contenente $n_i$ documenti.
 
-La misura più semplice prende il nome di **purity** e rappresenta il rapporto medio tra i vari cluster che c'è tra la classe nominante in quel cluster e la dimensione del cluster.
+La misura più semplice prende il nome di **purity** e rappresenta, per ogni cluster, il rapporto medio tra la classe dominante in quel cluster e la dimensione del cluster. Nell'immagine, in "Cluster 1" ci sono 5 pallini di classe "rosso" (che, essendo quella di numero maggiore, è la classe dominante in quel cluster) su 6 totali.
 
 Dalle slide: purity, the ratio between the dominant class in the cluster $π_i$ and the size of the cluster $ω_i$
 

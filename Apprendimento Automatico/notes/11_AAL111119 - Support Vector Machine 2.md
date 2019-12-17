@@ -1,4 +1,4 @@
-#Lezione 11 - Support Vector Machine 2
+# Lezione 11 - Support Vector Machine 2
 Lunedì 11 Novembre 2019
 
 

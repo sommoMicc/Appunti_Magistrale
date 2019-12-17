@@ -1,16 +1,65 @@
-#Lezione 19 - Sistemi di raccomandazione
+# Lezione 19 - Sistemi di raccomandazione
+
+## Il paradosso della scelta
+
+In un supermercato venivano esposti in due scaffali rispettivamente 24 gusti e 6 gusti di marmellata. C'era la possibilità di assaggiare le marmellate. Il risultato è stato che, sebbene nello scaffale con 24 scelte si fermavano più clienti, il numero maggiore di acquisti si è concretizzato con lo scaffale a 6 marmellata. Morale: quasi sempre una persona, di fronte ad una scelta, tende a focalizzarsi di più in ciò che perde rispetto a ciò che guadagna. Nell'esempio, comprando una marmellata su 24 significa rinunciare a 23 gusti, mentre comprane una su 6 significa rinunciarne solo a 5.
+
+## Sistemi di raccomandazione everywhere!
 
 Quando Facebook suggerisce gli amici, quando Amazon suggerisce dei prodotti e quando Youtube suggerisce dei video, viene utilizzato un sistema di raccomandazione.
 
-##Organizzazione di un RS
+## Boom dei sistemi di raccomandazione
 
-C'è un sistema di **esplict feedback** che l'utente esprime in modo quantitativo:
+Coincide con gli anni 2006/2009, anni in cui Netflix mette in palio un premio da 1 milione di dollari a chiunque fosse stato in grado di migliorare di almeno il 10% la performance del loro algoritmo di predizione dei rating.
+
+Il punto è che su 480 000 utenti e 18 000 film c'erano solo 100 milioni di valutazioni, quindi non tutti gli utenti hanno valutato tutti i film!
+
+La morale è che Netflix valutava economicamente un incremento della capacità predittiva maggiore di 1 milione di dollari!
+
+## Definizione di sistemi di raccomandazione
+
+> una sottoclasse di sistemi di information-filtering che cerca di predire la preferenza che un utente darebbe ad un certo elemento [Wikipedia].
+
+> strumenti software e tecniche che danno suggerimenti per oggetti che più verosimilmente siano di interesse ad un particolare utente [Handbook].
+
+## Scenario generale
+
+Un sistema di raccomandazione prende in input:
+
+- Dati dell'utente;
+- Dati dell'item;
+- Storico delle interazioni tra l'utente e l'item.
+
+Un nuovo parametro che viene considerato recentemente è il contesto: se un utente vuole vedere un film ed è a casa da solo piuttosto che in famiglia, le sue scelte potrebbero cambiare! __Attenzione__: il contesto è diverso dai dati dell'utente: questi ultimi sono dati inerenti all'utente "atemporali", non legati al momento in cui esso si trova.
+
+## Tassonomia
+
+Sistemi di raccomandazione:
+
+- Non personalizzati (stessi suggerimenti per tutti gli utenti)
+- Personalizzati (ad ogni utente viene fatto un suggerimento diverso)
+  - **Content base**: dato un utente sul quale si vuole fare predizione e si conosce già il suo storico (di acquisti) gli si va a proporre dei prodotti simili secondo qualche categoria (autore, genere, ecc.).
+  - **Collavorative filtering**: si va a raccomandare agli utente gli più simili a quelli che piaccinono ad altri utenti simili a lui. L'idea è che se un item piace a degli utenti simili all'utente target, è più probabile che piaccia anche al target. La similarità tiene conto delle interazioni tra utenti e item.
+    - Similarità item-item: due oggetti sono simili se tendono ad ottenere lo stesso rate da parte degli utenti
+    - Similarità user-user: due utenti sono simili se tendo a dare lo stesso rate ad item simili.
+    - Questo approccio non tiene conto delle caratteristiche degli oggetti, ma solo delle preferenze degli utenti.
+  - **Context-aware**, che prendono in considerazione anche il contesto in cui si trova l'utente. E' uno dei metodi che vanno per la maggiore ora!
+  - **Ibridi**, che è un po' un mischiotto.
+
+Il content base risulta migliore quando c'è poco storico (**cold start problem**), ovvero quando ho troppo poche informazioni relative alle interazioni tra l'utente e gli oggetti.
+
+Il collaborative filtering va di gran lunga meglio del content base quando le informazioni implicite contenute sulle interazioni tra l'utente e gli oggetti diventa prevalente rispetto alle informazioni sugli oggetti.
+Questo perché permette di scoprire nuovi pattern molto più potenti rispetto a quelli che si possono definire sulle caratteristiche degli oggetti (ad esempio: suggerire canzoni dello stesso artista).
+
+## Tipi di feedback
+
+C'è un sistema di **explict feedback** che l'utente esprime in modo _quantitativo_:
 
 - Valutazione da 1 a 5 o con stelle
 - Un ordinamento dal preferito al meno favorito
 - Preferenze su coppie di oggetti
 
-Tutte queste valutazione sono intrusive e richiedono che l'interazione dell'utente.
+Tutte queste valutazione sono intrusive e richiedono che l'interazione dell'utente. Inoltre, le "scale di valutazione" sono soggettive, ovvero per me 3 stelle possono essere tanto mentre Bolzo 3 stelle le mette quando un oggetto fa schifo a lui.
 
 Il sistema può sennò basarsi su **implicit feedback**:
 
@@ -18,32 +67,17 @@ Il sistema può sennò basarsi su **implicit feedback**:
 - tempo di permanenza in una data pagina del sito
 - rete sociale dell'utente
 
-In questo caso non c'è un responso esplicito delle preferenze dell'utente ma vengono usati dei valori impliciti, ad esempio si può presupporre che se l'utente sta molto in una pagina web, quella gli interessa.
+In questo caso non c'è un responso esplicito delle preferenze dell'utente ma vengono usati dei valori impliciti, ad esempio si può presupporre che se l'utente sta molto in una pagina web, quella gli interessa (ma è una supposizione!).
 Il vantaggio del feedback implicito è che non viene richiesto direttamente all'utente, ma viene calcolato.
-
-## Approcci per la raccomandazione
-
-Ci sono 2 approcci principali per questi sistemi:
-
-- **Content base**: dato un utente sul quale si vuole fare predizione e si conosce già il suo storico (di acquisti) gli si va a proporre dei prodotti simili secondo qualche categoria (autore, genere, ecc.).
-- **Collavorative filtering**: si va a raccomandare agli utente gli più simili a quelli che piaccinono ad altri utenti simili a lui. L'idea è che se un item piace a degli utenti simili all'utente target, è più probabile che piaccia anche al target. La similarità tiene conto delle interazioni tra utenti e item.
-    - Similarità item-item: due oggetti sono simili se tendono ad ottenere lo stesso rate da parte degli utenti
-    - Similarità user-user: due utenti sono simili se tendo a dare lo stesso rate ad item simili.
-    - Questo approccio non tiene conto delle caratteristiche degli oggetti, ma solo delle preferenze degli utenti.
-
-Il content base risulta migliore quando c'è poco storico (**cold start problem**), ovvero quando ho troppo poche informazioni relative alle interazioni tra l'utente e gli oggetti.
-
-Il collaborative filtering va di gran lunga meglio del content base quando le informazioni implicite contenute sulle interazioni tra l'utente e gli oggetti diventa prevalente rispetto alle informazioni sugli oggetti.
-Questo perché permette di scoprire nuovi pattern molto più potenti rispetto a quelli che si possono definire sulle caratteristiche degli oggetti (ad esempio: suggerire canzoni dello stesso artista).
 
 ## Rating Matrix
 
 Matrice che ha come righe gli utenti e come colonne i vari item.
-Le celle della matrice contengono la valutazione dell'utente per il dato item.
+Le celle della matrice contengono la valutazione dell'utente per il dato item. La valutazione può essere di tipo qualitativo o quantitativo
 
-Nei casi reali queste matrici sono molto sparse, tipicamente 0.1% dei valori presenti.
+Nei casi reali queste matrici sono molto sparse, tipicamente 0.1% dei valori presenti. Inoltre, il numero di rating effettuati sono moolto minori del numero dei possibili rating. Netflix ha solo lo 0.002% di entry diverse da zero.
 
-C'è poi un'altra sfiga, l'**effetto long tail**: per pochi utenti saranno presenti tanti rate e per pochi prodotti ci saranno tanti rate. Ovvero ci sono poche righe che hanno tanti elementi e tante righe che hanno pochi elementi. Lo stesso vale anche per le colonne.
+C'è poi un'altra sfiga, l'**effetto long tail**: per pochi utenti saranno presenti tanti rate (utenti molto attivi) e per pochi prodotti ci saranno tanti rate. Ovvero ci sono poche righe che hanno tanti elementi e tante righe che hanno pochi elementi. Lo stesso vale anche per le colonne.
 
 ## Problemi di predizione
 
@@ -80,7 +114,7 @@ Nel caso di top-N ci sono:
 
 ## Collaborative filtering (la matematica)
 
-###MatrixFactorization e regressione
+### MatrixFactorization e regressione
 
 > r_ui = x_u<sup>T</sup>y_i
 
@@ -92,7 +126,7 @@ Il problema di minimizzazione non è convesso, quindi o xu o yi deve essere fiss
 
 L'approccio tipico è quello di inizializzare a caso yi e fissarlo, per poi minimizzare su xu, una volta raggiunto il minimo, si fissa xu e si minimizza per yi, e via così finché non si raggiunge la precisione desiderata.
 
-###Neirest Neightbors based CF
+### Neirest Neightbors based CF
 
 Per stimare il rate dell'utente *u* si fa la media pesata dei rate dati dagli utenti che sono più simili all'utente *u*.
 C'è anche il reciproco per gli item.
@@ -130,7 +164,3 @@ Ogni possibile arco può essere rappresentato come un insieme di feature che pos
 - ecc.
 
 La differenza con un problema di raccomanazione sta nel come vengono calcolate le feature.
-
-
-
-

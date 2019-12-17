@@ -11,7 +11,6 @@ L'inferenza per enumerazione viene poi fatta riducendosi alla tabella della dist
 La distribuzione della probabilità congiunta può essere poi fattorializzata utilizzando la semantica globale data dalla topologia della rete bayesiana.
 
 Nel caso pessimo, per calcolare la distribuzione congiunta servono _n\*2<sup>n</sup>_ operazioni (variabili booleane), sfruttando la topologia si riesce a scendere a _O(n)_ per il tempo e _O(d<sup>n</sup>)_ per lo spazio.
-
 ## Algorimto di enumerazione
 
 ![](./immagini/l28-enumerazione.png)
