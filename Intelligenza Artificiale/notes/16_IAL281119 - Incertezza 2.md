@@ -1,4 +1,4 @@
-#Lezione 26 - Incertezza 2
+# Lezione 26 - Incertezza 2
 
 ### Formalmente
 

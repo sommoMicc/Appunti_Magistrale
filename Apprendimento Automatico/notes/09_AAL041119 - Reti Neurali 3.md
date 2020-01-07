@@ -51,10 +51,10 @@ Le possibili condizioni di terminazione sono le stesse che si hanno quando c'è 
 Le funzioni che si ottengono sono molto complesse. Inoltre, minimizzare l'errore è difficile perché la funzione errore, in quanto complessa, ha molti minimi locali.
 
 ## Universalità delle reti multistrato
-Le reti neurali sono dei buoni approssimatori: una rete neurale a tre strati (con un solo livello nascosto) riesce ad approssimare con una precisione arbitraria ($\epsilon > 0$) una qualsiasi funzione continua $f: \R^n \to \R$ usando almeno $M$ unità nascoste. Da notare che viene teorizzata l'esistenza di $M$ ma non viene data nessuna formula per calcolarlo (_Teorema di Pinkus).
+Le reti neurali sono dei buoni approssimatori: una rete neurale a tre strati (con un solo livello nascosto) riesce ad approssimare con una precisione arbitraria ($\epsilon > 0$) una qualsiasi funzione continua $f: \R^n \to \R$ usando almeno $M$ unità nascoste. Da notare che viene teorizzata l'esistenza di $M$ ma non viene data nessuna formula per calcolarlo (_Teorema di Pinkus_).
 
 ## Alcuni problemi
-- Il numero di unità nascoste determina la complessità dello spazio delle ipotesii
+- Il numero di unità nascoste determina la complessità dello spazio delle ipotesi
 - La scelta di $\eta$ può essere determinante per la convergenza: valori troppo bassi determinano convergenze molto lente, mentre valori troppo grandi potrebbero portarci a divergere dall'ottimo (invece che convergere ad esso)
 - L'apprendimento della rete è lento (quantomeno rispetto al calcolo dell'output)
 - Presenza di minimi locali nella funzione errore. Per evitarli si può:
