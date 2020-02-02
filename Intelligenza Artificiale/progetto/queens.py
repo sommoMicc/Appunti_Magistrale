@@ -37,16 +37,15 @@ class QueensConstraint(Constraint[int, int]):
                         return False
         return True # no conflict
 
-def print_solutions(n_columns: int, n_rows : int,
-    solution: Dict[int, int]):
+def print_solutions(n_queens: int, solution: Dict[int, int]):
 
     from prettytable import PrettyTable, ALL
     prettyTable = PrettyTable(header=False,hrules=ALL)
 
     grid: Dic[int, List[str]] = {}
-    for i in range(n_rows):
+    for i in range(n_queens):
         grid[i] = []
-        for j in range(n_columns):
+        for j in range(n_queens):
             grid[i].append("")
 
     for queen_column in solution.keys():
@@ -62,26 +61,26 @@ def print_solutions(n_columns: int, n_rows : int,
     print(prettyTable)
 
 if __name__ == "__main__":
-    n_columns = 10
-    n_rows = 10
+    n_queens = 100
 
-    bqg = BlockedQueensGenerator(10,2)
+    bqg = BlockedQueensGenerator(n_queens,2)
     blocked_queens = bqg.generate()
 
-    queens: List[int] = range(n_columns)
+    queens: List[int] = list(range(n_queens))
     domains: Dict[int, List[int]] = {}
 
     for column in queens:
         if column not in blocked_queens.keys():
-            domains[column] = range(n_rows)
+            domains[column] = list(range(n_queens))
         else:
             domains[column] = [blocked_queens[column]]
 
     csp: CSP[int, int] = CSP(queens, domains)
     csp.add_constraint(QueensConstraint(queens))
-    solution: Optional[Dict[int, int]] = csp.backtracking_search()
+    solution: Optional[Dict[int, int]] = csp.backtracking_search({},csp.domains)
     if solution is None:
         print("Nessuna soluzione trovata!")
     else:
-        print_solutions(n_columns, n_rows, solution)
+        print_solutions(n_queens, solution)
+        print("Trovata in %d assegnazioni" %  csp.attempts)
         #print(solution)
