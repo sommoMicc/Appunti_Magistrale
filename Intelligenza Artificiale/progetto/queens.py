@@ -30,26 +30,26 @@ class QueensConstraint(Constraint[int, int]):
             # q2c = queen 2 column
             for q2c in range(q1c + 1, len(self.columns) + 1):
                 if q2c in assignment:
-                    q2r: int = assignment[q2c] # q2r = queen 2 row
-                    if q1r == q2r: # same row?
+                    q2r: int = assignment[q2c]  # q2r = queen 2 row
+                    if q1r == q2r:  # same row?
                         return False
-                    if abs(q1r - q2r) == abs(q1c - q2c): # same diagonal?
+                    if abs(q1r - q2r) == abs(q1c - q2c):  # same diagonal?
                         return False
-        return True # no conflict
+        return True  # no conflict
+
 
 def print_solutions(n_queens: int, solution: Dict[int, int]):
-
     from prettytable import PrettyTable, ALL
-    prettyTable = PrettyTable(header=False,hrules=ALL)
+    prettyTable = PrettyTable(header=False, hrules=ALL)
 
-    grid: Dic[int, List[str]] = {}
+    grid: Dict[int, List[str]] = {}
     for i in range(n_queens):
         grid[i] = []
         for j in range(n_queens):
             grid[i].append("")
 
     for queen_column in solution.keys():
-        queen_row : int = solution[queen_column] 
+        queen_row: int = solution[queen_column]
 
         grid[queen_row][queen_column] = "Q%d" % (queen_column)
         # i,y = solution[queen]
@@ -60,10 +60,11 @@ def print_solutions(n_queens: int, solution: Dict[int, int]):
 
     print(prettyTable)
 
-if __name__ == "__main__":
-    n_queens = 100
 
-    bqg = BlockedQueensGenerator(n_queens,2)
+if __name__ == "__main__":
+    n_queens = 20
+
+    bqg = BlockedQueensGenerator(n_queens, 2)
     blocked_queens = bqg.generate()
 
     queens: List[int] = list(range(n_queens))
@@ -77,10 +78,10 @@ if __name__ == "__main__":
 
     csp: CSP[int, int] = CSP(queens, domains)
     csp.add_constraint(QueensConstraint(queens))
-    solution: Optional[Dict[int, int]] = csp.backtracking_search({},csp.domains)
+    solution: Optional[Dict[int, int]] = csp.backtracking_search({}, csp.domains)
     if solution is None:
         print("Nessuna soluzione trovata!")
     else:
         print_solutions(n_queens, solution)
-        print("Trovata in %d assegnazioni" %  csp.attempts)
-        #print(solution)
+        print("Trovata in %d assegnazioni" % csp.attempts)
+        # print(solution)
