@@ -7,11 +7,11 @@ class BlockedQueensGenerator:
     def __init__(self, n_queens: int, n_blocked_queens: int):
         self.n_queens = n_queens
         self.n_blocked_queens = n_blocked_queens
-        self.mininfile = 4
+        self.mininfile = 2
         random.seed(10)
 
     def generate(self) -> Dict[int, int]:
-        for attempt in range(1000):
+        for attempt in range(100000):
             queensorder = [[i, j] for i in range(self.n_queens) for j in range(self.n_queens)]
             random.shuffle(queensorder)
 
@@ -28,6 +28,5 @@ class BlockedQueensGenerator:
                     cols[c].remove(r)
                     answer[c] = r  # because old blocked queens instances are from 1
                     if len(answer) == self.n_blocked_queens:
-                        print("letting n = ", self.n_queens)
-                        print("letting blocks = ", answer)
+                        print("Blocked Queens: %r" % answer)
                         return answer

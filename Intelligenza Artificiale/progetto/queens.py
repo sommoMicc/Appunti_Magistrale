@@ -76,7 +76,7 @@ def print_solutions(n_queens: int, solution: Dict[int, int]):
 
 if __name__ == "__main__":
     n_queens: int = 20
-    n_blocked_queens: int = 3
+    n_blocked_queens: int = 2
 
     bqg = BlockedQueensGenerator(n_queens, n_blocked_queens)
     blocked_queens: Dict[int, int] = bqg.generate()

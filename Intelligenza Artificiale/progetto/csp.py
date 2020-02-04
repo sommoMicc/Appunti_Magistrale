@@ -65,7 +65,13 @@ class CSP(Generic[V, D]):
 
     def backtracking(self) -> Optional[Dict[V, D]]:
         domains: Dict[V, List[D]] = self.ac3(self.domains)
-        print("%r", domains)
+
+        print("AC-3 Terminato:")
+        for v in domains.keys():
+            print("- Q%d: #%d" % (v, len(domains[v])))
+
+        print("Inizio backtracking")
+        # print("%r" % domains)
         return self.backtracking_search({}, domains)
 
     def backtracking_search(self, assignment: Dict[V, D] = {},
@@ -95,7 +101,7 @@ class CSP(Generic[V, D]):
 
             # if we're still consistent, we recurse (continue)
             if self.consistent(first, local_assignment):
-
+                # Forward checking
                 inferred_domain: Dict[V, List[D]] = self.forward_checking(domains, first, value)
                 if inferred_domain is not None:
                     result: Optional[Dict[V, D]] = self.backtracking_search(local_assignment,
@@ -127,18 +133,38 @@ class CSP(Generic[V, D]):
         removed: bool = False
         assignment: Dict[V, D] = {}
 
-        for value in domains[x1]:
-            assignment[x1] = value
+        # print("Rimuovo inconsistenti tra x1: %d e x2: %d" % (x1, x2))
 
-            if not self.consistent(x2, assignment):
-                print("Rimuovo %d dal dominio di Q%d" % (value, x1))
-                domains[x1].remove(value)
+        for value1 in domains[x1]:
+            assignment[x1] = value1
+
+            is_valid: bool = False
+            for value2 in domains[x2]:
+                assignment[x2] = value2
+                # print("Controllo consistenza di %r e %d" % (assignment, x2))
+                if self.consistent(x2, assignment):
+                    is_valid = True
+                    break
+            if not is_valid:
+                # print("Rimuovo %d dal dominio di Q%d" % (value1, x1))
+                domains[x1].remove(value1)
                 removed = True
 
         return removed
 
     def ac3(self, domains: Dict[V, List[D]]) -> Optional[Dict[V, List[D]]]:
-        queue: List[Tuple[V, V]] = list(((x, y) for x in self.variables for y in self.variables))
+        queue: List[Tuple[V, V]] = []
+        n_queens = len(self.variables)
+
+        for i in range(n_queens):
+            for j in range(n_queens):
+                if i == j:
+                    continue
+
+                queue.append((self.variables[i], self.variables[j]))
+
+        queue.reverse()
+        # print("Queue: \n%r" % queue)
 
         while queue:
             x1, x2 = queue.pop()
@@ -146,9 +172,12 @@ class CSP(Generic[V, D]):
                 continue
 
             if self.remove_inconsistent(domains, x1, x2):
+                if len(domains[x1]) == 0:
+                    return None
+
                 for var in self.variables:
                     if var != x1:
-                        print("Appendo (%d, %d) alla coda" % (var, x1))
+                        # print("Appendo (%d, %d) alla coda" % (var, x1))
                         queue.append((var, x1))
 
         return domains
