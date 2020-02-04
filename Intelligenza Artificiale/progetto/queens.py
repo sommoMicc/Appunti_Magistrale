@@ -38,9 +38,22 @@ class QueensConstraint(Constraint[int, int]):
         return True  # no conflict
 
 
+class BlockedQueensConstraint(Constraint[int, int]):
+    def __init__(self, positions: Dict[int, int]) -> None:
+        super().__init__(list(positions.keys()))
+        self.positions = positions
+
+    def satisfied(self, assignment: Dict[int, int]) -> bool:
+        # q1c = queen 1 column, q1r = queen 1 row
+        for queen in self.positions.keys():
+            if queen in assignment.keys() and assignment[queen] != self.positions[queen]:
+                return False
+        return True  # no conflict
+
+
 def print_solutions(n_queens: int, solution: Dict[int, int]):
     from prettytable import PrettyTable, ALL
-    prettyTable = PrettyTable(header=False, hrules=ALL)
+    pretty_table = PrettyTable(header=False, hrules=ALL)
 
     grid: Dict[int, List[str]] = {}
     for i in range(n_queens):
@@ -51,34 +64,41 @@ def print_solutions(n_queens: int, solution: Dict[int, int]):
     for queen_column in solution.keys():
         queen_row: int = solution[queen_column]
 
-        grid[queen_row][queen_column] = "Q%d" % (queen_column)
+        grid[queen_row][queen_column] = "Q%d" % queen_column
         # i,y = solution[queen]
         # grid[i,j] = "%d" % queen
 
     for row in grid:
-        prettyTable.add_row(grid[row])
+        pretty_table.add_row(grid[row])
 
-    print(prettyTable)
+    print(pretty_table)
 
 
 if __name__ == "__main__":
-    n_queens = 20
+    n_queens: int = 20
+    n_blocked_queens: int = 3
 
-    bqg = BlockedQueensGenerator(n_queens, 2)
-    blocked_queens = bqg.generate()
+    bqg = BlockedQueensGenerator(n_queens, n_blocked_queens)
+    blocked_queens: Dict[int, int] = bqg.generate()
+
+    blocked_queens_constraint: BlockedQueensConstraint = BlockedQueensConstraint(blocked_queens)
 
     queens: List[int] = list(range(n_queens))
     domains: Dict[int, List[int]] = {}
 
     for column in queens:
-        if column not in blocked_queens.keys():
-            domains[column] = list(range(n_queens))
-        else:
-            domains[column] = [blocked_queens[column]]
+        domains[column] = list(range(n_queens))
+        # if column not in blocked_queens.keys():
+        #    domains[column] = list(range(n_queens))
+        # else:
+        #    domains[column] = [blocked_queens[column]]
 
     csp: CSP[int, int] = CSP(queens, domains)
+
     csp.add_constraint(QueensConstraint(queens))
-    solution: Optional[Dict[int, int]] = csp.backtracking_search({}, csp.domains)
+    csp.add_constraint(blocked_queens_constraint)
+
+    solution: Optional[Dict[int, int]] = csp.backtracking()
     if solution is None:
         print("Nessuna soluzione trovata!")
     else:

@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Generic, TypeVar, Dict, List, Optional
+from typing import Generic, TypeVar, Dict, List, Optional, Tuple
 from abc import ABC, abstractmethod
 
 import copy
@@ -63,6 +63,11 @@ class CSP(Generic[V, D]):
                 return False
         return True
 
+    def backtracking(self) -> Optional[Dict[V, D]]:
+        domains: Dict[V, List[D]] = self.ac3(self.domains)
+        print("%r", domains)
+        return self.backtracking_search({}, domains)
+
     def backtracking_search(self, assignment: Dict[V, D] = {},
                             domains: Dict[V, List[D]] = None) -> Optional[Dict[V, D]]:
 
@@ -70,7 +75,7 @@ class CSP(Generic[V, D]):
         if len(assignment) == len(self.variables):
             return assignment
 
-        if domains == None:
+        if domains is None:
             return None
 
         # get all variables in the CSP but not in the assignment
@@ -90,18 +95,26 @@ class CSP(Generic[V, D]):
 
             # if we're still consistent, we recurse (continue)
             if self.consistent(first, local_assignment):
-                result: Optional[Dict[V, D]] = self.backtracking_search(local_assignment,
-                                                                        self.remove_from_domains(domains, first, value))
-                # if we didn't find the result, we will end up backtracking
-                if result is not None:
-                    return result
+
+                inferred_domain: Dict[V, List[D]] = self.forward_checking(domains, first, value)
+                if inferred_domain is not None:
+                    result: Optional[Dict[V, D]] = self.backtracking_search(local_assignment,
+                                                                            inferred_domain)
+                    # if we didn't find the result, we will end up backtracking
+                    if result is not None:
+                        return result
         return None
 
     # Rimuove dal dominio di tutte le variabili il valore che è appena stato assegnato ad
     # una variabile
-    def remove_from_domains(self, old_domains: Dict[V, D], variable: V, value: D) -> Dict[V, D]:
+    @staticmethod
+    def forward_checking(old_domains: Dict[V, List[D]], variable: V, value: int) -> Optional[Dict[V, D]]:
         domains: Dict[V, D] = copy.deepcopy(old_domains)
-        for key in domains:
+        keys: List[V] = list(domains.keys())
+
+        keys.sort(key=lambda v: len(domains[v]))
+
+        for key in keys:
             if key != variable and value in domains[key]:
                 domains[key].remove(value)
 
@@ -109,4 +122,33 @@ class CSP(Generic[V, D]):
             if len(domains[key]) < 1:
                 return None
         return domains
-        # return old_domains
+
+    def remove_inconsistent(self, domains: Dict[V, List[D]], x1: V, x2: V):
+        removed: bool = False
+        assignment: Dict[V, D] = {}
+
+        for value in domains[x1]:
+            assignment[x1] = value
+
+            if not self.consistent(x2, assignment):
+                print("Rimuovo %d dal dominio di Q%d" % (value, x1))
+                domains[x1].remove(value)
+                removed = True
+
+        return removed
+
+    def ac3(self, domains: Dict[V, List[D]]) -> Optional[Dict[V, List[D]]]:
+        queue: List[Tuple[V, V]] = list(((x, y) for x in self.variables for y in self.variables))
+
+        while queue:
+            x1, x2 = queue.pop()
+            if x1 == x2:
+                continue
+
+            if self.remove_inconsistent(domains, x1, x2):
+                for var in self.variables:
+                    if var != x1:
+                        print("Appendo (%d, %d) alla coda" % (var, x1))
+                        queue.append((var, x1))
+
+        return domains
