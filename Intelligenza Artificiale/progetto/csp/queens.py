@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from csp import Constraint, CSP
-from generator import BlockedQueensGenerator
+from utils.generator import BlockedQueensGenerator
 
 from typing import Dict, List, Optional
 
