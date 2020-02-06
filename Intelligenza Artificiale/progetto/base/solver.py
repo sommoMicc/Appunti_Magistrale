@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Dict, Optional
+from utils.solution_printer import SolutionPrinter
 
 V = TypeVar('V')  # variable type
 D = TypeVar('D')  # domain type
@@ -14,6 +15,6 @@ class Solver(ABC):
     def solve(self) -> Optional[Dict[int, int]]:
         ...
 
-    @abstractmethod
     def print_solutions(self, queen_positions: Dict[int, int]):
-        ...
+        SolutionPrinter.print_solutions(self.n, queen_positions)
+

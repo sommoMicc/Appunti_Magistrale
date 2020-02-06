@@ -12,15 +12,15 @@ class BlockedQueensGenerator:
 
     def generate(self) -> Dict[int, int]:
         for attempt in range(100000):
-            queensorder = [[i, j] for i in range(self.n_queens) for j in range(self.n_queens)]
-            random.shuffle(queensorder)
+            queens_order = [[i, j] for i in range(self.n_queens) for j in range(self.n_queens)]
+            random.shuffle(queens_order)
 
             rows = [[j for j in range(self.n_queens)] for i in range(self.n_queens)]
             cols = [[j for j in range(self.n_queens)] for i in range(self.n_queens)]
 
             answer: Dict[int, int] = {}
 
-            for q in queensorder:
+            for q in queens_order:
                 r = q[0]
                 c = q[1]
                 if len(rows[r]) > self.mininfile and len(cols[c]) > self.mininfile:

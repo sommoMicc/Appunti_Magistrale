@@ -1,28 +1,20 @@
-from abc import ABC
-
-from min_conflicts import blocked_n_queens
-from utils import generator as Generator
+from base.solver import Solver
+from min_conflicts.blocked_n_queens import BlockedNQueens
 from typing import TypeVar, Dict, Optional
 
 V = TypeVar('V')  # variable type
 D = TypeVar('D')  # domain type
 
-import base.solver
 
-
-class MinConflictSolver(base.solver.Solver, ABC):
+class MinConflictSolver(Solver):
     def __init__(self, n: int, blocked_queens: Dict[V, D]):
-        super.__init__(n, blocked_queens)
+        super().__init__(n, blocked_queens)
 
     def solve(self) -> Optional[Dict[int, int]]:
-        n = 8
-        NQ = blocked_n_queens.BlockedNQueens(n, {
-            2: 3,
-            3: 5
-        })
+        NQ = BlockedNQueens(self.n, self.blocked_queens)
         timer = 0
         while not NQ.all_queens_safe():
-            minAttacks = n + 1  # n + 1 is greater than any possibility of attacks so this is guaranteed to get minimized
+            minAttacks: int = self.n + 1  # n + 1 is greater than any possibility of attacks so this is guaranteed to get minimized
             pickedQueen = NQ.pick_random_queen()
 
             positions = NQ.available_positions(pickedQueen)
@@ -40,3 +32,4 @@ class MinConflictSolver(base.solver.Solver, ABC):
         print(NQ.print_board())
 
         return None
+

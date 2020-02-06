@@ -51,18 +51,15 @@ class CSP(Generic[V, D]):
     def backtracking(self) -> Optional[Dict[V, D]]:
         domains: Dict[V, List[D]] = self.ac3(self.domains)
 
-        print("AC-3 Terminato:")
-        for v in domains.keys():
-            print("- Q%d: #%d" % (v, len(domains[v])))
-
-        print("Inizio backtracking")
-        # print("%r" % domains)
         return self.backtracking_search({}, domains)
 
-    def backtracking_search(self, assignment: Dict[V, D] = {},
+    def backtracking_search(self, assignment=None,
                             domains: Dict[V, List[D]] = None) -> Optional[Dict[V, D]]:
 
         # assignment is complete if every variable is assigned (our base case)
+        if assignment is None:
+            assignment = {}
+
         if len(assignment) == len(self.variables):
             return assignment
 
