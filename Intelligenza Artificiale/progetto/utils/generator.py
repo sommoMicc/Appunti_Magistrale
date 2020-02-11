@@ -1,6 +1,6 @@
 import sys
 import random
-from typing import Dict
+from typing import Dict, Optional
 
 
 class BlockedQueensGenerator:
@@ -10,7 +10,10 @@ class BlockedQueensGenerator:
         self.mininfile = 2
         random.seed(10)
 
-    def _generate(self) -> Dict[int, int]:
+    def _generate(self) -> Optional[Dict[int, int]]:
+        if self.n_blocked_queens == 0:
+            return None
+
         for attempt in range(100000):
             queens_order = [[i, j] for i in range(self.n_queens) for j in range(self.n_queens)]
             random.shuffle(queens_order)
@@ -34,7 +37,8 @@ class BlockedQueensGenerator:
         answer: Dict[int, int] = self._generate()
         sorted_answer: Dict[int, int] = {}
 
-        for column in sorted(answer.keys()):
-            sorted_answer[column] = answer[column]
+        if answer is not None:
+            for column in sorted(answer.keys()):
+                sorted_answer[column] = answer[column]
 
         return sorted_answer

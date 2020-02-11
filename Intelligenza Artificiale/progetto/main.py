@@ -2,6 +2,7 @@ from base.solver import Solver
 from min_conflicts.min_conflict import MinConflictSolver
 from csp.queens import CSPQueenSolver
 from utils.generator import BlockedQueensGenerator
+from utils.solution_printer import SolutionPrinter
 
 from typing import TypeVar, Dict, Tuple
 from timeit import default_timer as timer
@@ -31,6 +32,8 @@ class Benchmark:
         print("\n#Queens: %d, #Blocked: %d" % (self.n, self.n_blocked))
         blocked_queens: Dict[V, D] = BlockedQueensGenerator(self.n, self.n_blocked).generate()
 
+        SolutionPrinter.print_solutions(self.n, blocked_queens)
+
         print("blocked: %r" % blocked_queens)
 
         csp_iterations, csp_time = Benchmark._run_test(CSPQueenSolver(self.n, blocked_queens), "CSP")
@@ -42,6 +45,4 @@ class Benchmark:
         }
 
 
-for n_queens in range(10, 30, 5):
-    n_blocked_queens: int = 2  # round(n_queens / 10.0 * 2)
-    Benchmark(n_queens, n_blocked_queens).run()
+Benchmark(4, 0).run()

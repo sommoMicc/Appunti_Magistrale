@@ -22,7 +22,8 @@ class Solver(ABC):
     @staticmethod
     def _print_solutions(n: int, queen_positions: Dict[int, int]):
         sorted_queen_positions: Dict[int, int] = {}
-        for key in sorted(queen_positions):
-            sorted_queen_positions[key] = queen_positions[key]
+        if queen_positions is not None:
+            for key in sorted(queen_positions):
+                sorted_queen_positions[key] = queen_positions[key]
         SolutionPrinter.print_solutions(n, sorted_queen_positions)
 
