@@ -1,5 +1,5 @@
-import sys
 import random
+from math import sqrt, pow, ceil
 from typing import Dict, Optional
 
 
@@ -7,7 +7,8 @@ class BlockedQueensGenerator:
     def __init__(self, n_queens: int, n_blocked_queens: int):
         self.n_queens = n_queens
         self.n_blocked_queens = n_blocked_queens
-        self.mininfile = 2
+        self.mininfile: int = ceil((n_queens + sqrt(pow(n_queens, 2) + 4 * pow(n_queens, 2) * n_blocked_queens)) / (2 * pow(n_queens, 2)))
+
         random.seed(10)
 
     def _generate(self) -> Optional[Dict[int, int]]:

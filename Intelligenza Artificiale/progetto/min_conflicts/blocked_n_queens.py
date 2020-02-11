@@ -95,12 +95,15 @@ class BlockedNQueens:
 
         return count
 
-    def pick_random_queen(self):  # returns position of random queen
+    def pick_random_queen(self, source="ASD"):  # returns position of random queen
         random_index = random.randint(0, self.n - 1)
         row, column = self.queenPositions[random_index]
 
+        print("Row: %d, Column: %d, is_blocked: %r, %s" % (row, column, self.queen_is_blocked(row, column), source))
+        print("%r" % self.queenPositions)
         if self.queen_is_blocked(row, column):
-            return self.pick_random_queen()
+            print("Ricorro")
+            return self.pick_random_queen("Recursion")
 
         return row, column
 
@@ -121,9 +124,10 @@ class BlockedNQueens:
 
     def available_positions(self, pos):
         # returns list of tuples with all positions queen can go
+        #TODO QUESTO METODO é SBAGLIATO!!!
         available_pos = []
         for x in range(self.n):
-            if x != pos[1]:
+            if x != pos[1] and (pos[0], x) not in self.queenPositions:
                 available_pos.append((pos[0], x))
 
         return available_pos

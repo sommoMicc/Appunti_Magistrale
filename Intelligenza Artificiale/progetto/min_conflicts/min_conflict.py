@@ -20,7 +20,7 @@ class MinConflictSolver(Solver):
             iterations = iterations + 1
 
             minAttacks: int = self.n + 1  # n + 1 is greater than any possibility of attacks so this is guaranteed to get minimized
-            pickedQueen = self.NQ.pick_random_queen()
+            pickedQueen = self.NQ.pick_random_queen("MAIN")
 
             positions = self.NQ.available_positions(pickedQueen)
             minConflictPosition = (-1, -1)
