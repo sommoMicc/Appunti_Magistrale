@@ -5,6 +5,8 @@ from prettytable import PrettyTable, ALL
 class SolutionPrinter:
     @staticmethod
     def print_solutions(n: int, queens_coord: Dict[int, int]):
+        print("%r" % queens_coord)
+        return
         pretty_table = PrettyTable(header=False, hrules=ALL)
 
         grid: Dict[int, List[str]] = {}
@@ -13,8 +15,8 @@ class SolutionPrinter:
             for j in range(n):
                 grid[i].append("")
 
-        for row in queens_coord.keys():
-            column: int = queens_coord[row]
+        for column in queens_coord.keys():
+            row: int = queens_coord[column]
 
             grid[row][column] = "Q%d" % column
             # i,y = solution[queen]

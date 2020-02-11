@@ -8,11 +8,10 @@ D = TypeVar('D')  # domain type
 class BlockedNQueens:
     def __init__(self, n: int, blocked_queens: Dict[V, D]):
         self.blocked_queens: Dict[V, D] = blocked_queens
-        self.board, self.queenPositions = self.get_new_board(n, blocked_queens)
         self.n = n
+        self.board, self.queenPositions = self.get_new_board(n, blocked_queens)
 
-    @staticmethod
-    def get_new_board(n: int, blocked_queens: Dict[V, D]) -> Tuple[List[List[int]], List[Tuple[int, int]]]:
+    def get_new_board(self, n: int, blocked_queens: Dict[V, D]) -> Tuple[List[List[int]], List[Tuple[int, int]]]:
         # queens are represented as ones in 2d list of all zeros
         # Since it's a 2d list, each element is a row of zeros except for the queen
         board: List[List[int]] = []
@@ -26,15 +25,25 @@ class BlockedNQueens:
             board[row][column] = 1
             queens_pos.append((row, column))
 
-        for x in range(n - blocked_queens_number):  # sets a random value of each row to be 1, denoting the queen
+        row: int = 0
+        while row < n:
+            if not self.row_clear(board, row):
+                row = row + 1
+                continue
+
             random_column: int = random.randint(0, n - 1)
-            while board[x][random_column] == 1:  # La posizione potrebbe essere già occupata da una regina bloccata
-                random_column: int = random.randint(0, n - 1)
 
-            board[x][random_column] = 1
-            queens_pos.append((x, random_column))
+            board[row][random_column] = 1
+            queens_pos.append((row, random_column))
 
+            row = row + 1
         return board, queens_pos
+
+    def row_clear(self, board: List[List[int]], row: int) -> bool:
+        for column in range(self.n):
+            if board[row] == 1:
+                return False
+        return True
 
     def queen_is_blocked(self, row: int, column: int):
         if column not in self.blocked_queens.keys():
@@ -95,9 +104,12 @@ class BlockedNQueens:
 
         return row, column
 
-    def print_board(self):  # prints out all positions of queens
+    def get_solution(self) -> Dict[int, int]:  # prints out all positions of queens
+        solution: Dict[int, int] = {}
         for queen in self.queenPositions:
-            print(queen)
+            row, column = queen
+            solution[column] = row
+        return solution
 
     def move_queen(self, start_pos, end_pos):  # moves queen from startpos to end_pos
         assert self.board[start_pos[0]][start_pos[1]] == 1
@@ -111,6 +123,7 @@ class BlockedNQueens:
         # returns list of tuples with all positions queen can go
         available_pos = []
         for x in range(self.n):
-            available_pos.append((pos[0], x))
+            if x != pos[1]:
+                available_pos.append((pos[0], x))
 
         return available_pos

@@ -48,23 +48,23 @@ class CSP(Generic[V, D]):
                 return False
         return True
 
-    def backtracking(self) -> Optional[Dict[V, D]]:
+    def backtracking(self) -> Tuple[Optional[Dict[V, D]], int]:
         domains: Dict[V, List[D]] = self.ac3(self.domains)
 
         return self.backtracking_search({}, domains)
 
     def backtracking_search(self, assignment=None,
-                            domains: Dict[V, List[D]] = None) -> Optional[Dict[V, D]]:
+                            domains: Dict[V, List[D]] = None) -> Tuple[Optional[Dict[V, D]], int]:
 
         # assignment is complete if every variable is assigned (our base case)
         if assignment is None:
             assignment = {}
 
         if len(assignment) == len(self.variables):
-            return assignment
+            return assignment, 0
 
         if domains is None:
-            return None
+            return None, 0
 
         # get all variables in the CSP but not in the assignment
         unassigned: List[V] = [v for v in self.variables if v not in assignment]
@@ -75,7 +75,9 @@ class CSP(Generic[V, D]):
 
         # get the every possible domain value of the first unassigned variable
         first: V = unassigned[0]
+        current_iterations = 0
         for value in domains[first]:
+            current_iterations = current_iterations + 1
             local_assignment = assignment.copy()
             local_assignment[first] = value
 
@@ -86,12 +88,14 @@ class CSP(Generic[V, D]):
                 # Forward checking
                 inferred_domain: Dict[V, List[D]] = self.forward_checking(domains, first, value)
                 if inferred_domain is not None:
-                    result: Optional[Dict[V, D]] = self.backtracking_search(local_assignment,
-                                                                            inferred_domain)
+                    result, iterations = self.backtracking_search(local_assignment,
+                                                                  inferred_domain)
+
+                    current_iterations = current_iterations + iterations
                     # if we didn't find the result, we will end up backtracking
                     if result is not None:
-                        return result
-        return None
+                        return result, current_iterations
+        return None, current_iterations
 
     # Rimuove dal dominio di tutte le variabili il valore che è appena stato assegnato ad
     # una variabile

@@ -17,7 +17,7 @@ from base.solver import Solver
 from csp.csp import Constraint, CSP
 from utils.generator import BlockedQueensGenerator
 
-from typing import Dict, List, Optional, TypeVar
+from typing import Dict, List, Optional, TypeVar, Tuple
 
 V = TypeVar('V')  # variable type
 D = TypeVar('D')  # domain type
@@ -56,25 +56,27 @@ class BlockedQueensConstraint(Constraint[int, int]):
 
 
 class CSPQueenSolver(Solver):
+    def print_solutions(self):
+        return CSPQueenSolver._print_solutions(self.n, self.solution)
+
     def __init__(self, n: int, blocked_queens: Dict[V, D]):
         super().__init__(n, blocked_queens)
+        self.solution: Optional[Dict[int, int]] = None
 
-    def solve(self) -> Optional[Dict[int, int]]:
-        n_queens: int = 20
-        n_blocked_queens: int = 2
-
+    def solve(self) -> Tuple[Optional[Dict[int, int]], int]:
         blocked_queens_constraint: BlockedQueensConstraint = BlockedQueensConstraint(self.blocked_queens)
 
-        queens: List[int] = list(range(n_queens))
+        queens: List[int] = list(range(self.n))
         domains: Dict[int, List[int]] = {}
 
         for column in queens:
-            domains[column] = list(range(n_queens))
+            domains[column] = list(range(self.n))
 
         csp: CSP[int, int] = CSP(queens, domains)
 
         csp.add_constraint(QueensConstraint(queens))
         csp.add_constraint(blocked_queens_constraint)
 
-        solution: Optional[Dict[int, int]] = csp.backtracking()
-        return solution
+        solution, iterations = csp.backtracking()
+        self.solution = solution
+        return solution, iterations

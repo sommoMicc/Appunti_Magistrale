@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Dict, Optional
+from typing import TypeVar, Dict, Optional, Tuple
 from utils.solution_printer import SolutionPrinter
 
 V = TypeVar('V')  # variable type
@@ -12,9 +12,17 @@ class Solver(ABC):
         self.blocked_queens: Dict[V, D] = blocked_queens
 
     @abstractmethod
-    def solve(self) -> Optional[Dict[int, int]]:
+    def solve(self) -> Tuple[Optional[Dict[int, int]], int]:
         ...
 
-    def print_solutions(self, queen_positions: Dict[int, int]):
-        SolutionPrinter.print_solutions(self.n, queen_positions)
+    @abstractmethod
+    def print_solutions(self):
+        ...
+
+    @staticmethod
+    def _print_solutions(n: int, queen_positions: Dict[int, int]):
+        sorted_queen_positions: Dict[int, int] = {}
+        for key in sorted(queen_positions):
+            sorted_queen_positions[key] = queen_positions[key]
+        SolutionPrinter.print_solutions(n, sorted_queen_positions)
 
