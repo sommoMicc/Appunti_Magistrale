@@ -45,4 +45,4 @@ class Benchmark:
         }
 
 
-Benchmark(4, 2).run()
+Benchmark(30, 0).run()

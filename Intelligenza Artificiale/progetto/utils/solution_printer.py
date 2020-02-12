@@ -11,7 +11,7 @@ class SolutionPrinter:
         for i in range(n):
             grid[i] = []
             for j in range(n):
-                grid[i].append("")
+                grid[i].append("  ")
 
         for column in queens_coord.keys():
             row: int = queens_coord[column]

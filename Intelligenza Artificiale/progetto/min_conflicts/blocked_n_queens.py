@@ -19,29 +19,28 @@ class BlockedNQueens:
         for x in range(n):  # makes n x n board of zeros
             board.append([0] * n)
 
-        blocked_queens_number: int = len(blocked_queens.keys())
         for column in blocked_queens.keys():
             row = blocked_queens[column]
             board[row][column] = 1
             queens_pos.append((row, column))
 
-        row: int = 0
-        while row < n:
-            if not self.row_clear(board, row):
-                row = row + 1
+        column: int = 0
+        while column < n:
+            if not self.column_clear(board, column):
+                column = column + 1
                 continue
 
-            random_column: int = random.randint(0, n - 1)
+            random_row: int = random.randint(0, n - 1)
 
-            board[row][random_column] = 1
-            queens_pos.append((row, random_column))
+            board[random_row][column] = 1
+            queens_pos.append((random_row, column))
 
-            row = row + 1
+            column = column + 1
         return board, queens_pos
 
-    def row_clear(self, board: List[List[int]], row: int) -> bool:
-        for column in range(self.n):
-            if board[row] == 1:
+    def column_clear(self, board: List[List[int]], column: int) -> bool:
+        for row in range(self.n):
+            if board[row][column] == 1:
                 return False
         return True
 
@@ -95,17 +94,33 @@ class BlockedNQueens:
 
         return count
 
+    def print_conflict_board(self):
+        from prettytable import PrettyTable, ALL
+        pretty_table = PrettyTable(header=False, hrules=ALL)
+
+        grid: Dict[int, List[str]] = {}
+        for i in range(self.n):
+            grid[i] = []
+            for j in range(self.n):
+                grid[i].append("  ")
+
+        for row, column in self.queenPositions:
+            grid[row][column] = "Q: %d" % self.queen_number_conflicts((row,column))
+            # i,y = solution[queen]
+            # grid[i,j] = "%d" % queen
+
+        for row in grid:
+            pretty_table.add_row(grid[row])
+
+        print(pretty_table)
+
     def pick_random_queen(self, source="ASD"):  # returns position of random queen
-        random_index = random.randint(0, self.n - 1)
-        row, column = self.queenPositions[random_index]
+        random.shuffle(self.queenPositions)
+        for i in range(len(self.queenPositions)):
+            row, column = self.queenPositions[i]
+            return row, column
 
-        print("Row: %d, Column: %d, is_blocked: %r, %s" % (row, column, self.queen_is_blocked(row, column), source))
-        print("%r" % self.queenPositions)
-        if self.queen_is_blocked(row, column):
-            print("Ricorro")
-            return self.pick_random_queen("Recursion")
-
-        return row, column
+        return None
 
     def get_solution(self) -> Dict[int, int]:  # prints out all positions of queens
         solution: Dict[int, int] = {}
@@ -124,10 +139,9 @@ class BlockedNQueens:
 
     def available_positions(self, pos):
         # returns list of tuples with all positions queen can go
-        #TODO QUESTO METODO é SBAGLIATO!!!
         available_pos = []
         for x in range(self.n):
-            if x != pos[1] and (pos[0], x) not in self.queenPositions:
-                available_pos.append((pos[0], x))
+            if x != pos[0] and (x, pos[1]) not in self.queenPositions:
+                available_pos.append((x, pos[1]))
 
         return available_pos

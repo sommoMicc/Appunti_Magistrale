@@ -1,38 +1,28 @@
 import random
-from math import sqrt, pow, ceil
 from typing import Dict, Optional
+from base.solver import Solver
+from csp.queens import CSPQueenSolver
 
 
 class BlockedQueensGenerator:
     def __init__(self, n_queens: int, n_blocked_queens: int):
         self.n_queens = n_queens
         self.n_blocked_queens = n_blocked_queens
-        self.mininfile: int = ceil((n_queens + sqrt(pow(n_queens, 2) + 4 * pow(n_queens, 2) * n_blocked_queens)) / (2 * pow(n_queens, 2)))
-
         random.seed(10)
 
     def _generate(self) -> Optional[Dict[int, int]]:
-        if self.n_blocked_queens == 0:
+        if self.n_blocked_queens < 1:
             return None
 
-        for attempt in range(100000):
-            queens_order = [[i, j] for i in range(self.n_queens) for j in range(self.n_queens)]
-            random.shuffle(queens_order)
+        solver: Solver = CSPQueenSolver(self.n_queens, {})
+        solution, _ = solver.solve()
 
-            rows = [[j for j in range(self.n_queens)] for i in range(self.n_queens)]
-            cols = [[j for j in range(self.n_queens)] for i in range(self.n_queens)]
+        # devo eliminare delle colonne qua!!!
+        while len(solution.keys()) > self.n_blocked_queens:
+            queen_to_delete: int = random.randint(0, len(solution.keys()) - 1)
+            solution.pop(list(solution.keys())[queen_to_delete])
 
-            answer: Dict[int, int] = {}
-
-            for q in queens_order:
-                r = q[0]
-                c = q[1]
-                if len(rows[r]) > self.mininfile and len(cols[c]) > self.mininfile:
-                    rows[r].remove(c)
-                    cols[c].remove(r)
-                    answer[c] = r  # because old blocked queens instances are from 1
-                    if len(answer) == self.n_blocked_queens:
-                        return answer
+        return solution
 
     def generate(self) -> Dict[int, int]:
         answer: Dict[int, int] = self._generate()

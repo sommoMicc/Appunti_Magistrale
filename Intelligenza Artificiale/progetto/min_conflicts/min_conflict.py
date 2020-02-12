@@ -17,10 +17,14 @@ class MinConflictSolver(Solver):
     def solve(self) -> Tuple[Optional[Dict[int, int]], int]:
         iterations: int = 0
         while not self.NQ.all_queens_safe():
+            # self.NQ.print_conflict_board()
+
             iterations = iterations + 1
 
             minAttacks: int = self.n + 1  # n + 1 is greater than any possibility of attacks so this is guaranteed to get minimized
             pickedQueen = self.NQ.pick_random_queen("MAIN")
+            if self.NQ.queen_is_blocked(pickedQueen[0], pickedQueen[1]):
+                continue
 
             positions = self.NQ.available_positions(pickedQueen)
             minConflictPosition = (-1, -1)
@@ -31,8 +35,9 @@ class MinConflictSolver(Solver):
                     minConflictPosition = pos
                     minAttacks = newNumberOfConflicts
                 self.NQ.move_queen(pos, pickedQueen)  # move queen back
-
+            # print("Muovo %r in %r" % (pickedQueen, minConflictPosition))
             self.NQ.move_queen(pickedQueen, minConflictPosition)  # move queen to least conflict spot
+            # breakpoint()
 
         return self.NQ.get_solution(), iterations
 

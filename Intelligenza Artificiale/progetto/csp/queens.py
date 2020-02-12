@@ -15,7 +15,6 @@
 # limitations under the License.
 from base.solver import Solver
 from csp.csp import Constraint, CSP
-from utils.generator import BlockedQueensGenerator
 
 from typing import Dict, List, Optional, TypeVar, Tuple
 
