@@ -1,20 +1,19 @@
 import random
 from typing import Dict, Optional
 from base.solver import Solver
-from csp.queens import CSPQueenSolver
+from min_conflicts.min_conflicts import MinConflictsSolver
 
 
 class BlockedQueensGenerator:
     def __init__(self, n_queens: int, n_blocked_queens: int):
         self.n_queens = n_queens
         self.n_blocked_queens = n_blocked_queens
-        random.seed(10)
 
     def _generate(self) -> Optional[Dict[int, int]]:
         if self.n_blocked_queens < 1:
             return None
 
-        solver: Solver = CSPQueenSolver(self.n_queens, {})
+        solver: Solver = MinConflictsSolver(self.n_queens, {})
         solution, _ = solver.solve()
 
         # devo eliminare delle colonne qua!!!

@@ -23,11 +23,15 @@ class Constraint(Generic[V, D], ABC):
 # that have ranges of values known as domains of type D and constraints
 # that determine whether a particular variable's domain selection is valid
 class CSP(Generic[V, D]):
-    def __init__(self, variables: List[V], domains: Dict[V, List[D]]) -> None:
+    def __init__(self, variables: List[V], domains: Dict[V, List[D]], ac3: bool = True, forward_checking: bool = True) -> None:
         self.variables: List[V] = variables  # variables to be constrained
         self.domains: Dict[V, List[D]] = domains  # domain of each variable
         self.constraints: Dict[V, List[Constraint[V, D]]] = {}
         self.attempts: int = 0  # numero di tentativi di assegnazione
+
+        self.use_ac3: bool = ac3
+        self.use_forward_checking: bool = forward_checking
+
         for variable in self.variables:
             self.constraints[variable] = []
             if variable not in self.domains:
@@ -49,7 +53,9 @@ class CSP(Generic[V, D]):
         return True
 
     def backtracking(self) -> Tuple[Optional[Dict[V, D]], int]:
-        domains: Dict[V, List[D]] = self.ac3(self.domains)
+        domains: Dict[V, List[D]] = self.domains
+        if self.use_ac3:
+            domains = self.ac3(self.domains)
 
         return self.backtracking_search({}, domains)
 
@@ -86,7 +92,10 @@ class CSP(Generic[V, D]):
             # if we're still consistent, we recurse (continue)
             if self.consistent(first, local_assignment):
                 # Forward checking
-                inferred_domain: Dict[V, List[D]] = self.forward_checking(domains, first, value)
+                inferred_domain: Dict[V, List[D]] = domains
+                if self.use_forward_checking:
+                    inferred_domain = self.forward_checking(domains, first, value)
+
                 if inferred_domain is not None:
                     result, iterations = self.backtracking_search(local_assignment,
                                                                   inferred_domain)

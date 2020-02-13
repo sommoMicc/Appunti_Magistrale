@@ -3,10 +3,9 @@ import random
 from typing import List, Dict, Optional, Tuple
 
 
-class MinConflictsSolver2(Solver):
+class MinConflictsSolver(Solver):
     def __init__(self, n: int, blocked_queens: Dict[int, int]):
         super().__init__(n, blocked_queens)
-        random.seed(10)
 
         self.rows: Dict[int, int] = {}
         self.randomize()
@@ -24,7 +23,8 @@ class MinConflictsSolver2(Solver):
         for column in range(len(self.rows)):
             # Ovviamente non modifico le righe delle regine bloccate
             if column not in self.blocked_queens.keys():
-                new_column: int = random.randint(0, self.n - 1)
+                # Scelgo una colonna a caso che non sia assegnata ad una regina bloccata
+                new_column: int = random.choice([x for x in range(self.n) if x not in self.blocked_queens.keys()])
                 self.rows[column], self.rows[new_column] = self.rows[new_column], self.rows[column]
 
     def conflicts(self, row: int, column: int) -> int:
@@ -51,6 +51,10 @@ class MinConflictsSolver2(Solver):
             # Cerco la regina avente il massimo numero di conflitti
             # Per identificare la regina uso la sua colonna
             for column in range(self.n):
+                # Se la colonna è di una regina bloccata, non la considero
+                if column in self.blocked_queens.keys():
+                    continue
+
                 conflicts: int = self.conflicts(self.rows[column], column)
                 if conflicts == max_conflicts:
                     candidates.append(column)
@@ -60,6 +64,7 @@ class MinConflictsSolver2(Solver):
                     candidates.clear()
                     candidates.append(column)
 
+            # print("MAX CONFLICTS %d, CANDIDATES: %r" % (max_conflicts, candidates))
             # Se non ho più conflitti, ho trovato la soluzione
             if max_conflicts == 0:
                 solution_found = True
@@ -96,7 +101,6 @@ class MinConflictsSolver2(Solver):
                 self.randomize()
 
         return self.rows, movements
-
 
     def print_solutions(self):
         return self._print_solutions(self.n, self.rows)
