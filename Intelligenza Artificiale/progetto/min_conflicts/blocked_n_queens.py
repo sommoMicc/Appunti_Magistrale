@@ -11,6 +11,9 @@ class BlockedNQueens:
         self.n = n
         self.board, self.queenPositions = self.get_new_board(n, blocked_queens)
 
+    def shuffle(self):
+        self.board, self.queenPositions = self.get_new_board(self.n, self.blocked_queens)
+
     def get_new_board(self, n: int, blocked_queens: Dict[V, D]) -> Tuple[List[List[int]], List[Tuple[int, int]]]:
         # queens are represented as ones in 2d list of all zeros
         # Since it's a 2d list, each element is a row of zeros except for the queen
@@ -118,7 +121,8 @@ class BlockedNQueens:
         random.shuffle(self.queenPositions)
         for i in range(len(self.queenPositions)):
             row, column = self.queenPositions[i]
-            return row, column
+            if not self.queen_is_blocked(row, column) or True:
+                return row, column
 
         return None
 
