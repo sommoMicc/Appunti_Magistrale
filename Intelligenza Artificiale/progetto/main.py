@@ -65,19 +65,21 @@ class Benchmark:
 
         output["CSP"] = (avg_csp_iterations / self.attempt_numbers,
                          avg_csp_time / self.attempt_numbers,
-                         max_csp_time-min_csp_time)
+                         max_csp_time - min_csp_time)
 
         output["MIN-CONFLICTS"] = (avg_mc_iterations / self.attempt_numbers,
                                    avg_mc_time / self.attempt_numbers,
-                                   max_mc_time-min_mc_time)
+                                   max_mc_time - min_mc_time)
 
         return output
 
 
 def test_1():
     result: Dict[int, Dict[str, Tuple[float, float, float]]] = {}
-    for n in range(4, 21, 1):
-        result[n] = Benchmark(n, 2).run()
+    n_blocked_queens: int = 2
+
+    for n in range(4, 31, 1):
+        result[n] = Benchmark(n, n_blocked_queens).run()
 
     x_axis_values = list(result.keys())
 
@@ -93,20 +95,27 @@ def test_1():
 
     print("result.keys(): %r, y: %r" % (x_axis_values, y_csp))
 
-    _, time_ax = plt.subplots()
+    fig, (time_ax, delta_ax) = plt.subplots(2, sharex="all")
+    fig.set_figheight(8)
+    fig.set_figwidth(5)
+
+    # fig.suptitle('CSP vs Min conflicts: %d blocked queens' % n_blocked_queens)
+
     time_ax.plot(x_axis_values, y_csp, label="CSP")
     time_ax.plot(x_axis_values, y_min_conflicts, label="MIN-CONFLICTS")
-    time_ax.set(xlabel='Number of queens (board size)', ylabel='time (s)',
-           title='CSP vs Min Conflicts')
-    time_ax.legend()
+    time_ax.set(title='CSP vs Min Conflicts', ylabel='Time (s)')
+    time_ax.legend(loc="upper left")
 
-    _, delta_ax = plt.subplots()
     delta_ax.plot(x_axis_values, y_var_csp, label="CSP")
     delta_ax.plot(x_axis_values, y_var_min_conflicts, label="MIN-CONFLICTS")
-    delta_ax.set(xlabel='Number of queens (board size)', ylabel='Time variability (s)',
-           title='CSP vs Min Conflicts - Time variability')
-    delta_ax.legend()
+    delta_ax.set(xlabel='Number of queens (board size)', ylabel='Delta time (s)',
+                 title='CSP vs Min Conflicts - Time variability')
+    delta_ax.legend(loc="upper left")
 
+    delta_ax.grid()
+    time_ax.grid()
+
+    plt.savefig("plots/test_1.png", dpi=410)
     plt.show()
 
 
