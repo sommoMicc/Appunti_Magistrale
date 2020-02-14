@@ -19,11 +19,18 @@ class Constraint(Generic[V, D], ABC):
         ...
 
 
+class VariableValuesSorter(Generic[V, D], ABC):
+    @abstractmethod
+    def sort_variable_values(self, variable: V, domains: Dict[V, D], assignment: Dict[V, D]):
+        ...
+
+
 # A constraint satisfaction problem consists of variables of type V
 # that have ranges of values known as domains of type D and constraints
 # that determine whether a particular variable's domain selection is valid
 class CSP(Generic[V, D]):
-    def __init__(self, variables: List[V], domains: Dict[V, List[D]], ac3: bool = True, forward_checking: bool = True) -> None:
+    def __init__(self, variables: List[V], domains: Dict[V, List[D]], variable_val_sorter: VariableValuesSorter,
+                 ac3: bool = True, forward_checking: bool = True) -> None:
         self.variables: List[V] = variables  # variables to be constrained
         self.domains: Dict[V, List[D]] = domains  # domain of each variable
         self.constraints: Dict[V, List[Constraint[V, D]]] = {}
@@ -31,6 +38,8 @@ class CSP(Generic[V, D]):
 
         self.use_ac3: bool = ac3
         self.use_forward_checking: bool = forward_checking
+
+        self.variable_val_sorter: VariableValuesSorter = variable_val_sorter
 
         for variable in self.variables:
             self.constraints[variable] = []
@@ -77,12 +86,13 @@ class CSP(Generic[V, D]):
 
         # euristica MRV (ordino in base al numero di elementi del dominio, in ordine crescente)
         # questo significa che veranno assegnati prima i valori delle regine "bloccate"
-        unassigned.sort(key=lambda v: len(domains[v]))
+        CSP.minimum_remaining_values(unassigned, domains)
+        # unassigned.sort(key=lambda v: len(domains[v]))
 
         # get the every possible domain value of the first unassigned variable
         first: V = unassigned[0]
         current_iterations = 0
-        for value in domains[first]:
+        for value in self.variable_val_sorter.sort_variable_values(first, domains, assignment):
             current_iterations = current_iterations + 1
             local_assignment = assignment.copy()
             local_assignment[first] = value
@@ -106,6 +116,19 @@ class CSP(Generic[V, D]):
                         return result, current_iterations
         return None, current_iterations
 
+    @staticmethod
+    def minimum_remaining_values(variables: List[V], domains: Dict[V, D]):
+        """
+        Euristica MRV (minimum remaining values): ordine cresente basato sul numero di valori rimanenti nel dominio
+
+        Nota: l'ordinamento avviene in-place (side effect)!
+        :param variables:
+        :param domains:
+        :return:
+        """
+        variables.sort(key=lambda v: len(domains[v]))
+
+
     # Rimuove dal dominio di tutte le variabili il valore che è appena stato assegnato ad
     # una variabile
     @staticmethod
@@ -113,7 +136,7 @@ class CSP(Generic[V, D]):
         domains: Dict[V, D] = copy.deepcopy(old_domains)
         keys: List[V] = list(domains.keys())
 
-        keys.sort(key=lambda v: len(domains[v]))
+        CSP.minimum_remaining_values(keys, domains)
 
         for key in keys:
             if key != variable and value in domains[key]:
