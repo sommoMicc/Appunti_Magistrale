@@ -117,7 +117,8 @@ class CSPQueenSolver(Solver):
     def print_solutions(self):
         return CSPQueenSolver._print_solutions(self.n, self.solution)
 
-    def __init__(self, n: int, blocked_queens: Dict[V, D], value_sorter: ValuesSorter = ValuesSorter.DEFAULT):
+    def __init__(self, n: int, blocked_queens: Dict[V, D], value_sorter: ValuesSorter = ValuesSorter.DEFAULT,
+                 use_ac3: bool = True, use_fc: bool = True, use_mrv: bool = True):
         super().__init__(n, blocked_queens)
         self.solution: Optional[Dict[int, int]] = None
 
@@ -128,6 +129,10 @@ class CSPQueenSolver(Solver):
         elif value_sorter == ValuesSorter.LEAST_CONSTRAINT:
             self.value_sorter = LeastConstraintValueSorter()
 
+        self.use_ac3: bool = use_ac3
+        self.use_fc: bool = use_fc
+        self.use_mrv: bool = use_mrv
+
     def solve(self) -> Tuple[Optional[Dict[int, int]], int]:
         blocked_queens_constraint: BlockedQueensConstraint = BlockedQueensConstraint(self.blocked_queens)
 
@@ -137,7 +142,7 @@ class CSPQueenSolver(Solver):
         for column in queens:
             domains[column] = list(range(self.n))
 
-        csp: CSP[int, int] = CSP(queens, domains, self.value_sorter)
+        csp: CSP[int, int] = CSP(queens, domains, self.value_sorter, ac3=self.use_ac3, mrv=self.use_mrv, fc=self.use_fc)
 
         csp.add_constraint(QueensConstraint(queens))
         csp.add_constraint(blocked_queens_constraint)

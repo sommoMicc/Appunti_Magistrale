@@ -30,14 +30,15 @@ class VariableValuesSorter(Generic[V, D], ABC):
 # that determine whether a particular variable's domain selection is valid
 class CSP(Generic[V, D]):
     def __init__(self, variables: List[V], domains: Dict[V, List[D]], variable_val_sorter: VariableValuesSorter,
-                 ac3: bool = True, forward_checking: bool = True) -> None:
+                 ac3: bool = True, fc: bool = True, mrv: bool = True) -> None:
         self.variables: List[V] = variables  # variables to be constrained
         self.domains: Dict[V, List[D]] = domains  # domain of each variable
         self.constraints: Dict[V, List[Constraint[V, D]]] = {}
         self.attempts: int = 0  # numero di tentativi di assegnazione
 
         self.use_ac3: bool = ac3
-        self.use_forward_checking: bool = forward_checking
+        self.use_forward_checking: bool = fc
+        self.use_mrv: bool = mrv
 
         self.variable_val_sorter: VariableValuesSorter = variable_val_sorter
 
@@ -86,7 +87,8 @@ class CSP(Generic[V, D]):
 
         # euristica MRV (ordino in base al numero di elementi del dominio, in ordine crescente)
         # questo significa che veranno assegnati prima i valori delle regine "bloccate"
-        CSP.minimum_remaining_values(unassigned, domains)
+        if self.use_mrv:
+            CSP.minimum_remaining_values(unassigned, domains)
         # unassigned.sort(key=lambda v: len(domains[v]))
 
         # get the every possible domain value of the first unassigned variable
