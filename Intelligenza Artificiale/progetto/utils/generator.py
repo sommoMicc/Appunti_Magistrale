@@ -4,7 +4,7 @@ from base.solver import Solver
 from min_conflicts.min_conflicts import MinConflictsSolver
 
 
-class BlockedQueensGenerator:
+class NQueensCompletionGenerator:
     def __init__(self, n_queens: int, n_blocked_queens: int):
         self.n_queens = n_queens
         self.n_blocked_queens = n_blocked_queens

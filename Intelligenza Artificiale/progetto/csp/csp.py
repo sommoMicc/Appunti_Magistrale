@@ -7,21 +7,49 @@ V = TypeVar('V')  # variable type
 D = TypeVar('D')  # domain type
 
 
-# Base class for all constraints
 class Constraint(Generic[V, D], ABC):
-    # The variables that the constraint is between
+    """
+    Classe base per tutti vincoli
+    """
     def __init__(self, variables: List[V]) -> None:
+        """
+        Costruttore
+        Args:
+            variables: le variabili che il vincolo deve considerare
+        """
         self.variables = variables
 
     # Must be overridden by subclasses
     @abstractmethod
     def satisfied(self, assignment: Dict[V, D]) -> bool:
+        """
+        Verifica se l'assegnamento passato come parametro è consistente
+        Args:
+            assignment: un assegnamento di variabili
+
+        Returns:
+            True se l'assegnamento è consistente, False altrimenti
+        """
         ...
 
 
 class VariableValuesSorter(Generic[V, D], ABC):
+    """
+    Classe che implementa la politica di ordinamento dei valori di una variabile
+    """
     @abstractmethod
     def sort_variable_values(self, variable: V, domains: Dict[V, D], assignment: Dict[V, D]):
+        """
+        Ordina in-place i valori di "variable" presenti in "domain", tenendo conto (se necessario) dell'assegnamento
+        delle altre variabili.
+        Args:
+            variable: la variabile di cui ordinare i valori del dominio
+            domains: i domini di tutte le variabili del problema
+            assignment: l'assegnamento corrente
+
+        Returns:
+            Void, perché l'ordinamento avviene in-place
+        """
         ...
 
 
@@ -29,8 +57,25 @@ class VariableValuesSorter(Generic[V, D], ABC):
 # that have ranges of values known as domains of type D and constraints
 # that determine whether a particular variable's domain selection is valid
 class CSP(Generic[V, D]):
+    """
+    Definisce la struttura di un CSP. Esso consiste in variabili di tipo V che possono assumere una serie di valori di
+    tipo D (dominio), i quali però devono soddisfare dei vincoli
+    """
     def __init__(self, variables: List[V], domains: Dict[V, List[D]], variable_val_sorter: VariableValuesSorter,
                  ac3: bool = True, fc: bool = True, mrv: bool = True) -> None:
+        """
+        Costruttore della classe
+        Args:
+            variables: lista di tutte le variabili del problema
+            domains: dizionario che associa ad ogni variabile una lista di possibili valori che essa potrebbe assumere
+            variable_val_sorter: la politica di ordinamento dei valori delle variabili quando esse vengono selezionate
+                                 per l'assegnazione
+            ac3: True se si vuole usare AC-3 per la consistenza locale prima della ricerca
+            fc: True se si vuole usare il Forward Checking come metodo di inferenza
+            mrv: True se si vogliono estrarre le variabili secondo una politica Minimum Remaining Values (fail first).
+                In caso sia impostato a False, le variabili vengono estratte nell'ordine in cui compaiono dentro
+                la lista "variabiles"
+        """
         self.variables: List[V] = variables  # variables to be constrained
         self.domains: Dict[V, List[D]] = domains  # domain of each variable
         self.constraints: Dict[V, List[Constraint[V, D]]] = {}
@@ -47,38 +92,70 @@ class CSP(Generic[V, D]):
             if variable not in self.domains:
                 raise LookupError("Every variable should have a domain assigned to it.")
 
-    def add_constraint(self, constraint: Constraint[V, D]) -> None:
+    def add_constraint(self, constraint: Constraint[V, D]):
+        """
+        Aggiunge un vincolo al problema
+        Args:
+            constraint: il vincolo che si vuole aggiungere
+
+        Returns:
+            Void
+        """
         for variable in constraint.variables:
             if variable not in self.variables:
                 raise LookupError("Variable in constraint not in CSP")
             else:
                 self.constraints[variable].append(constraint)
 
-    # Check if the value assignment is consistent by checking all constraints
-    # for the given variable against it
     def consistent(self, variable: V, assignment: Dict[V, D]) -> bool:
+        """
+        Controlla se un assegnamento è consistente controllando se tutti i vincoli associati alla variabile di input
+        sono soddisfatti
+        Args:
+            variable: la variabile di cui si vogliono controllare i vincoli
+            assignment: l'assegnamento di input
+
+        Returns:
+            True se l'assegnamento è consistente per la variabile di input, ovvero se non viola nessun vincolo in cui
+            essa è coinvolta
+        """
         for constraint in self.constraints[variable]:
             if not constraint.satisfied(assignment):
                 return False
         return True
 
     def backtracking(self) -> Tuple[Optional[Dict[V, D]], int]:
+        """
+        Inizializza la ricerca con Backtracking
+        Returns:
+            una soluzione, se è stata trovata. None altrimenti.
+        """
         domains: Dict[V, List[D]] = self.domains
         if self.use_ac3:
-            domains = self.ac3(self.domains)
+            domains = self._ac3(self.domains)
 
-        return self.backtracking_search({}, domains)
+        return self._backtracking_search({}, domains)
 
-    def backtracking_search(self, assignment=None,
-                            domains: Dict[V, List[D]] = None) -> Tuple[Optional[Dict[V, D]], int]:
+    def _backtracking_search(self, assignment=None,
+                             domains: Dict[V, List[D]] = None) -> Tuple[Optional[Dict[V, D]], int]:
+        """
+        Definisce un passo ricorsivo della ricerca con Backtracking.
+        Args:
+            assignment: l'assegnamento corrente
+            domains: i domini ("sfoltiti", se è stato usato AC-3 o Forward Chaining) delle variabili del problema
 
-        # assignment is complete if every variable is assigned (our base case)
+        Returns:
+            una soluzione che completa l'assegnamento passato come parametro, se esiste.
+        """
+
         if assignment is None:
             assignment = {}
 
+        # l'assegnamento è completo se è presente in esso ogni variabile (caso base)
         if len(assignment) == len(self.variables):
             return assignment, 0
 
+        # se le variabili non hanno valori che possono assumere, è inutile proseguire con la ricerca
         if domains is None:
             return None, 0
 
@@ -88,7 +165,7 @@ class CSP(Generic[V, D]):
         # euristica MRV (ordino in base al numero di elementi del dominio, in ordine crescente)
         # questo significa che veranno assegnati prima i valori delle regine "bloccate"
         if self.use_mrv:
-            CSP.minimum_remaining_values(unassigned, domains)
+            CSP._minimum_remaining_values(unassigned, domains)
         # unassigned.sort(key=lambda v: len(domains[v]))
 
         # get the every possible domain value of the first unassigned variable
@@ -106,10 +183,10 @@ class CSP(Generic[V, D]):
                 # Forward checking
                 inferred_domain: Dict[V, List[D]] = domains
                 if self.use_forward_checking:
-                    inferred_domain = self.forward_checking(domains, first, value)
+                    inferred_domain = self._forward_checking(domains, first, value)
 
                 if inferred_domain is not None:
-                    result, iterations = self.backtracking_search(local_assignment,
+                    result, iterations = self._backtracking_search(local_assignment,
                                                                   inferred_domain)
 
                     current_iterations = current_iterations + iterations
@@ -119,7 +196,7 @@ class CSP(Generic[V, D]):
         return None, current_iterations
 
     @staticmethod
-    def minimum_remaining_values(variables: List[V], domains: Dict[V, D]):
+    def _minimum_remaining_values(variables: List[V], domains: Dict[V, D]):
         """
         Euristica MRV (minimum remaining values): ordine cresente basato sul numero di valori rimanenti nel dominio
 
@@ -130,15 +207,25 @@ class CSP(Generic[V, D]):
         """
         variables.sort(key=lambda v: len(domains[v]))
 
-
     # Rimuove dal dominio di tutte le variabili il valore che è appena stato assegnato ad
     # una variabile
     @staticmethod
-    def forward_checking(old_domains: Dict[V, List[D]], variable: V, value: int) -> Optional[Dict[V, D]]:
+    def _forward_checking(old_domains: Dict[V, List[D]], variable: V, value: D) -> Optional[Dict[V, D]]:
+        """
+        Implementa l'algoritmo di Forward Checking per fare inferenza ad ogni passo di Backtracking
+        Args:
+            old_domains: i domini correnti delle variabili
+            variable: la variabile che si vuole assegnare
+            value: il valore che si vuole dare a quella variabile
+
+        Returns:
+            una versione "ridotta" del dominio, oppure None se è presente una variabile a cui non sono rimasti
+            assegnamenti possibili.
+        """
         domains: Dict[V, D] = copy.deepcopy(old_domains)
         keys: List[V] = list(domains.keys())
 
-        CSP.minimum_remaining_values(keys, domains)
+        CSP._minimum_remaining_values(keys, domains)
 
         for key in keys:
             if key != variable and value in domains[key]:
@@ -149,7 +236,17 @@ class CSP(Generic[V, D]):
                 return None
         return domains
 
-    def remove_inconsistent(self, domains: Dict[V, List[D]], x1: V, x2: V):
+    def _remove_inconsistent(self, domains: Dict[V, List[D]], x1: V, x2: V) -> bool:
+        """
+        Parte dell'algoritmo AC-3. Rimuove i valori inconsistenti ????
+        Args:
+            domains:
+            x1:
+            x2:
+
+        Returns:
+
+        """
         removed: bool = False
         assignment: Dict[V, D] = {}
 
@@ -172,7 +269,16 @@ class CSP(Generic[V, D]):
 
         return removed
 
-    def ac3(self, domains: Dict[V, List[D]]) -> Optional[Dict[V, List[D]]]:
+    def _ac3(self, domains: Dict[V, List[D]]) -> Optional[Dict[V, List[D]]]:
+        """
+        Algoritmo di AC-3 per la consistenza locale
+        Args:
+            domains: I domini di ogni variabile
+
+        Returns:
+            una versione "scremata" dei domini passati come input, oppure None se almeno una variabile non ha valori
+            ammissibili.
+        """
         queue: List[Tuple[V, V]] = []
         n_queens = len(self.variables)
 
@@ -191,7 +297,7 @@ class CSP(Generic[V, D]):
             if x1 == x2:
                 continue
 
-            if self.remove_inconsistent(domains, x1, x2):
+            if self._remove_inconsistent(domains, x1, x2):
                 if len(domains[x1]) == 0:
                     return None
 

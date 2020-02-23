@@ -1,7 +1,7 @@
 from base.solver import Solver
 from min_conflicts.min_conflicts import MinConflictsSolver
 from csp.queens import CSPQueenSolver, ValuesSorter
-from utils.generator import BlockedQueensGenerator
+from utils.generator import NQueensCompletionGenerator
 
 from typing import Dict, Tuple, List
 from timeit import default_timer as timer
@@ -33,7 +33,7 @@ class Benchmark:
 
         for attempt in range(attempt_number):
             print("Attempt #%d/%d" % (attempt + 1, attempt_number))
-            blocked_queens: Dict[int, int] = BlockedQueensGenerator(self.n, self.n_blocked).generate()
+            blocked_queens: Dict[int, int] = NQueensCompletionGenerator(self.n, self.n_blocked).generate()
 
             solvers: List[CSPQueenSolver] = []
             standard_CSP: CSPQueenSolver = CSPQueenSolver(self.n, blocked_queens, ValuesSorter.DEFAULT,
@@ -74,7 +74,7 @@ class Benchmark:
 
         for attempt in range(attempt_numbers):
             # Faccio un tentativo diverso con una configurazione di regine bloccate diversa
-            blocked_queens: Dict[int, int] = BlockedQueensGenerator(self.n, self.n_blocked).generate()
+            blocked_queens: Dict[int, int] = NQueensCompletionGenerator(self.n, self.n_blocked).generate()
             print("Blocked queens: %r" % blocked_queens)
 
             csp_iterations, csp_time = Benchmark._run_test(CSPQueenSolver(self.n, blocked_queens), "CSP")
