@@ -4,13 +4,33 @@ from typing import List, Dict, Optional, Tuple
 
 
 class MinConflictsSolver(Solver):
+    """
+    La classe rappersenta l'impelentazione dell'algoritmo di Min-Conflicts al problema N-Queens Completion
+    """
     def __init__(self, n: int, blocked_queens: Dict[int, int]):
+        """
+        Costruisce una scacchiera n x n con delle regine bloccate coerentemente con quanto definito dal parametro
+        "blocked_queens"
+
+        Args:
+            n: dimensione della scacchiera
+            blocked_queens: mappa delle regine bloccate, dove la chiave rappresenta la colonna, il valore la riga. Ad
+                            esempio, blocked_queens[3] = 2 indica che nella quarta colonna c'è una regina bloccata
+                            posizionata sulla terza riga.
+        """
         super().__init__(n, blocked_queens)
 
         self.rows: Dict[int, int] = {}
         self.randomize()
 
     def randomize(self):
+        """
+        Genera uno stato inziale pseudo casuale: le regine libere vengono posizionate una per colonna e riga, mentre
+        alle regine bloccate viene assegnata la loro posizione staticamente definita.
+
+        Returns:
+            Void
+        """
         # Posiziono le regine libere sulla diagonale della scacchiera
         # mentre quelle bloccate sulle loro posizioni
         for i in range(self.n):
@@ -28,6 +48,16 @@ class MinConflictsSolver(Solver):
                 self.rows[column], self.rows[new_column] = self.rows[new_column], self.rows[column]
 
     def conflicts(self, row: int, column: int) -> int:
+        """
+        Calcola il numero di conflitti a cui una regina in posizione (row, column) è soggetta
+        Args:
+            row: la riga (coordinata)
+            column: la colonna (coordinata)
+
+        Returns:
+            numero di conflitti della regina in posizione (row, column)
+        """
+
         n_conflicts: int = 0
         for current_column in range(self.n):
             if current_column == column:
@@ -40,6 +70,13 @@ class MinConflictsSolver(Solver):
         return n_conflicts
 
     def solve(self) -> Tuple[Optional[Dict[int, int]], int]:
+        """
+        Risolve il problema.
+
+        Returns:
+            Una tupla formata da un dizionario, che è la disposizione delle regine (la chiave rappresenta la colonna),
+            e un intero, che rappresenta il numero di passi svolto dall'algoritmo.
+        """
         movements: int = 0
         candidates: List[int] = []
 
@@ -103,4 +140,10 @@ class MinConflictsSolver(Solver):
         return self.rows, movements
 
     def print_solutions(self):
+        """
+        Metodo che stampa la scacchiera con le soluzioni
+
+        Returns:
+            Void
+        """
         return self._print_solutions(self.n, self.rows)

@@ -53,9 +53,6 @@ class VariableValuesSorter(Generic[V, D], ABC):
         ...
 
 
-# A constraint satisfaction problem consists of variables of type V
-# that have ranges of values known as domains of type D and constraints
-# that determine whether a particular variable's domain selection is valid
 class CSP(Generic[V, D]):
     """
     Definisce la struttura di un CSP. Esso consiste in variabili di tipo V che possono assumere una serie di valori di
@@ -207,8 +204,6 @@ class CSP(Generic[V, D]):
         """
         variables.sort(key=lambda v: len(domains[v]))
 
-    # Rimuove dal dominio di tutte le variabili il valore che è appena stato assegnato ad
-    # una variabile
     @staticmethod
     def _forward_checking(old_domains: Dict[V, List[D]], variable: V, value: D) -> Optional[Dict[V, D]]:
         """

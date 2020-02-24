@@ -10,6 +10,11 @@ class NQueensCompletionGenerator:
         self.n_blocked_queens = n_blocked_queens
 
     def _generate(self) -> Optional[Dict[int, int]]:
+        """
+        Genera un assegnamento consistente di k=n_blocked_queens posizioni su una scacchiera NxN, dove N = n_queens
+        Returns:
+            Un assegnamento consistente. Se n_blocked_queens == 0, ritorna None
+        """
         if self.n_blocked_queens < 1:
             return None
 
@@ -24,6 +29,14 @@ class NQueensCompletionGenerator:
         return solution
 
     def generate(self) -> Dict[int, int]:
+        """
+        Genera un assegnamento consistente di k=n_blocked_queens posizioni su una scacchiera NxN, dove N = n_queens, le
+        cui chiavi sono ordinate in ordine "alfabetico" (se le regine bloccate sono Q2 e Q4, nelle chiavi del dizionario
+        Q2 sarà prima di Q4), in modo che sia più facile la stampa.
+
+        Returns:
+            Un assegnamento consistente ordinato alfabeticamente. Se n_blocked_queens == 0, ritorna None
+        """
         answer: Dict[int, int] = self._generate()
         sorted_answer: Dict[int, int] = {}
 
