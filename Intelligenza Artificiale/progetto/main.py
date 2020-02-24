@@ -32,7 +32,7 @@ class Benchmark:
         avg_iterations, avg_times, max_times, min_times = [0] * 4, [0] * 4, [-1] * 4, [-1] * 4
 
         for attempt in range(attempt_number):
-            print("Attempt #%d/%d" % (attempt + 1, attempt_number))
+            print("Tentativo #%d/%d" % (attempt + 1, attempt_number))
             blocked_queens: Dict[int, int] = NQueensCompletionGenerator(self.n, self.n_blocked).generate()
 
             solvers: List[CSPQueenSolver] = []
@@ -110,6 +110,11 @@ class Benchmark:
 
 
 def test_1():
+    """
+    CSP vs Min Conflicts
+    Returns:
+
+    """
     result: Dict[int, Dict[str, Tuple[float, float, float]]] = {}
     n_blocked_queens: int = 2
 
@@ -162,7 +167,7 @@ def test_2():
     Testo le varie implementazioni di CSP
     :return:
     """
-    avg_times, min_times, max_times = Benchmark(15, 2).csp_internal_comparison(10)
+    avg_times, min_times, max_times = Benchmark(15, 2).csp_internal_comparison(100)
 
     variants_range: range = range(len(avg_times))
 
@@ -184,11 +189,14 @@ def test_3():
     x: List[List[int]] = []
     y: List[List[float]] = []
 
-    for i in range(4):
+    test_size: int = 4
+    for i in range(test_size):
         n_queens: int = i * 5 + 5
 
         x.append([])
         y.append([])
+
+        print("Test %d/%d (n: %d)" % (i, test_size, n_queens))
 
         avg_times, min_times, max_times = Benchmark(n_queens, 2).csp_internal_comparison(5)
         for j in range(len(csp_variants)):
@@ -200,5 +208,5 @@ def test_3():
 
 
 if __name__ == "__main__":
-    # test_2()
-    test_3()
+    test_2()
+    # test_3()
