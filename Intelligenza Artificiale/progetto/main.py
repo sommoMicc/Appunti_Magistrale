@@ -10,8 +10,11 @@ from timeit import default_timer as timer
 from matplotlib import pyplot as plt
 import numpy as np
 import json
+from os import path
 
 from utils.solution_printer import SolutionPrinter
+
+solver_names: List[str] = ["Standard", "AC3", "AC3+FC", "AC3+FC+MRV", "AC3+FC+MRV+LCV", "Min-Conflicts"]
 
 
 class Benchmark:
@@ -35,7 +38,7 @@ class Benchmark:
         return iterations, elapsed_time
 
     def compare(self, attempt_number: int = 3):
-        solver_numbers: int = 5
+        solver_numbers: int = len(solver_names)
 
         avg_iterations, avg_times, max_times, min_times, fails_number = [0] * solver_numbers, [0] * solver_numbers, \
                                                                         [-1] * solver_numbers, \
@@ -59,12 +62,15 @@ class Benchmark:
             complete_CSP: CSPQueenSolver = CSPQueenSolver(self.n, blocked_queens, ValuesSorter.DEFAULT,
                                                           True, True, True)
             solvers.append(complete_CSP)
+            complete_LCV_CSP: CSPQueenSolver = CSPQueenSolver(self.n, blocked_queens, ValuesSorter.LEAST_CONSTRAINT,
+                                                              True, True, True)
+            solvers.append(complete_LCV_CSP)
 
             min_conflicts: MinConflictsSolver = MinConflictsSolver(self.n, blocked_queens)
             solvers.append(min_conflicts)
 
             for i in range(len(solvers)):
-                iteration, time = self._run_test(solvers[i], "CSP %d" % i)
+                iteration, time = self._run_test(solvers[i], "Solver %s" % solver_names[i])
                 if iteration < 0:
                     fails_number[i] += 1
                     time = 61  # Faccio fallire
@@ -83,15 +89,12 @@ class Benchmark:
         return avg_times, min_times, max_times, fails_number
 
 
-solver_names: List[str] = ["Standard", "AC3", "AC3+FC", "AC3+FC+MRV", "Min-Conflicts"]
-
-
 def test():
     """
     Svolge il test, i cui risultati sono riportati nella relazione.
 
-    In pratica, sottomette alle tre versioni di CSP e a Min-Conflicts lo stesso problema, variando n da 4 a 30, e k da 0
-    (per ottenere la baseline) a 29
+    In pratica, sottomette alle 4 versioni di CSP e a Min-Conflicts lo stesso problema, variando n da 4 a 29, e k da 0
+    (per ottenere la baseline) a 28
     Returns:
 
     """
@@ -112,14 +115,14 @@ def test():
             }
 
             print("(n=%d,k=%d): %r" % (n, k, results["%d;%d" % (n, k)]))
-            json.dump(results, open("results/test_10_iterations.json", "w"))
+            json.dump(results, open(config.output_file, "w"))
 
-    json.dump(results, open("results/test_10_iterations.json", "w"))
+    json.dump(results, open(config.output_file, "w"))
     return results
 
 
 def show_test_result():
-    file_name: str = "results/test_10_iterations.json"
+    file_name: str = config.output_file
     file_content = json.load(open(file_name, "r"))
 
     parsed_result: Dict[int, Dict[int, object]] = {}
@@ -132,60 +135,67 @@ def show_test_result():
 
         parsed_result[n][k] = file_content[key]
 
-    n: int = config.benchmark_max_n
-    tot_iterations = config.benchmark_iterations
+    for n in parsed_result.keys():
+        """
+        tot_iterations = config.benchmark_iterations
+        parameter_to_normalize: List[str] = ["max_times", "avg_times"]
+        for parameter in parameter_to_normalize:
+            for k in parsed_result[n].keys():
+                for solver in range(len(solver_names)):
+                    old_value = parsed_result[n][k][parameter][solver]
+                    n_fails: int = parsed_result[n][k]["fails"][solver]
+                    if n_fails > 0:
+                        time_to_add = n_fails * config.timeout
+                        old_weight = tot_iterations - n_fails
+                        parsed_result[n][k][parameter][solver] = (old_value * old_weight + time_to_add) / tot_iterations
+        """
+        for parameter_considered in ["fails", "avg_times", "max_times", "min_times"]:
+            y = []
+            for i in range(len(solver_names)):
+                y.append([])
 
-    """
-    parameter_to_normalize: List[str] = ["max_times", "avg_times"]
-    for parameter in parameter_to_normalize:
-        for k in parsed_result[n].keys():
-            for solver in range(len(solver_names)):
-                old_value = parsed_result[n][k][parameter][solver]
-                n_fails: int = parsed_result[n][k]["fails"][solver]
-                if n_fails > 0:
-                    time_to_add = n_fails * config.timeout
-                    old_weight = tot_iterations - n_fails
-                    parsed_result[n][k][parameter][solver] = (old_value * old_weight + time_to_add) / tot_iterations
-    """
-    for parameter_considered in ["fails", "avg_times", "max_times", "min_times"]:
-        y = []
-        for i in range(len(solver_names)):
-            y.append([])
+            x: List[int] = []
+            max_value: float = -1
 
-        x: List[int] = []
+            plt.figure()  # reset del grafico
 
-        for k in parsed_result[n].keys():
-            x.append(k)
-            for i in range(len(parsed_result[n][k][parameter_considered])):
-                if parameter_considered != "fails":
-                    if parsed_result[n][k][parameter_considered][i] >= config.timeout or \
-                       parsed_result[n][k][parameter_considered][i] <= 0.0:
+            for k in parsed_result[n].keys():
+                x.append(k)
+                for i in range(len(parsed_result[n][k][parameter_considered])):
+                    if parameter_considered != "fails":
+                        if parsed_result[n][k][parameter_considered][i] >= config.timeout or \
+                                parsed_result[n][k][parameter_considered][i] <= 0.0:
+                            parsed_result[n][k][parameter_considered][i] = np.nan
 
-                        parsed_result[n][k][parameter_considered][i] = np.nan
-                y[i].append(parsed_result[n][k][parameter_considered][i])
-                # x_size += 1
-        print("y: %r" % y)
-        for solver_index in range(len(y)):
-            plt.plot(x, y[solver_index], label=solver_names[solver_index])
-            plt.xlabel("# of blocked queens (k)")
-            plt.ylabel(parameter_considered.capitalize())
+                    y[i].append(parsed_result[n][k][parameter_considered][i])
 
-        if "time" in parameter_considered:
-            plt.axhline(y=config.timeout, linestyle=':')
-        else:
-            plt.axhline(y=config.benchmark_iterations, linestyle=':')
+                    if parsed_result[n][k][parameter_considered][i] > max_value:
+                        max_value = parsed_result[n][k][parameter_considered][i]
+                    # x_size += 1
+            print("n: %d, max_value: %f, parameter: %s" % (n, max_value, parameter_considered))
+            for solver_index in range(len(y)):
+                plt.plot(x, y[solver_index], label=solver_names[solver_index])
+                plt.xlabel("# of blocked queens (k)")
+                plt.ylabel(parameter_considered.capitalize())
 
-        plt.xticks(x, x)
-        plt.grid(True)
+            if "time" in parameter_considered:
+                if max_value > 10:
+                    plt.axhline(y=config.timeout, linestyle=':')
+            else:
+                plt.axhline(y=config.benchmark_iterations, linestyle=':')
 
-        plt.title("%d-Queens, %s" % (n, parameter_considered))
-        plt.legend()
-        plt.show()
+            plt.xticks(x, x)
+            plt.grid(True)
+
+            plt.title("%d-Queens, %s" % (n, parameter_considered))
+            plt.legend()
+            plt.savefig("%s/%d_queens_%s.png" % (config.plot_folder, n, parameter_considered))
 
 
 if __name__ == "__main__":
-    """
-    results = test()
-    print("\n\nEsito:\n%r" % results)
-    """
+
+    if not path.exists(config.output_file):
+        results = test()
+        print("\n\nEsito:\n%r" % results)
+
     show_test_result()
