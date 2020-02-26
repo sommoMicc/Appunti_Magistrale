@@ -1,6 +1,8 @@
 from base.solver import Solver
+import utils.config as config
 import random
 from typing import List, Dict, Optional, Tuple
+from timeit import default_timer as timer
 
 
 class MinConflictsSolver(Solver):
@@ -21,6 +23,9 @@ class MinConflictsSolver(Solver):
         super().__init__(n, blocked_queens)
 
         self.rows: Dict[int, int] = {}
+
+        self.start_time: float = -1
+
         self.randomize()
 
     def randomize(self):
@@ -77,11 +82,15 @@ class MinConflictsSolver(Solver):
             Una tupla formata da un dizionario, che è la disposizione delle regine (la chiave rappresenta la colonna),
             e un intero, che rappresenta il numero di passi svolto dall'algoritmo.
         """
+        self.start_time = timer()
         movements: int = 0
         candidates: List[int] = []
 
         solution_found: bool = False
         while not solution_found:
+            if timer() - self.start_time > config.timeout:
+                return None, -1
+
             max_conflicts: int = 0
             candidates.clear()
 

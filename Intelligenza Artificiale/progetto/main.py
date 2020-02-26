@@ -2,11 +2,14 @@ from base.solver import Solver
 from min_conflicts.min_conflicts import MinConflictsSolver
 from csp.queens import CSPQueenSolver, ValuesSorter
 from utils.generator import NQueensCompletionGenerator
+import utils.config as config
 
 from typing import Dict, Tuple, List
 from timeit import default_timer as timer
 
 from matplotlib import pyplot as plt
+import numpy as np
+import json
 
 from utils.solution_printer import SolutionPrinter
 
@@ -20,6 +23,9 @@ class Benchmark:
     def _run_test(solver: Solver, name) -> Tuple[int, float]:
         start_time: float = timer()
         solutions, iterations = solver.solve()
+        if solutions is None:
+            iterations = -1
+
         end_time: float = timer()
         elapsed_time: float = end_time - start_time
 
@@ -28,14 +34,18 @@ class Benchmark:
 
         return iterations, elapsed_time
 
-    def csp_internal_comparison(self, attempt_number: int = 3):
-        avg_iterations, avg_times, max_times, min_times = [0] * 4, [0] * 4, [-1] * 4, [-1] * 4
+    def compare(self, attempt_number: int = 3):
+        solver_numbers: int = 5
+
+        avg_iterations, avg_times, max_times, min_times, fails_number = [0] * solver_numbers, [0] * solver_numbers, \
+                                                                        [-1] * solver_numbers, \
+                                                                        [-1] * solver_numbers, [-0] * solver_numbers
 
         for attempt in range(attempt_number):
             print("Tentativo #%d/%d" % (attempt + 1, attempt_number))
             blocked_queens: Dict[int, int] = NQueensCompletionGenerator(self.n, self.n_blocked).generate()
 
-            solvers: List[CSPQueenSolver] = []
+            solvers: List[Solver] = []
             standard_CSP: CSPQueenSolver = CSPQueenSolver(self.n, blocked_queens, ValuesSorter.DEFAULT,
                                                           False, False, False)
             solvers.append(standard_CSP)
@@ -50,8 +60,15 @@ class Benchmark:
                                                           True, True, True)
             solvers.append(complete_CSP)
 
+            min_conflicts: MinConflictsSolver = MinConflictsSolver(self.n, blocked_queens)
+            solvers.append(min_conflicts)
+
             for i in range(len(solvers)):
                 iteration, time = self._run_test(solvers[i], "CSP %d" % i)
+                if iteration < 0:
+                    fails_number[i] += 1
+                    time = 61  # Faccio fallire
+
                 avg_iterations[i] += iteration
                 avg_times[i] += time
 
@@ -63,150 +80,112 @@ class Benchmark:
         avg_iterations, avg_times = list((x / attempt_number for x in avg_iterations)), \
                                     list((x / attempt_number for x in avg_times))
 
-        return avg_times, min_times, max_times
-
-    def csp_min_conflict_comparison(self, attempt_numbers: int = 3) -> Dict[str, Tuple[float, float, float]]:
-        print("\n#Queens: %d, #Blocked: %d" % (self.n, self.n_blocked))
-        output: Dict[str, Tuple[float, float, float]] = {}
-
-        avg_csp_iterations, avg_csp_time, max_csp_time, min_csp_time = (.0, .0, -1, -1)
-        avg_mc_iterations, avg_mc_time, max_mc_time, min_mc_time = (.0, .0, -1, -1)
-
-        for attempt in range(attempt_numbers):
-            # Faccio un tentativo diverso con una configurazione di regine bloccate diversa
-            blocked_queens: Dict[int, int] = NQueensCompletionGenerator(self.n, self.n_blocked).generate()
-            print("Blocked queens: %r" % blocked_queens)
-
-            csp_iterations, csp_time = Benchmark._run_test(CSPQueenSolver(self.n, blocked_queens), "CSP")
-
-            if csp_time > max_csp_time:
-                max_csp_time = csp_time
-            if csp_time < min_csp_time or min_csp_time < 0:
-                min_csp_time = csp_time
-
-            avg_csp_iterations += csp_iterations
-            avg_csp_time += csp_time
-
-            mc_iterations, mc_time = Benchmark._run_test(MinConflictsSolver(self.n, blocked_queens),
-                                                         "MIN-CONFLICTS")
-
-            if mc_time > max_mc_time:
-                max_mc_time = mc_time
-            if mc_time < min_mc_time or min_mc_time < 0:
-                min_mc_time = mc_time
-
-            avg_mc_iterations += mc_iterations
-            avg_mc_time += mc_time
-
-        output["CSP"] = (avg_csp_iterations / attempt_numbers,
-                         avg_csp_time / attempt_numbers,
-                         max_csp_time - min_csp_time)
-
-        output["MIN-CONFLICTS"] = (avg_mc_iterations / attempt_numbers,
-                                   avg_mc_time / attempt_numbers,
-                                   max_mc_time - min_mc_time)
-
-        return output
+        return avg_times, min_times, max_times, fails_number
 
 
-def test_1():
+solver_names: List[str] = ["Standard", "AC3", "AC3+FC", "AC3+FC+MRV", "Min-Conflicts"]
+
+
+def test():
     """
-    CSP vs Min Conflicts
+    Svolge il test, i cui risultati sono riportati nella relazione.
+
+    In pratica, sottomette alle tre versioni di CSP e a Min-Conflicts lo stesso problema, variando n da 4 a 30, e k da 0
+    (per ottenere la baseline) a 29
     Returns:
 
     """
-    result: Dict[int, Dict[str, Tuple[float, float, float]]] = {}
-    n_blocked_queens: int = 2
+    max_n: int = config.benchmark_max_n
+    min_n: int = config.benchmark_min_n
 
-    for n in range(4, 31, 1):
-        result[n] = Benchmark(n, n_blocked_queens).csp_min_conflict_comparison(5)
+    results = {}
+    print("%r" % results)
 
-    x_axis_values = list(result.keys())
+    for n in range(min_n, max_n + 1, 5):
+        for k in range(0, n, 2):
+            avg_times, min_times, max_times, fails = Benchmark(n, k).compare(config.benchmark_iterations)
+            results["%d;%d" % (n, k)] = {
+                "avg_times": avg_times,
+                "min_times": min_times,
+                "max_times": max_times,
+                "fails": fails
+            }
 
-    y_csp, y_min_conflicts = [], []
-    y_var_min_conflicts, y_var_csp = [], []
+            print("(n=%d,k=%d): %r" % (n, k, results["%d;%d" % (n, k)]))
+            json.dump(results, open("results/test_10_iterations.json", "w"))
 
-    for n in result.keys():
-        y_min_conflicts.append(result[n]["MIN-CONFLICTS"][1])
-        y_var_min_conflicts.append(result[n]["MIN-CONFLICTS"][2])
-
-        y_csp.append(result[n]["CSP"][1])
-        y_var_csp.append(result[n]["CSP"][2])
-
-    print("result.keys(): %r, y: %r" % (x_axis_values, y_csp))
-
-    fig, (time_ax, delta_ax) = plt.subplots(2, sharex="all")
-    fig.set_figheight(8)
-    fig.set_figwidth(5)
-
-    # fig.suptitle('CSP vs Min conflicts: %d blocked queens' % n_blocked_queens)
-
-    time_ax.plot(x_axis_values, y_csp, label="CSP")
-    time_ax.plot(x_axis_values, y_min_conflicts, label="MIN-CONFLICTS")
-    time_ax.set(title='CSP vs Min Conflicts', ylabel='Time (s)')
-    time_ax.legend(loc="upper left")
-
-    delta_ax.plot(x_axis_values, y_var_csp, label="CSP")
-    delta_ax.plot(x_axis_values, y_var_min_conflicts, label="MIN-CONFLICTS")
-    delta_ax.set(xlabel='Number of queens (board size)', ylabel='Delta time (s)',
-                 title='CSP vs Min Conflicts - Time variability')
-    delta_ax.legend(loc="upper left")
-
-    delta_ax.grid()
-    time_ax.grid()
-
-    plt.savefig("plots/test_1.png", dpi=410)
-    plt.show()
+    json.dump(results, open("results/test_10_iterations.json", "w"))
+    return results
 
 
-csp_variants: List[str] = ["Standard", "AC3", "AC3+FC", "AC3+FC+MRV"]
+def show_test_result():
+    file_name: str = "results/test_10_iterations.json"
+    file_content = json.load(open(file_name, "r"))
 
+    parsed_result: Dict[int, Dict[int, object]] = {}
 
-def test_2():
+    for key in file_content.keys():
+        n, k = [int(a) for a in key.split(";")]
+
+        if n not in parsed_result.keys():
+            parsed_result[int(n)] = {}
+
+        parsed_result[n][k] = file_content[key]
+
+    n: int = config.benchmark_max_n
+    tot_iterations = config.benchmark_iterations
+
     """
-    Testo le varie implementazioni di CSP
-    :return:
+    parameter_to_normalize: List[str] = ["max_times", "avg_times"]
+    for parameter in parameter_to_normalize:
+        for k in parsed_result[n].keys():
+            for solver in range(len(solver_names)):
+                old_value = parsed_result[n][k][parameter][solver]
+                n_fails: int = parsed_result[n][k]["fails"][solver]
+                if n_fails > 0:
+                    time_to_add = n_fails * config.timeout
+                    old_weight = tot_iterations - n_fails
+                    parsed_result[n][k][parameter][solver] = (old_value * old_weight + time_to_add) / tot_iterations
     """
-    avg_times, min_times, max_times = Benchmark(15, 2).csp_internal_comparison(100)
+    for parameter_considered in ["fails", "avg_times", "max_times", "min_times"]:
+        y = []
+        for i in range(len(solver_names)):
+            y.append([])
 
-    variants_range: range = range(len(avg_times))
+        x: List[int] = []
 
-    max_bar = plt.bar(variants_range, max_times)
-    avg_bar = plt.bar(variants_range, avg_times)
-    min_bar = plt.bar(variants_range, min_times)
+        for k in parsed_result[n].keys():
+            x.append(k)
+            for i in range(len(parsed_result[n][k][parameter_considered])):
+                if parameter_considered != "fails":
+                    if parsed_result[n][k][parameter_considered][i] >= config.timeout or \
+                       parsed_result[n][k][parameter_considered][i] <= 0.0:
 
-    plt.legend((avg_bar[0], min_bar[0], max_bar[0]), ('AVG', 'Min', 'Max'))
+                        parsed_result[n][k][parameter_considered][i] = np.nan
+                y[i].append(parsed_result[n][k][parameter_considered][i])
+                # x_size += 1
+        print("y: %r" % y)
+        for solver_index in range(len(y)):
+            plt.plot(x, y[solver_index], label=solver_names[solver_index])
+            plt.xlabel("# of blocked queens (k)")
+            plt.ylabel(parameter_considered.capitalize())
 
-    plt.xticks(variants_range, csp_variants)
+        if "time" in parameter_considered:
+            plt.axhline(y=config.timeout, linestyle=':')
+        else:
+            plt.axhline(y=config.benchmark_iterations, linestyle=':')
 
-    plt.yscale('log')
-    plt.ylabel('Time (in seconds)')
+        plt.xticks(x, x)
+        plt.grid(True)
 
-    plt.show()
-
-
-def test_3():
-    x: List[List[int]] = []
-    y: List[List[float]] = []
-
-    test_size: int = 4
-    for i in range(test_size):
-        n_queens: int = i * 5 + 5
-
-        x.append([])
-        y.append([])
-
-        print("Test %d/%d (n: %d)" % (i, test_size, n_queens))
-
-        avg_times, min_times, max_times = Benchmark(n_queens, 2).csp_internal_comparison(5)
-        for j in range(len(csp_variants)):
-            x[i].append(i)
-            y[i].append(avg_times[j])
-
-    plt.plot(x, y)
-    plt.show()
+        plt.title("%d-Queens, %s" % (n, parameter_considered))
+        plt.legend()
+        plt.show()
 
 
 if __name__ == "__main__":
-    test_2()
-    # test_3()
+    """
+    results = test()
+    print("\n\nEsito:\n%r" % results)
+    """
+    show_test_result()

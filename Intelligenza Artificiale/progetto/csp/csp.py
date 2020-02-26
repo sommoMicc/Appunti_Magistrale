@@ -1,6 +1,7 @@
 from typing import Generic, TypeVar, Dict, List, Optional, Tuple
 from abc import ABC, abstractmethod
-
+from timeit import default_timer as timer
+import utils.config as config
 import copy
 
 V = TypeVar('V')  # variable type
@@ -83,6 +84,7 @@ class CSP(Generic[V, D]):
         self.use_mrv: bool = mrv
 
         self.variable_val_sorter: VariableValuesSorter = variable_val_sorter
+        self.start_time: float = -1
 
         for variable in self.variables:
             self.constraints[variable] = []
@@ -127,6 +129,8 @@ class CSP(Generic[V, D]):
         Returns:
             una soluzione, se è stata trovata. None altrimenti.
         """
+        self.start_time = timer()
+
         domains: Dict[V, List[D]] = self.domains
         if self.use_ac3:
             domains = self._ac3(self.domains)
@@ -144,7 +148,6 @@ class CSP(Generic[V, D]):
         Returns:
             una soluzione che completa l'assegnamento passato come parametro, se esiste.
         """
-
         if assignment is None:
             assignment = {}
 
@@ -154,7 +157,11 @@ class CSP(Generic[V, D]):
 
         # se le variabili non hanno valori che possono assumere, è inutile proseguire con la ricerca
         if domains is None:
-            return None, 0
+            return None, -1
+
+        # Controllo sul timeout
+        if timer() - self.start_time > config.timeout:
+            return None, -1
 
         # get all variables in the CSP but not in the assignment
         unassigned: List[V] = [v for v in self.variables if v not in assignment]
