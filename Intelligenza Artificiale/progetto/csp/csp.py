@@ -12,6 +12,7 @@ class Constraint(Generic[V, D], ABC):
     """
     Classe base per tutti vincoli
     """
+
     def __init__(self, variables: List[V]) -> None:
         """
         Costruttore
@@ -38,6 +39,7 @@ class VariableValuesSorter(Generic[V, D], ABC):
     """
     Classe che implementa la politica di ordinamento dei valori di una variabile
     """
+
     @abstractmethod
     def sort_variable_values(self, variable: V, domains: Dict[V, D], assignment: Dict[V, D]):
         """
@@ -59,6 +61,7 @@ class CSP(Generic[V, D]):
     Definisce la struttura di un CSP. Esso consiste in variabili di tipo V che possono assumere una serie di valori di
     tipo D (dominio), i quali però devono soddisfare dei vincoli
     """
+
     def __init__(self, variables: List[V], domains: Dict[V, List[D]], variable_val_sorter: VariableValuesSorter,
                  ac3: bool = True, fc: bool = True, mrv: bool = True) -> None:
         """
@@ -148,6 +151,10 @@ class CSP(Generic[V, D]):
         Returns:
             una soluzione che completa l'assegnamento passato come parametro, se esiste.
         """
+        # Controllo sul timeout
+        if timer() - self.start_time > config.timeout:
+            return None, -1
+
         if assignment is None:
             assignment = {}
 
@@ -157,10 +164,6 @@ class CSP(Generic[V, D]):
 
         # se le variabili non hanno valori che possono assumere, è inutile proseguire con la ricerca
         if domains is None:
-            return None, -1
-
-        # Controllo sul timeout
-        if timer() - self.start_time > config.timeout:
             return None, -1
 
         # get all variables in the CSP but not in the assignment
@@ -177,6 +180,11 @@ class CSP(Generic[V, D]):
         current_iterations = 0
         for value in self.variable_val_sorter.sort_variable_values(first, domains, assignment):
             current_iterations = current_iterations + 1
+
+            # Controllo sul timeout
+            if timer() - self.start_time > config.timeout:
+                return None, -1
+
             local_assignment = assignment.copy()
             local_assignment[first] = value
 
@@ -191,7 +199,7 @@ class CSP(Generic[V, D]):
 
                 if inferred_domain is not None:
                     result, iterations = self._backtracking_search(local_assignment,
-                                                                  inferred_domain)
+                                                                   inferred_domain)
 
                     current_iterations = current_iterations + iterations
                     # if we didn't find the result, we will end up backtracking
@@ -224,6 +232,7 @@ class CSP(Generic[V, D]):
             una versione "ridotta" del dominio, oppure None se è presente una variabile a cui non sono rimasti
             assegnamenti possibili.
         """
+
         domains: Dict[V, D] = copy.deepcopy(old_domains)
         keys: List[V] = list(domains.keys())
 
@@ -295,6 +304,10 @@ class CSP(Generic[V, D]):
         # print("Queue: \n%r" % queue)
 
         while queue:
+            # Controllo sul timeout
+            if timer() - self.start_time > config.timeout:
+                return None
+
             x1, x2 = queue.pop()
             if x1 == x2:
                 continue

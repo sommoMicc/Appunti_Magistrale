@@ -1,3 +1,5 @@
+from json import JSONDecodeError
+
 from base.solver import Solver
 from min_conflicts.min_conflicts import MinConflictsSolver
 from csp.queens import CSPQueenSolver, ValuesSorter
@@ -23,7 +25,7 @@ class Benchmark:
         self.n_blocked = n_blocked
 
     @staticmethod
-    def _run_test(solver: Solver, name) -> Tuple[int, float]:
+    def run_test(solver: Solver, name) -> Tuple[int, float]:
         start_time: float = timer()
         solutions, iterations = solver.solve()
         if solutions is None:
@@ -70,7 +72,7 @@ class Benchmark:
             solvers.append(min_conflicts)
 
             for i in range(len(solvers)):
-                iteration, time = self._run_test(solvers[i], "Solver %s" % solver_names[i])
+                iteration, time = self.run_test(solvers[i], "Solver %s" % solver_names[i])
                 if iteration < 0:
                     fails_number[i] += 1
                     time = 61  # Faccio fallire
@@ -89,7 +91,7 @@ class Benchmark:
         return avg_times, min_times, max_times, fails_number
 
 
-def test():
+def test(sizes: List[int] = None, granularity: int = 2):
     """
     Svolge il test, i cui risultati sono riportati nella relazione.
 
@@ -101,24 +103,35 @@ def test():
     max_n: int = config.benchmark_max_n
     min_n: int = config.benchmark_min_n
 
-    results = {}
-    print("%r" % results)
+    if sizes is None:
+        sizes = range(min_n, max_n + 1, 5)
 
-    for n in range(min_n, max_n + 1, 5):
-        for k in range(0, n, 2):
+    results_file = open(config.output_file, "r")
+    try:
+        output: Dict = json.load(results_file)
+        print("Output: %r" % output)
+    except JSONDecodeError:
+        print("JSONDecodeError")
+        output: Dict = {}
+
+    results_file.close()
+    print("%r" % output)
+
+    for n in sizes:
+        for k in range(0, n, granularity):
             avg_times, min_times, max_times, fails = Benchmark(n, k).compare(config.benchmark_iterations)
-            results["%d;%d" % (n, k)] = {
+            output["%d;%d" % (n, k)] = {
                 "avg_times": avg_times,
                 "min_times": min_times,
                 "max_times": max_times,
                 "fails": fails
             }
+            results_file = open(config.output_file, "w")
+            print("(n=%d,k=%d): %r" % (n, k, output["%d;%d" % (n, k)]))
+            json.dump(output, results_file)
+            results_file.close()
 
-            print("(n=%d,k=%d): %r" % (n, k, results["%d;%d" % (n, k)]))
-            json.dump(results, open(config.output_file, "w"))
-
-    json.dump(results, open(config.output_file, "w"))
-    return results
+    return output
 
 
 def show_test_result():
@@ -190,12 +203,11 @@ def show_test_result():
             plt.title("%d-Queens, %s" % (n, parameter_considered))
             plt.legend()
             plt.savefig("%s/%d_queens_%s.png" % (config.plot_folder, n, parameter_considered))
+            plt.close()
 
 
 if __name__ == "__main__":
-
     if not path.exists(config.output_file):
-        results = test()
-        print("\n\nEsito:\n%r" % results)
+        test()
 
     show_test_result()
