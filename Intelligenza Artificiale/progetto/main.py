@@ -6,7 +6,7 @@ from csp.queens import CSPQueenSolver, ValuesSorter
 from utils.generator import NQueensCompletionGenerator
 import utils.config as config
 
-from typing import Dict, Tuple, List
+from typing import Dict, Tuple, List, TextIO
 from timeit import default_timer as timer
 
 from matplotlib import pyplot as plt
@@ -17,6 +17,7 @@ from os import path
 from utils.solution_printer import SolutionPrinter
 
 solver_names: List[str] = ["Standard", "AC3", "AC3+FC", "AC3+FC+MRV", "AC3+FC+MRV+LCV", "Min-Conflicts"]
+alternative_solver_names: List[str] = ["Default", "Random", "LCV"]
 
 
 class Benchmark:
@@ -90,8 +91,51 @@ class Benchmark:
 
         return avg_times, min_times, max_times, fails_number
 
+    def compare_values_sorter(self, attempt_number: int = 3):
+        solver_numbers: int = len(alternative_solver_names)
 
-def test(sizes: List[int] = None, granularity: int = 2):
+        avg_iterations, avg_times, max_times, min_times, fails_number = [0] * solver_numbers, [0] * solver_numbers, \
+                                                                        [-1] * solver_numbers, \
+                                                                        [-1] * solver_numbers, [-0] * solver_numbers
+
+        for attempt in range(attempt_number):
+            print("Tentativo #%d/%d" % (attempt + 1, attempt_number))
+            blocked_queens: Dict[int, int] = NQueensCompletionGenerator(self.n, self.n_blocked).generate()
+
+            solvers: List[Solver] = []
+            complete_CSP: CSPQueenSolver = CSPQueenSolver(self.n, blocked_queens, ValuesSorter.DEFAULT,
+                                                          True, True, True)
+            solvers.append(complete_CSP)
+
+            complete_random_CSP: CSPQueenSolver = CSPQueenSolver(self.n, blocked_queens, ValuesSorter.RANDOM,
+                                                                 True, True, True)
+            solvers.append(complete_random_CSP)
+
+            complete_LCV_CSP: CSPQueenSolver = CSPQueenSolver(self.n, blocked_queens, ValuesSorter.LEAST_CONSTRAINT,
+                                                              True, True, True)
+            solvers.append(complete_LCV_CSP)
+
+            for i in range(len(solvers)):
+                iteration, time = self.run_test(solvers[i], "Solver %s" % solver_names[i])
+                if iteration < 0:
+                    fails_number[i] += 1
+                    time = 61  # Faccio fallire
+
+                avg_iterations[i] += iteration
+                avg_times[i] += time
+
+                if time > max_times[i]:
+                    max_times[i] = time
+                if time < min_times[i] or min_times[i] < 0:
+                    min_times[i] = time
+
+        avg_iterations, avg_times = list((x / attempt_number for x in avg_iterations)), \
+                                    list((x / attempt_number for x in avg_times))
+
+        return avg_times, min_times, max_times, fails_number
+
+
+def test(sizes: List[int] = None, granularity: int = 2, alternative:bool = False):
     """
     Svolge il test, i cui risultati sono riportati nella relazione.
 
@@ -103,10 +147,14 @@ def test(sizes: List[int] = None, granularity: int = 2):
     max_n: int = config.benchmark_max_n
     min_n: int = config.benchmark_min_n
 
+    file_name: str = config.output_file
+    if alternative:
+        file_name = config.alternative_output_file
+
     if sizes is None:
         sizes = range(min_n, max_n + 1, 5)
 
-    results_file = open(config.output_file, "r")
+    results_file = open(file_name, "r")
     try:
         output: Dict = json.load(results_file)
         print("Output: %r" % output)
@@ -119,14 +167,19 @@ def test(sizes: List[int] = None, granularity: int = 2):
 
     for n in sizes:
         for k in range(0, n, granularity):
-            avg_times, min_times, max_times, fails = Benchmark(n, k).compare(config.benchmark_iterations)
+            if alternative:
+                avg_times, min_times, max_times, fails = Benchmark(n, k)\
+                                                                    .compare_values_sorter(config.benchmark_iterations)
+            else:
+                avg_times, min_times, max_times, fails = Benchmark(n, k).compare(config.benchmark_iterations)
             output["%d;%d" % (n, k)] = {
                 "avg_times": avg_times,
                 "min_times": min_times,
                 "max_times": max_times,
                 "fails": fails
             }
-            results_file = open(config.output_file, "w")
+
+            results_file: TextIO = open(file_name, "w")
             print("(n=%d,k=%d): %r" % (n, k, output["%d;%d" % (n, k)]))
             json.dump(output, results_file)
             results_file.close()
@@ -139,6 +192,12 @@ def show_test_result():
     file_content = json.load(open(file_name, "r"))
 
     parsed_result: Dict[int, Dict[int, object]] = {}
+    parameter_translation: Dict[str, str] = {
+        "fails": "Numero di fallimenti",
+        "avg_times": "Tempo medio di esecuzione (s)",
+        "max_times": "Tempo massimo di esecuzione (s)",
+        "min_times": "Tempo minimo di esecuzione (s)"
+    }
 
     for key in file_content.keys():
         n, k = [int(a) for a in key.split(";")]
@@ -149,19 +208,6 @@ def show_test_result():
         parsed_result[n][k] = file_content[key]
 
     for n in parsed_result.keys():
-        """
-        tot_iterations = config.benchmark_iterations
-        parameter_to_normalize: List[str] = ["max_times", "avg_times"]
-        for parameter in parameter_to_normalize:
-            for k in parsed_result[n].keys():
-                for solver in range(len(solver_names)):
-                    old_value = parsed_result[n][k][parameter][solver]
-                    n_fails: int = parsed_result[n][k]["fails"][solver]
-                    if n_fails > 0:
-                        time_to_add = n_fails * config.timeout
-                        old_weight = tot_iterations - n_fails
-                        parsed_result[n][k][parameter][solver] = (old_value * old_weight + time_to_add) / tot_iterations
-        """
         for parameter_considered in ["fails", "avg_times", "max_times", "min_times"]:
             y = []
             for i in range(len(solver_names)):
@@ -178,18 +224,18 @@ def show_test_result():
                     if parameter_considered != "fails":
                         if parsed_result[n][k][parameter_considered][i] >= config.timeout or \
                                 parsed_result[n][k][parameter_considered][i] <= 0.0:
-                            parsed_result[n][k][parameter_considered][i] = np.nan
+                            parsed_result[n][k][parameter_considered][i] = config.timeout
 
                     y[i].append(parsed_result[n][k][parameter_considered][i])
 
                     if parsed_result[n][k][parameter_considered][i] > max_value:
                         max_value = parsed_result[n][k][parameter_considered][i]
                     # x_size += 1
-            print("n: %d, max_value: %f, parameter: %s" % (n, max_value, parameter_considered))
+            # print("n: %d, max_value: %f, parameter: %s" % (n, max_value, parameter_considered))
             for solver_index in range(len(y)):
                 plt.plot(x, y[solver_index], label=solver_names[solver_index])
-                plt.xlabel("# of blocked queens (k)")
-                plt.ylabel(parameter_considered.capitalize())
+                plt.xlabel("Numero di regine bloccate (k)")
+                plt.ylabel(parameter_translation[parameter_considered])
 
             if "time" in parameter_considered:
                 if max_value > 10:
@@ -200,7 +246,7 @@ def show_test_result():
             plt.xticks(x, x)
             plt.grid(True)
 
-            plt.title("%d-Queens, %s" % (n, parameter_considered))
+            plt.title("%d-Queens Completion, %s" % (n, parameter_translation[parameter_considered]))
             plt.legend()
             plt.savefig("%s/%d_queens_%s.png" % (config.plot_folder, n, parameter_considered))
             plt.close()
@@ -208,6 +254,6 @@ def show_test_result():
 
 if __name__ == "__main__":
     if not path.exists(config.output_file):
-        test()
+        test([29], alternative=True)
 
     show_test_result()

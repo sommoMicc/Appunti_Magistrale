@@ -5,4 +5,5 @@ benchmark_iterations = 10
 timeout = 60  # timeout in secondi
 
 output_file = "results/test_full.json"
+alternative_output_file = "results/test_values_sorter.json"
 plot_folder = "results/plots"
