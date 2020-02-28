@@ -71,7 +71,6 @@ class RandomConstraintValueSorter(VariableValuesSorter):
 
 
 class LeastConstraintValueSorter(VariableValuesSorter):
-
     def sort_variable_values(self, variable: V, domains: Dict[V, D], assignment: Dict[V, D]) -> D:
         """
         Ordina gli elementi del dominio di "variable" in base al numero di conflitti: valori che portano ad un numero
@@ -82,6 +81,7 @@ class LeastConstraintValueSorter(VariableValuesSorter):
         :param assignment:
         :return:
         """
+
         domain: D = domains[variable]
         domain.sort(key=lambda row: LeastConstraintValueSorter.number_of_conflicts(variable, row, assignment))
         return domain

@@ -1,23 +1,19 @@
+import json
 from json import JSONDecodeError
-
-from base.solver import Solver
-from min_conflicts.min_conflicts import MinConflictsSolver
-from csp.queens import CSPQueenSolver, ValuesSorter
-from utils.generator import NQueensCompletionGenerator
-import utils.config as config
-
-from typing import Dict, Tuple, List, TextIO
+from os import path
 from timeit import default_timer as timer
+from typing import Dict, Tuple, List, TextIO, Optional
 
 from matplotlib import pyplot as plt
-import numpy as np
-import json
-from os import path
 
-from utils.solution_printer import SolutionPrinter
+import utils.config as config
+from base.solver import Solver
+from csp.queens import CSPQueenSolver, ValuesSorter
+from min_conflicts.min_conflicts import MinConflictsSolver
+from utils.generator import NQueensCompletionGenerator
 
 solver_names: List[str] = ["Standard", "AC3", "AC3+FC", "AC3+FC+MRV", "AC3+FC+MRV+LCV", "Min-Conflicts"]
-alternative_solver_names: List[str] = ["Default", "Random", "LCV"]
+alternative_solver_names: List[str] = ["Default", "Random", "LCV", "Min-Conflicts"]
 
 
 class Benchmark:
@@ -115,8 +111,15 @@ class Benchmark:
                                                               True, True, True)
             solvers.append(complete_LCV_CSP)
 
+            min_conflicts: MinConflictsSolver = MinConflictsSolver(self.n, blocked_queens)
+            solvers.append(min_conflicts)
+
             for i in range(len(solvers)):
-                iteration, time = self.run_test(solvers[i], "Solver %s" % solver_names[i])
+                # if i % 2 == 1:
+                iteration, time = self.run_test(solvers[i], "Solver %s" % alternative_solver_names[i])
+                # else:
+                # iteration, time = -1, 60.2
+
                 if iteration < 0:
                     fails_number[i] += 1
                     time = 61  # Faccio fallire
@@ -154,15 +157,19 @@ def test(sizes: List[int] = None, granularity: int = 2, alternative:bool = False
     if sizes is None:
         sizes = range(min_n, max_n + 1, 5)
 
-    results_file = open(file_name, "r")
+    results_file: Optional[TextIO] = None
+    output: Dict = {}
+
     try:
+        results_file = open(file_name, "r")
         output: Dict = json.load(results_file)
         print("Output: %r" % output)
     except JSONDecodeError:
         print("JSONDecodeError")
-        output: Dict = {}
+        results_file.close()
+    except FileNotFoundError:
+        print("File %s non trovato" % file_name)
 
-    results_file.close()
     print("%r" % output)
 
     for n in sizes:
@@ -187,8 +194,16 @@ def test(sizes: List[int] = None, granularity: int = 2, alternative:bool = False
     return output
 
 
-def show_test_result():
+def show_test_result(alternative: bool = False):
     file_name: str = config.output_file
+    labels: List[str] = solver_names
+    plot_file_name_suffix: str = ""
+
+    if alternative:
+        file_name: str = config.alternative_output_file
+        labels = alternative_solver_names
+        plot_file_name_suffix = "_alt"
+
     file_content = json.load(open(file_name, "r"))
 
     parsed_result: Dict[int, Dict[int, object]] = {}
@@ -210,7 +225,7 @@ def show_test_result():
     for n in parsed_result.keys():
         for parameter_considered in ["fails", "avg_times", "max_times", "min_times"]:
             y = []
-            for i in range(len(solver_names)):
+            for i in range(len(labels)):
                 y.append([])
 
             x: List[int] = []
@@ -233,7 +248,8 @@ def show_test_result():
                     # x_size += 1
             # print("n: %d, max_value: %f, parameter: %s" % (n, max_value, parameter_considered))
             for solver_index in range(len(y)):
-                plt.plot(x, y[solver_index], label=solver_names[solver_index])
+                # if solver_index in [1, 3]:
+                plt.plot(x, y[solver_index], label=labels[solver_index])
                 plt.xlabel("Numero di regine bloccate (k)")
                 plt.ylabel(parameter_translation[parameter_considered])
 
@@ -248,12 +264,15 @@ def show_test_result():
 
             plt.title("%d-Queens Completion, %s" % (n, parameter_translation[parameter_considered]))
             plt.legend()
-            plt.savefig("%s/%d_queens_%s.png" % (config.plot_folder, n, parameter_considered))
+            plt.savefig("%s/%d_queens_%s%s.png" % (config.plot_folder, n, parameter_considered, plot_file_name_suffix))
             plt.close()
 
 
 if __name__ == "__main__":
     if not path.exists(config.output_file):
-        test([29], alternative=True)
+        test(alternative=False)
+    show_test_result(False)
 
-    show_test_result()
+    if not path.exists(config.alternative_output_file):
+        test([4, 9, 14, 19, 24, 29, 50, 100], alternative=True)
+    show_test_result(True)

@@ -178,7 +178,10 @@ class CSP(Generic[V, D]):
         # get the every possible domain value of the first unassigned variable
         first: V = unassigned[0]
         current_iterations = 0
-        for value in self.variable_val_sorter.sort_variable_values(first, domains, assignment):
+
+        sorted_domain: Dict[V,D] = self.variable_val_sorter.sort_variable_values(first, domains, assignment)
+
+        for value in sorted_domain:
             current_iterations = current_iterations + 1
 
             # Controllo sul timeout
