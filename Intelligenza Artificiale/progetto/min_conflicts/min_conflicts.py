@@ -142,7 +142,7 @@ class MinConflictsSolver(Solver):
 
             movements += 1
 
-            # Random reboot
+            # Random Restart
             if movements % (self.n * 2) == 0:
                 self.randomize()
 

@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Dict, Optional, Tuple
 from utils.solution_printer import SolutionPrinter
 
-V = TypeVar('V')  # variable type
-D = TypeVar('D')  # domain type
+V = TypeVar('V')  # Tipo di variabile
+D = TypeVar('D')  # Tipo di dominio
 
 
 class Solver(ABC):

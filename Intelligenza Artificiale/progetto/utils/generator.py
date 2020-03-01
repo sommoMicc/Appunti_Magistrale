@@ -5,7 +5,16 @@ from min_conflicts.min_conflicts import MinConflictsSolver
 
 
 class NQueensCompletionGenerator:
+    """
+    Classe che genera una configurazione casuale di regine bloccate
+    """
     def __init__(self, n_queens: int, n_blocked_queens: int):
+        """
+        Costruttore
+        Args:
+            n_queens: numero di regine (dimensione della scacchiera)
+            n_blocked_queens: numero di regine bloccate
+        """
         self.n_queens = n_queens
         self.n_blocked_queens = n_blocked_queens
 
@@ -21,7 +30,7 @@ class NQueensCompletionGenerator:
         solver: Solver = MinConflictsSolver(self.n_queens, {})
         solution, _ = solver.solve()
 
-        # devo eliminare delle colonne qua!!!
+        # Qua vengono eliminate le colonne "in eccesso" in maniera casuale
         while len(solution.keys()) > self.n_blocked_queens:
             queen_to_delete: int = random.randint(0, len(solution.keys()) - 1)
             solution.pop(list(solution.keys())[queen_to_delete])

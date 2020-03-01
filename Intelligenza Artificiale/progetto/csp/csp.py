@@ -4,8 +4,8 @@ from timeit import default_timer as timer
 import utils.config as config
 import copy
 
-V = TypeVar('V')  # variable type
-D = TypeVar('D')  # domain type
+V = TypeVar('V')  # Tipo di variabile
+D = TypeVar('D')  # Tipo di dominio
 
 
 class Constraint(Generic[V, D], ABC):
@@ -175,7 +175,6 @@ class CSP(Generic[V, D]):
             CSP._minimum_remaining_values(unassigned, domains)
         # unassigned.sort(key=lambda v: len(domains[v]))
 
-        # get the every possible domain value of the first unassigned variable
         first: V = unassigned[0]
         current_iterations = 0
 
@@ -205,7 +204,7 @@ class CSP(Generic[V, D]):
                                                                    inferred_domain)
 
                     current_iterations = current_iterations + iterations
-                    # if we didn't find the result, we will end up backtracking
+
                     if result is not None:
                         return result, current_iterations
         return None, current_iterations
@@ -264,20 +263,16 @@ class CSP(Generic[V, D]):
         removed: bool = False
         assignment: Dict[V, D] = {}
 
-        # print("Rimuovo inconsistenti tra x1: %d e x2: %d" % (x1, x2))
-
         for value1 in domains[x1]:
             assignment[x1] = value1
 
             is_valid: bool = False
             for value2 in domains[x2]:
                 assignment[x2] = value2
-                # print("Controllo consistenza di %r e %d" % (assignment, x2))
                 if self.consistent(x2, assignment):
                     is_valid = True
                     break
             if not is_valid:
-                # print("Rimuovo %d dal dominio di Q%d" % (value1, x1))
                 domains[x1].remove(value1)
                 removed = True
 
@@ -304,7 +299,6 @@ class CSP(Generic[V, D]):
                 queue.append((self.variables[i], self.variables[j]))
 
         queue.reverse()
-        # print("Queue: \n%r" % queue)
 
         while queue:
             # Controllo sul timeout
@@ -321,7 +315,6 @@ class CSP(Generic[V, D]):
 
                 for var in self.variables:
                     if var != x1:
-                        # print("Appendo (%d, %d) alla coda" % (var, x1))
                         queue.append((var, x1))
 
         return domains

@@ -29,8 +29,6 @@ class SolutionPrinter:
             row: int = queens_coord[column]
 
             grid[row][column] = "Q%d" % column
-            # i,y = solution[queen]
-            # grid[i,j] = "%d" % queen
 
         for row in grid:
             pretty_table.add_row(grid[row])

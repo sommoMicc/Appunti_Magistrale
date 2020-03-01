@@ -17,12 +17,32 @@ alternative_solver_names: List[str] = ["Default", "Random", "LCV", "Min-Conflict
 
 
 class Benchmark:
+    """
+    Classe che semplifica l'esecuzione di un benchmark
+    """
     def __init__(self, n: int, n_blocked: int):
+        """
+        Costruttore
+        Args:
+            n: la dimensione della scacchiera
+            n_blocked: il numero di regine bloccate
+        """
         self.n = n
         self.n_blocked = n_blocked
 
     @staticmethod
     def run_test(solver: Solver, name) -> Tuple[int, float]:
+        """
+        Esegue il metodo "solve" del Solver "solver" passato come parametro e ne cronometra i risultati
+        Args:
+            solver: il risolutore di cui si vogliono misurare performance (in secondi)
+            name: il nome del risolutore (serve per l'output in console)
+
+        Returns:
+            Una tupla formata dal numero di iterazioni (in prima posizione) e dal tempo in secondi (seconda posizione)
+            che il risolutore ha impiegato per risolvere il problema. In caso di mancata soluzione (ad esempio causa
+            timeout), il primo argomento della tupla sarà "-1"
+        """
         start_time: float = timer()
         solutions, iterations = solver.solve()
         if solutions is None:
@@ -36,7 +56,25 @@ class Benchmark:
 
         return iterations, elapsed_time
 
-    def compare(self, attempt_number: int = 3):
+    def compare(self, attempt_number: int = 3) -> Tuple[List[float], List[float], List[float], List[int]]:
+        """
+        Compara le prestazioni di Backtracking Standard, Backtracking+AC-3, Backtracking+AC-3+FC, Backtracking+AC-3+FC+
+        MRV, Backtracking+AC-3+FC+MRV+LCV e Min Conflicts sullo stesso problema. In pratica svolge i benchmark
+        menzionati in sezione 3.1 della relazione
+        Args:
+            attempt_number: Il numero di comparative da svolgere. Notare che per ogni comparativa viene generata una
+                            configurazione di regine bloccate differente (e casuale), ma coerente con il parametro
+                            "n_blocked" dell'istanza della classe "Benchmark"
+
+        Returns:
+            Una tupla avente:
+            - In prima posizione un array contenente, per ogni algoritmo, la media dei tempi di esecuzione dei test;
+            - In seconda posizione, un array contenente per ogni algoritmo il tempo migliore fatto registrare nei test;
+            - In terza posizione, un array contenente per ogni algoritmo il tempo peggiore fatto registrare nei test;
+            - In terza posizione, un array contenente per ogni algoritmo il numero di fallimenti fatti registrare
+              nei test;
+
+        """
         solver_numbers: int = len(solver_names)
 
         avg_iterations, avg_times, max_times, min_times, fails_number = [0] * solver_numbers, [0] * solver_numbers, \
@@ -88,6 +126,24 @@ class Benchmark:
         return avg_times, min_times, max_times, fails_number
 
     def compare_values_sorter(self, attempt_number: int = 3):
+        """
+        Compara le prestazioni delle varie metodologie di ordinamento dei valori del dominio delle variabili, tenendo
+        come base Backtracking+AC-3+FC+MRV. Nella comparativa è incluso anche Min-Conflicts. Questo test rappresenta
+        i risultati presentati in sezione 3.2 della relazione
+        Args:
+            attempt_number: Il numero di comparative da svolgere. Notare che per ogni comparativa viene generata una
+                            configurazione di regine bloccate differente (e casuale), ma coerente con il parametro
+                            "n_blocked" dell'istanza della classe "Benchmark"
+
+        Returns:
+            Una tupla avente:
+            - In prima posizione un array contenente, per ogni algoritmo, la media dei tempi di esecuzione dei test;
+            - In seconda posizione, un array contenente per ogni algoritmo il tempo migliore fatto registrare nei test;
+            - In terza posizione, un array contenente per ogni algoritmo il tempo peggiore fatto registrare nei test;
+            - In terza posizione, un array contenente per ogni algoritmo il numero di fallimenti fatti registrare
+              nei test;
+        """
+
         solver_numbers: int = len(alternative_solver_names)
 
         avg_iterations, avg_times, max_times, min_times, fails_number = [0] * solver_numbers, [0] * solver_numbers, \
@@ -138,14 +194,20 @@ class Benchmark:
         return avg_times, min_times, max_times, fails_number
 
 
-def test(sizes: List[int] = None, granularity: int = 2, alternative:bool = False):
+def test(sizes: List[int] = None, granularity: int = 2, alternative: bool = False) -> Dict:
     """
-    Svolge il test, i cui risultati sono riportati nella relazione.
+    Svolge il test, i cui risultati sono riportati nella relazione. Salva i risultati in un file json che, se già
+    esistente, viene semplicemente integrato.
 
-    In pratica, sottomette alle 4 versioni di CSP e a Min-Conflicts lo stesso problema, variando n da 4 a 29, e k da 0
-    (per ottenere la baseline) a 28
+    Args:
+        sizes: una lista contenente le dimensioni della scacchiera da testare
+        granularity: granularità con la quale viene variato il parametro k
+        alternative: True se si vuole usare il set di confronto alternativo (ovvero il confronto tra le varie euristiche
+        di ordinamento dei valori delle variabili, corrisponde alla sezione 3.2 della relazione).
+        Se False, il confronto viene svolto tra le varie versioni di Backtracking (sezione 3.1 della relazione)
+
     Returns:
-
+        Un dizionario contenente i risultati del benchmark
     """
     max_n: int = config.benchmark_max_n
     min_n: int = config.benchmark_min_n
@@ -195,6 +257,17 @@ def test(sizes: List[int] = None, granularity: int = 2, alternative:bool = False
 
 
 def show_test_result(alternative: bool = False):
+    """
+    Genera i grafici presenti nella relazione a partire dal contenuto del file json generato dal metodo "test"
+
+    Args:
+        alternative: True se si vuole caricare i risultati del confronto alternativo (ovvero il confronto tra le varie
+        euristiche di ordinamento dei valori delle variabili, corrisponde alla sezione 3.2 della relazione), False
+        altrimenti.
+
+    Returns:
+        Void
+    """
     file_name: str = config.output_file
     labels: List[str] = solver_names
     plot_file_name_suffix: str = ""
