@@ -19,3 +19,13 @@ Supponiamo che l'input sia in un file. L'implementazione di un round procede com
 Il DFS è fault-tolerant, quindi in caso di problemi i dati contenuti in esso possono essere recuperati. Uno dei compiti del master program è quello di pingare i _workers_ in modo periodico per rilevare gli errori. In caso di fallimento, i Map task completati o in corso nel "faulty worker" sono resettati e verranno rieseguiti. Siccome l'output del map task è salvato "in locale" sul worker, se esso si guasta anche l'output dei task già completati verrà perso, quindi tutti (a prescindere) dovranno essere rischedulati, cioè riassegnati ad altri worker.
 In caso di task _Reduce_, solo i task falliti dovrano essere riassegnati, in quanto l'output di un task reduce viene salvato nel DFS, che per definizione è fault tolerant.
 Invece, se il master fallisce, l'evento causa un errore non recuperabile, quindi l'intero task MapReduce deve essere resettato.
+
+## Implementation of MapReduce Algorithm
+
+Un algoritmo definisce come un output viene calcolato a partire dall'input. Quando specifichiamo un agloritmo MapReduce, dovremmo farlo avendo in mente che dovrebbe essere "facile" capire:
+
+- Quali sono input e output dell'algoritmo;
+- Qual'è la sequenza di round eseguita e, per ognuno di esso, quali sono input, intermediate e output sets di coppie chiave-valore e quali funzioni vengono applicate nella fase map e reduce.
+- Quali sono e a quanto ammontano i limiti asintotici per gli indicatori fondamentali di performance (_key performance indicators_)
+
+## Arrivato a 4:10 del video 6
