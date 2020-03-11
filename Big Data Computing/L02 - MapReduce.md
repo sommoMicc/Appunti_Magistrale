@@ -28,4 +28,27 @@ Un algoritmo definisce come un output viene calcolato a partire dall'input. Quan
 - Qual'è la sequenza di round eseguita e, per ognuno di esso, quali sono input, intermediate e output sets di coppie chiave-valore e quali funzioni vengono applicate nella fase map e reduce.
 - Quali sono e a quanto ammontano i limiti asintotici per gli indicatori fondamentali di performance (_key performance indicators_)
 
-## Arrivato a 4:10 del video 6
+## Specification of a MapReduce Algorithm
+
+Per descrivere ogni algoritmo di MR con un numero fissato di round _R_, si può usare il seguente stile:
+
+- **Input**: descrizone dell'input come un insieme di coppie chiave-valore.
+- **Output**: descrizione dell'output come un insieme di coppie chiave-valore.
+- **Round 1**:
+  - _Fase di Map_: descrizione della funzione applicata ad ogni coppia chiave-valore
+  - _Fase Reduce_: descrizione della funzione applicata ad ogni gruppo di coppie chiave-valore aventi la stessa chiave
+- **Round n**: Come il round 1
+
+Questa specifica ad alto livello dovrebbe non essere tediosa, quindi le descrizioni dovrebbero essere abbastanza straight-forward!s
+Inoltre, in un algoritmo MapReduce, il numero di round _R_ potrebbe dipendere dall'istanza di input.
+
+## Analysis of a MapReduce algorithm
+
+Nell'analisi di big data, oltre alla complessità temporale dell'algoritmo, è molto importante la sua complessità spaziale! Infatti, per definizione i dati di input sono tanti, e c'è bisogno di salvare i risultati intermedi in locale nei vari worker; tali risultati potrebbero essere ancora più onerosi da memorizzare del dataset iniziale.
+
+Quindi, l'analisi di un algoritmo MapReduce ha lo scopo di stimare i seguenti indicatori chiave:
+
+- **Numero di round R**, che misura il running time dell'algoritmo. La scelta è stata fatta perché all'inizio la performance del round era dominata asintoticamente dallo shuffle dei dati, quindi ogni round aveva un tempo di esecuzione quasi costante. Oggigiorno questo non è vero, ma per semplicità e coerenza si continua ad usare questa metrica
+- **Spazio locale $M_L$**, che indica la massima quantità di memoria centrale (main memory) richiesta ad un worker in un qualsiasi round da una singola invocazione della funzione _Map_ o _Reduce_ usata in quel round per salvare l'input e ogni struttura dati richiesta dall'invocazione. -**Spazio aggregato $M_A$**, ovvero lo spazio massimo richiesto per l'archiviazione delle coppie chiave-valore di input o generate da una qualsiasi fase Map o Reduce di un quasisasi round.
+
+**Osservazioni**: gli indicatori sono stimati tramite una analisi asintotica in funzione della grandezza dell'istanza. Inoltre, $M_L$ da un limite minimo sulla quantità di _main memory_ (RAM) richiesta da ogni worker, mentre $M_A$ da un limite minimo sulla _quantità totale di spazio su disco_ che la piattaforma di esecuzione deve fornire.
